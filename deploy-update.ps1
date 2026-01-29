@@ -3,7 +3,7 @@
 # This script creates a new package and instructs how to push it to the server
 
 $serverUser = "suporteitl"
-$serverIp = "10.1.15.204"
+$serverIp = "10.1.11.69"
 $remotePath = "/tmp"
 
 Write-Host "=== Utool Auto-Deployment ===" -ForegroundColor Cyan

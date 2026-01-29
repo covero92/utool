@@ -2,7 +2,7 @@
 # Usage: .\debug-server.ps1
 
 $serverUser = "suporteitl"
-$serverIp = "10.1.15.204"
+$serverIp = "10.1.11.69"
 
 Write-Host "=== Utool Server Debug ===" -ForegroundColor Cyan
 Write-Host "Connecting to $serverIp... (Enter password 'suporte@123' if asked)" -ForegroundColor Yellow
