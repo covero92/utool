@@ -345,7 +345,7 @@ if (isSupport() || isAdmin()) {
         
         $cardId = $_POST['card_id'] ?? '';
         if ($cardId) {
-            $newState = $portal->toggleBlock($cardId);
+            $newState = $portal->toggleBlockToken($cardId);
             echo json_encode(['success' => true, 'blocked' => $newState]);
         }
         exit;

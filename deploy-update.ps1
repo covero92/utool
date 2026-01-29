@@ -41,8 +41,12 @@ if ($LASTEXITCODE -eq 0) {
         "cd /home/suporteitl/utool",
         "sudo chmod +x setup.sh",
         "sudo ./setup.sh",
-        "sudo chown -R www-data:www-data /home/suporteitl/utool/data /home/suporteitl/utool/uploads /home/suporteitl/utool/logs_uploaded",
-        "sudo chmod -R 775 /home/suporteitl/utool/data /home/suporteitl/utool/uploads /home/suporteitl/utool/logs_uploaded",
+        "sudo chown -R www-data:www-data /home/suporteitl/utool/data",
+        "sudo chmod -R 777 /home/suporteitl/utool/data",
+        "sudo touch /home/suporteitl/utool/data/fiscal_blog.json",
+        "sudo chown www-data:www-data /home/suporteitl/utool/data/fiscal_blog.json",
+        "sudo chmod 666 /home/suporteitl/utool/data/fiscal_blog.json",
+        "ls -la /home/suporteitl/utool/data/",
         "rm ${remotePath}/$($latestZip.Name)"
     )
     

@@ -26,146 +26,98 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 <!-- FORCE GLASS THEME OVERRIDES -->
 <!-- GLASS THEME SYSTEM -->
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
     :root {
         /* LIGHT GLASS THEME VARS */
-        --glass-border: rgba(255, 255, 255, 0.5);
-        --glass-highlight: rgba(255, 255, 255, 0.8);
-        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --glass-highlight: rgba(255, 255, 255, 0.7);
+        --glass-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.08);
 
         /* Background */
-        --color-body-bg: #f0f4f8; /* Soft blue-grey */
-        --color-body-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        --color-body-bg: #f3f5f9;
+        --color-body-bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #dbeafe 100%);
 
         /* Cards & Glass */
-        --color-card-bg: rgba(255, 255, 255, 0.65);
-        --color-card-bg-hover: rgba(255, 255, 255, 0.85);
-        --color-card-border: rgba(255, 255, 255, 0.4);
+        --color-card-bg: rgba(255, 255, 255, 0.75);
+        --color-card-bg-hover: rgba(255, 255, 255, 0.95);
         
         /* Text */
+        --font-primary: 'Outfit', sans-serif;
+        --font-body: 'Inter', sans-serif;
+        
         --color-text-main: #1e293b;
-        --color-text-primary: #334155;
-        --color-text-secondary: #64748b;
-        --color-text-muted: #94a3b8;
-        
-        /* Accents */
-        --color-accent: #3b82f6; /* Blue 500 */
-        --color-accent-hover: #2563eb;
-        --color-accent-subtle: rgba(59, 130, 246, 0.1);
-        
-        /* Elements */
-        --color-input-bg: rgba(255, 255, 255, 0.8);
-        --color-border: #cbd5e1;
-        
-        /* Sidebar */
-        --sidebar-bg: rgba(255, 255, 255, 0.3);
+        --color-accent: #3b82f6; 
     }
 
     /* GLOBAL STYLES */
     body {
-        font-family: 'Inter', sans-serif;
-        background: var(--color-body-bg) !important;
+        font-family: var(--font-body);
         background: var(--color-body-bg-gradient) !important;
         background-attachment: fixed !important;
         color: var(--color-text-main);
         min-height: 100vh;
     }
 
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-primary);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #0f172a;
+    }
+
     /* GLASS UTILITIES */
     .glass-panel, .card {
         background: var(--color-card-bg) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--color-card-border) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border) !important;
         box-shadow: var(--glass-shadow);
-        border-radius: 16px !important;
+        border-radius: 20px !important;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     
     .hover-card:hover {
         background: var(--color-card-bg-hover) !important;
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2) !important;
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12) !important;
         border-color: #fff !important;
     }
 
-    /* TYPOGRAPHY OVERRIDES */
-    h1, h2, h3, h4, h5, h6 {
-        color: #0f172a;
+    /* WIDGETS */
+    .widget-value {
+        font-family: var(--font-primary);
         font-weight: 700;
-        letter-spacing: -0.025em;
+        letter-spacing: -1px;
     }
-    
-    .text-muted { color: var(--color-text-secondary) !important; }
-    .text-secondary { color: var(--color-text-secondary) !important; }
-    
-    /* NAVIGATION PILLS */
-    .nav-pills .nav-link {
-        color: var(--color-text-secondary);
-        font-weight: 600;
-        border-radius: 12px;
-        padding: 10px 20px;
-        transition: all 0.2s;
-        border: 1px solid transparent;
+
+    /* SEARCH BAR */
+    #tool-search {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border: 1px solid rgba(255,255,255,0.8) !important;
+        backdrop-filter: blur(10px);
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
     }
-    
-    .nav-pills .nav-link:hover {
-        background: rgba(255, 255, 255, 0.5);
-        color: var(--color-accent);
-    }
-    
-    .nav-pills .nav-link.active {
-        background: rgba(255, 255, 255, 0.9) !important;
-        color: var(--color-accent) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border-color: #fff;
-    }
-    
-    /* INPUTS */
-    .glass-input, .form-control, #tool-search {
-        background: var(--color-input-bg) !important;
-        border: 1px solid white !important;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        color: var(--color-text-main) !important;
-        border-radius: 12px !important;
-    }
-    
-    .glass-input:focus, .form-control:focus, #tool-search:focus {
+    #tool-search:focus {
         background: #fff !important;
-        box-shadow: 0 0 0 3px var(--color-accent-subtle) !important;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
         border-color: var(--color-accent) !important;
     }
-    
-    /* SIDEBARS */
-    .left-sidebar {
-        background: linear-gradient(to right, rgba(255,255,255,0.4), rgba(255,255,255,0));
-    }
-    
-    .right-sidebar-glass {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-left: 1px solid rgba(255,255,255,0.3) !important;
-    }
 
-    /* ICON BOXES - OPTIMIZED */
+    /* ICON BOXES */
     .icon-box {
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-        width: 54px; /* Slightly larger */
-        height: 54px;
-        font-size: 1.5rem; /* Larger icons */
-    }
-    
-    /* BADGES */
-    .badge {
-        font-weight: 600;
-        letter-spacing: 0.5px;
+        border-radius: 16px;
+        box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1); 
+        width: 60px;
+        height: 60px;
+        font-size: 1.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* WIDGETS */
-    .backdrop-blur {
-        backdrop-filter: blur(8px);
-    }
-    
-    /* Helper Gradients - More Vibrant */
+    /* GRADIENTS (Updated) */
     .bg-primary-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
     .bg-success-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
     .bg-info-gradient { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
@@ -175,8 +127,6 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
     .bg-orange-gradient { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
     .bg-indigo-gradient { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
     .bg-teal-gradient { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
-
-
 </style>
 <script>
     // Body cleanup
@@ -207,47 +157,28 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
              }
             ?>
 
-            <!-- CATEGORY NAVIGATION -->
-
-            <div class="nav flex-column nav-pills" id="hub-nav">
-                <button class="nav-link active text-start fw-bold rounded-pill mb-2 px-3 py-2" onclick="filterCategory('all', this)">
-                    <i class="bi bi-grid-fill me-2"></i> Todos
-                </button>
-                <button class="nav-link text-start fw-bold rounded-pill mb-2 px-3 py-2 text-secondary" onclick="filterCategory('suporte', this)">
-                    <i class="bi bi-people-fill me-2"></i> Suporte
-                </button>
-                <button class="nav-link text-start fw-bold rounded-pill mb-2 px-3 py-2 text-secondary" onclick="filterCategory('fiscal', this)">
-                    <i class="bi bi-receipt me-2"></i> Fiscal
-                </button>
-                <button class="nav-link text-start fw-bold rounded-pill mb-2 px-3 py-2 text-secondary" onclick="filterCategory('utilitarios', this)">
-                    <i class="bi bi-tools me-2"></i> Utilitários
-                </button>
-                <button class="nav-link text-start fw-bold rounded-pill mb-2 px-3 py-2 text-secondary" onclick="filterCategory('sistema', this)">
-                    <i class="bi bi-hdd-network me-2"></i> Sistema
-                </button>
-            </div>
-
             <!-- Online Users Sidebar Widget -->
-            <div class="mt-4 px-2">
-                <h6 class="text-secondary fw-bold text-uppercase small mb-3" style="letter-spacing: 1px;">Online Agora</h6>
+            <div class="mt-4 px-3">
+                <h6 class="text-secondary fw-bold text-uppercase small mb-3 opacity-75" style="letter-spacing: 1px;">Online Agora</h6>
                 <?php if(empty($onlineUsers)): ?>
                     <p class="text-muted small">Ninguém online.</p>
                 <?php else: ?>
-                    <ul class="list-unstyled mb-0">
+                    <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                         <?php foreach($onlineUsers as $u): 
                              $isMe = ($loggedIn && $currentUser === $u['full_name']);
-                             $statusColor = 'bg-success'; // Online is basically always success if here
+                             $statusColor = 'bg-success'; 
                         ?>
-                        <li class="d-flex align-items-center mb-2">
+                        <li class="d-flex align-items-center bg-white bg-opacity-50 p-2 rounded-3 border border-white shadow-sm">
                             <div class="position-relative">
-                                <div class="rounded-circle bg-primary bg-opacity-75 d-flex align-items-center justify-content-center text-white fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                <div class="rounded-circle bg-gradient-primary-to-secondary d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" 
+                                     style="width: 36px; height: 36px; font-size: 0.85rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
                                     <?php echo strtoupper(substr($u['full_name'], 0, 2)); ?>
                                 </div>
                                 <span class="position-absolute bottom-0 end-0 p-1 <?php echo $statusColor; ?> border border-white rounded-circle"></span>
                             </div>
-                            <div class="ms-2 lh-1">
-                                <span class="d-block fw-bold text-dark small text-truncate" style="max-width: 120px;"><?php echo htmlspecialchars($u['full_name']); ?></span>
-                                <span class="d-block text-muted" style="font-size: 0.65rem;"><?php echo ucfirst($u['role']); ?> <?php if($isMe) echo '(Você)'; ?></span>
+                            <div class="ms-3 lh-1">
+                                <span class="d-block fw-bold text-dark small text-truncate" style="max-width: 140px;"><?php echo htmlspecialchars($u['full_name']); ?></span>
+                                <span class="d-block text-muted mt-1" style="font-size: 0.7rem;"><?php echo ucfirst($u['role']); ?> <?php if($isMe) echo '(Você)'; ?></span>
                             </div>
                         </li>
                         <?php endforeach; ?>
@@ -255,22 +186,84 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 <?php endif; ?>
             </div>
 
+            <!-- Fiscal Blog Widget -->
+            <div class="mt-4 px-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-secondary fw-bold text-uppercase small mb-0 opacity-75" style="letter-spacing: 1px;">Updates Fiscais</h6>
+                    <a href="fiscal_blog.php" class="text-primary small text-decoration-none fw-bold">Ver todos</a>
+                </div>
+                
+                <?php
+                    $blogFile = __DIR__ . '/data/fiscal_blog.json';
+                    $latestPosts = [];
+                    if (file_exists($blogFile)) {
+                        $posts = json_decode(file_get_contents($blogFile), true);
+                        if ($posts) {
+                            usort($posts, function($a, $b) { return strtotime($b['date']) - strtotime($a['date']); });
+                            $latestPosts = array_slice($posts, 0, 3);
+                        }
+                    }
+                ?>
+                
+                <?php if(empty($latestPosts)): ?>
+                    <div class="text-center p-4 bg-white bg-opacity-50 rounded-4 border border-white">
+                        <i class="bi bi-newspaper fs-4 text-muted opacity-50 mb-2"></i>
+                        <p class="text-muted small mb-0">Nenhuma notícia.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="d-flex flex-column gap-3">
+                        <?php foreach($latestPosts as $post): 
+                            $isNew = (strtotime($post['date']) > strtotime('-3 days'));
+                        ?>
+                            <a href="fiscal_blog.php?q=<?php echo urlencode($post['title']); ?>" class="text-decoration-none text-dark card border-0 shadow-sm p-3 hover-card" style="background: rgba(255,255,255,0.7);">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1" style="font-size: 0.65rem;"><?php echo htmlspecialchars($post['category']); ?></span>
+                                    <small class="text-muted" style="font-size: 0.65rem;"><?php echo date('d \d\e M', strtotime($post['date'])); ?></small>
+                                </div>
+                                <div class="fw-bold small lh-sm text-truncate-2" style="font-size: 0.85rem;"><?php echo htmlspecialchars($post['title']); ?></div>
+                                <?php if($isNew): ?>
+                                    <div class="mt-2">
+                                        <span class="badge bg-danger rounded-pill shadow-sm" style="font-size: 0.6rem;">NOVO</span>
+                                    </div>
+                                <?php endif; ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+            <!-- Version Display in Sidebar -->
+
+
         </div>
+    </div>
 
         <!-- Main Content: Tools Grid (Scrollable) -->
         <div class="col-lg-9 col-xl-10 py-5 px-5">
             
             <!-- Search & Widgets Header -->
             <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h1 class="display-6 fw-bold text-dark mb-0">Suporte <span class="text-primary">Hub</span></h1>
-                        <p class="text-muted small mb-0">Portal de ferramentas e utilitários.</p>
+                <div class="row align-items-center mb-5">
+                    <div class="col-md-5">
+                         <div class="d-inline-flex align-items-center gap-3 user-select-none">
+                            <div class="bg-gradient-primary-to-secondary text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg" 
+                                 style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                                <i class="bi bi-grid-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h1 class="display-6 fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">
+                                    Suporte <span class="text-primary">Hub</span>
+                                </h1>
+                                <p class="text-muted small mb-0 fw-medium opacity-75">Portal de ferramentas e utilitários.</p>
+                            </div>
+                        </div>
                     </div>
-                     <!-- Search Bar -->
-                    <div class="position-relative flex-grow-1 mx-4">
-                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                        <input type="text" id="tool-search" class="form-control form-control-lg rounded-pill border-0 shadow-sm ps-5 text-dark" placeholder="Pesquisar ferramenta..." onkeyup="filterTools()">
+                    
+                    <!-- Search Bar -->
+                    <div class="col-md-7">
+                        <div class="position-relative">
+                            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-4 text-primary opacity-50 fs-5"></i>
+                            <input type="text" id="tool-search" class="form-control form-control-lg rounded-pill border-0 ps-5 py-3 text-dark shadow-sm" placeholder="O que você procura hoje?" onkeyup="filterTools()">
+                        </div>
                     </div>
 
                     <!-- Profile Widget (Moved Here) -->
@@ -305,20 +298,22 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 </div>
 
                 <!-- Widgets Row -->
-                <div class="row g-3 mb-4">
+                <div class="row g-4 mb-4">
                     <!-- Technical Password Widget -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 bg-white bg-opacity-50 text-dark overflow-hidden h-100 position-relative backdrop-blur">
-                             <div class="card-body p-3 position-relative z-1 d-flex flex-column justify-content-between">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card">
+                             <div class="card-body p-4 position-relative z-1 d-flex flex-column justify-content-between">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <h6 class="text-uppercase text-secondary opacity-75 mb-0" style="font-size: 0.65rem; letter-spacing: 1px;">Senha Técnica</h6>
-                                    <i class="bi bi-key-fill fs-4 text-primary opacity-25"></i>
+                                    <h6 class="text-uppercase text-secondary fw-bold small opacity-75 mb-0" style="letter-spacing: 1px;">Senha Técnica</h6>
+                                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+                                        <i class="bi bi-key-fill fs-5"></i>
+                                    </div>
                                 </div>
-                                <div class="d-flex align-items-end justify-content-between mt-2">
-                                    <h2 class="display-6 fw-bold mb-0 text-primary"><?php echo $password; ?></h2>
+                                <div class="d-flex align-items-end justify-content-between mt-3">
+                                    <h2 class="display-5 widget-value mb-0 text-primary"><?php echo $password; ?></h2>
                                     <div class="text-end lh-1 text-muted">
                                         <div class="small fw-bold"><?php echo date('d/m/Y'); ?></div>
-                                        <div id="brasilia-clock" class="small">--:--:--</div>
+                                        <div id="brasilia-clock" class="small opacity-75">--:--:--</div>
                                     </div>
                                 </div>
                             </div>
@@ -327,45 +322,68 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 
                     <!-- Weather Widget -->
                     <div class="col-md-4">
-                         <div class="card border-0 shadow-sm rounded-4 bg-white bg-opacity-50 text-dark h-100 position-relative group-action backdrop-blur">
+                         <div class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card">
                             <?php if($isSupport): ?>
-                                <button class="btn btn-sm btn-light btn-action position-absolute top-0 end-0 m-2 rounded-circle shadow-sm" style="width: 24px; height: 24px; padding: 0;" onclick="openWeatherModal()"><i class="bi bi-pencil-fill text-primary" style="font-size: 0.6rem;"></i></button>
+                                <button class="btn btn-sm btn-light btn-action position-absolute top-0 end-0 m-2 rounded-circle shadow-sm" style="width: 28px; height: 28px; padding: 0;" onclick="openWeatherModal()"><i class="bi bi-pencil-fill text-primary" style="font-size: 0.7rem;"></i></button>
                             <?php endif; ?>
-                            <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                            <div class="card-body p-4 d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="text-uppercase text-secondary opacity-75 mb-1" style="font-size: 0.65rem; letter-spacing: 1px;">Clima & Tempo</h6>
+                                    <h6 class="text-uppercase text-secondary fw-bold small opacity-75 mb-2" style="letter-spacing: 1px;">Clima & Tempo</h6>
                                     <div class="d-flex align-items-baseline">
-                                        <h3 class="fw-bold mb-0 me-2 text-dark" id="weather-temp">--</h3>
-                                        <span class="small text-muted" id="weather-desc">...</span>
+                                        <h3 class="widget-value mb-0 me-2 text-dark" style="font-size: 2.5rem;" id="weather-temp">--</h3>
+                                        <span class="small text-muted fw-bold" id="weather-desc">...</span>
                                     </div>
-                                    <div class="small text-muted mt-1"><i class="bi bi-geo-alt me-1"></i> <span id="weather-city-display"><?php echo htmlspecialchars($weatherConfig['city'] ?? 'Brusque'); ?></span></div>
+                                    <div class="small text-muted mt-1 fw-medium"><i class="bi bi-geo-alt-fill me-1 text-danger opacity-75"></i> <span id="weather-city-display"><?php echo htmlspecialchars($weatherConfig['city'] ?? 'Brusque'); ?></span></div>
                                 </div>
-                                <i class="bi bi-cloud-sun fs-1 text-info opacity-50"></i>
+                                <i class="bi bi-cloud-sun fs-1 text-info opacity-75"></i>
                             </div>
                         </div>
                     </div>
 
                     <!-- Version Widget -->
                     <div class="col-md-4">
-                         <div class="card border-0 shadow-sm rounded-4 bg-white bg-opacity-50 h-100 position-relative group-action backdrop-blur">
+                         <div class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card">
                              <?php if($isAdmin): ?>
-                                <button class="btn btn-sm btn-light btn-action position-absolute top-0 end-0 m-2 rounded-circle shadow-sm" style="width: 24px; height: 24px; padding: 0;" onclick="openVersionModal()"><i class="bi bi-pencil-fill text-primary" style="font-size: 0.6rem;"></i></button>
+                                <button class="btn btn-sm btn-light btn-action position-absolute top-0 end-0 m-2 rounded-circle shadow-sm" style="width: 28px; height: 28px; padding: 0;" onclick="openVersionModal()"><i class="bi bi-pencil-fill text-primary" style="font-size: 0.7rem;"></i></button>
                             <?php endif; ?>
-                            <div class="card-body p-3 position-relative z-1 d-flex flex-column justify-content-between">
+                            <div class="card-body p-4 position-relative z-1 d-flex flex-column justify-content-between">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <h6 class="text-uppercase text-secondary opacity-75 mb-0" style="font-size: 0.65rem; letter-spacing: 1px;">Última Versão Uniplus</h6>
-                                    <i class="bi bi-box-seam fs-4 text-secondary opacity-25"></i>
+                                    <h6 class="text-uppercase text-secondary fw-bold small opacity-75 mb-0" style="letter-spacing: 1px;">Versão Uniplus</h6>
+                                    <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success">
+                                        <i class="bi bi-box-seam fs-5"></i>
+                                    </div>
                                 </div>
                                 <div class="mt-2">
-                                    <h2 class="display-6 fw-bold mb-0">v<?php echo $build['version']; ?></h2>
+                                    <h2 class="display-6 widget-value mb-0 text-dark">v<?php echo $build['version']; ?></h2>
                                     <div class="d-flex justify-content-between align-items-end mt-1">
-                                        <p class="text-muted small mb-0 lh-1">Data release:<br><?php echo $build['date']; ?></p>
-                                        <a href="release_notes.php" class="text-decoration-none small fw-bold stretched-link">Ver release</a>
+                                        <p class="text-muted small mb-0 lh-1 opacity-75">Data release:<br><?php echo $build['date']; ?></p>
+                                        <a href="release_notes.php" class="btn btn-sm btn-primary rounded-pill px-3 py-1 shadow-sm fs-7">Ver detalhes</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Horizontal Category Navigation -->
+            <div class="mb-5">
+                <div class="nav nav-pills gap-3 d-flex flex-nowrap overflow-auto py-2" id="hub-nav" style="scrollbar-width: none;">
+                    <button class="nav-link active rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2 flex-shrink-0" onclick="filterCategory('all', this)">
+                        <i class="bi bi-grid-fill"></i> Todos
+                    </button>
+                    <button class="nav-link bg-white text-secondary rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2 flex-shrink-0" onclick="filterCategory('suporte', this)">
+                        <i class="bi bi-people-fill"></i> Suporte
+                    </button>
+                    <button class="nav-link bg-white text-secondary rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2 flex-shrink-0" onclick="filterCategory('fiscal', this)">
+                        <i class="bi bi-receipt"></i> Fiscal
+                    </button>
+                    <button class="nav-link bg-white text-secondary rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2 flex-shrink-0" onclick="filterCategory('utilitarios', this)">
+                        <i class="bi bi-tools"></i> Utilitários
+                    </button>
+                    <button class="nav-link bg-white text-secondary rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2 flex-shrink-0" onclick="filterCategory('sistema', this)">
+                        <i class="bi bi-hdd-network"></i> Sistema
+                    </button>
                 </div>
             </div>
 
@@ -387,7 +405,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                         
                         $badge = '';
                         if ($isDev) {
-                            $badge = '<span class="badge bg-warning text-dark ms-2 small">Em Breve</span>';
+                            $badge = '<span class="badge bg-warning text-dark ms-2 small">Não Finalizado</span>';
                         }
                         
                         $targetAttr = $openNewTab ? 'target="_blank"' : '';
@@ -416,7 +434,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                                 <i class="bi '.$iconName.'"></i> 
                                             </div>
                                             <div class="d-flex flex-column text-container">
-                                                <h5 class="card-title fw-bold text-dark mb-0 text-title">'.$title.'</h5>
+                                                <h5 class="card-title fw-bold text-dark mb-1 text-title lh-sm">'.$title.'</h5>
                                                 <div class="badge-container">'.$badge.'</div>
                                             </div>
                                         </div>
@@ -450,13 +468,14 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 
         
                     // Apply Cards (Internal)
-                    renderCard('card-xml-gen', 'Gerador XML NF-e', 'Gere XMLs de Importação a partir de DI.', 'xml_generator.php', 'bg-info-gradient', 'bi-file-earmark-code', $portal, $isAdmin);
+                    renderCard('card-fiscal-blog', 'Blog Fiscal', 'Notícias e atualizações tributárias.', 'fiscal_blog.php', 'bg-danger-gradient', 'bi-newspaper', $portal, $isAdmin);
+                    renderCard('card-xml-gen', 'Gerador XML NF-e', 'Gere XMLs de Importação a partir de DI.', 'xml_generator.php', 'bg-info-gradient', 'bi-file-earmark-code', $portal, $isAdmin, true);
                     renderCard('card-manifestador', 'Manifestador', 'Em desenvolvimento', '#', 'bg-secondary', 'bi-cloud-download', $portal, $isAdmin, true);
-                    renderCard('card-nfse', 'NFS-e Nacional', 'Validador e Consulta NFS-e.', 'nfse-nacional.php', 'bg-orange-gradient', 'bi-building', $portal, $isAdmin);
+                    renderCard('card-nfse', 'NFS-e Nacional', 'Validador e Consulta NFS-e.', 'nfse-nacional.php', 'bg-orange-gradient', 'bi-building', $portal, $isAdmin, true);
                     renderCard('card-reforma', 'Reforma Tributária', 'Guia e tabelas de crédito.', 'reforma_tributaria.php', 'bg-success-gradient', 'bi-percent', $portal, $isAdmin);
                     renderCard('card-xml-analyzer', 'NFC-e / NF-e', 'Layout e regras de validação.', 'xml-analyzer.php', 'bg-warning-gradient', 'bi-bug', $portal, $isAdmin);
-                    renderCard('card-extractor', 'Extrator Postgres', 'Extraia XMLs do banco.', 'postgres_xml_extractor.php', 'bg-primary-gradient', 'bi-database-down', $portal, $isAdmin);
-                    renderCard('card-editor', 'Editor de Notas', 'Correção manual de valores.', 'invoice_tax_editor.php', 'bg-success-gradient', 'bi-pencil-square', $portal, $isAdmin);
+                    renderCard('card-extractor', 'Extrator Postgres', 'Extraia XMLs do banco.', 'postgres_xml_extractor.php', 'bg-primary-gradient', 'bi-database-down', $portal, $isAdmin, true);
+                    renderCard('card-editor', 'Editor de Notas', 'Correção manual de valores.', 'invoice_tax_editor.php', 'bg-success-gradient', 'bi-pencil-square', $portal, $isAdmin, true);
                     
                     // NEW: Cidades NFS-e Project Integration
                     renderCard('card-cidades-nfse', 'Gestão Municípios NFS-e', 'Mapa de adesão e gestão de provedores (Receita Federal).', 'https://app.powerbi.com/view?r=eyJrIjoiNGQ4YTcxNmMtMzdhNC00Mzc5LTllM2EtMjY1MTM3NWQyZDgyIiwidCI6IjZmNDlhYTQzLTgyMmEtNGMyMC05NjcwLWRiNzcwMGJmMWViMCJ9&pageName=608609c2e0a53d7a3c6ev', 'bg-indigo-gradient', 'bi-bar-chart-fill', $portal, $isAdmin, false, true);
@@ -476,7 +495,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                     <?php
                     // Core Utilities
                     renderCard('card-validator', 'Validador R2D2', 'Valide arquivos de importação.', 'validator.php', 'bg-success-gradient', 'bi-check-circle', $portal, $isAdmin);
-                    renderCard('card-converters', 'Conversores', 'Conversão de unidades.', 'converters.php', 'bg-purple-gradient', 'bi-arrow-left-right', $portal, $isAdmin);
+                    renderCard('card-converters', 'Conversores', 'Conversão de unidades.', 'converters.php', 'bg-purple-gradient', 'bi-arrow-left-right', $portal, $isAdmin, true);
                     renderCard('card-calculators', 'Calculadoras Porcentagem', 'Cálculos de porcentagem.', 'calculators.php', 'bg-success-gradient', 'bi-calculator', $portal, $isAdmin);
 
 
@@ -505,11 +524,11 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 <div class="row g-4 helper-row-container">
                     <?php
                     renderCard('card-dict', 'Dicionário de Dados', 'Consulte tabelas do sistema.', 'dictionary.php', 'bg-primary-gradient', 'bi-table', $portal, $isAdmin);
-                    renderCard('card-sql-editor', 'Editor SQL', 'Editor SQL Postgres completo.', 'sql_editor.php', 'bg-indigo-gradient', 'bi-database-fill-gear', $portal, $isAdmin);
-                    renderCard('card-log', 'Analisador de Logs', 'Análise de logs Uniplus.', 'log-analyzer.php', 'bg-danger-gradient', 'bi-file-medical', $portal, $isAdmin);
+                    renderCard('card-sql-editor', 'Editor SQL', 'Editor SQL Postgres completo.', 'sql_editor.php', 'bg-indigo-gradient', 'bi-terminal-fill', $portal, $isAdmin, true);
+                    renderCard('card-log', 'Analisador de Logs', 'Análise de logs Uniplus.', 'log-analyzer.php', 'bg-danger-gradient', 'bi-file-medical', $portal, $isAdmin, true);
                     renderCard('card-release', 'Release Notes Uniplus', 'Histórico de atualizações.', 'release_notes.php', 'bg-info-gradient', 'bi-megaphone', $portal, $isAdmin);
-                    renderCard('card-audit', 'Auditor de Logs', 'Auditoria do sistema Uniplus.', 'audit_analyzer.php', 'bg-teal-gradient', 'bi-shield-check', $portal, $isAdmin);
-                    renderCard('card-toolkit', 'Uniplus Toolkit', 'Ferramentas avançadas do sistema.', 'uniplus_toolkit.php', 'bg-indigo-gradient', 'bi-box-seam-fill', $portal, $isAdmin);
+                    renderCard('card-audit', 'Auditor de Logs', 'Auditoria do sistema Uniplus.', 'audit_analyzer.php', 'bg-teal-gradient', 'bi-shield-check', $portal, $isAdmin, true);
+                    renderCard('card-toolkit', 'Uniplus Toolkit', 'Ferramentas avançadas do sistema.', 'uniplus_toolkit.php', 'bg-indigo-gradient', 'bi-collection-fill', $portal, $isAdmin, true);
                     ?>
                 </div>
             </div>
@@ -1084,6 +1103,31 @@ function savePassword() {
             alert('Erro: ' + (data.message || 'Erro desconhecido'));
         }
     });
+}
+
+function toggleCard(cardId, btn) {
+    const icon = btn.querySelector('i');
+    const fd = new FormData();
+    fd.append('action', 'toggle_card');
+    fd.append('card_id', cardId);
+    
+    fetch('includes/portal_actions.php', { method: 'POST', body: fd })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success) {
+            const card = btn.closest('.tool-card'); 
+            if(data.blocked) {
+                card.classList.add('opacity-50', 'grayscale');
+                icon.className = 'bi bi-eye-slash-fill text-danger small';
+            } else {
+                card.classList.remove('opacity-50', 'grayscale');
+                icon.className = 'bi bi-eye text-muted small';
+            }
+        } else {
+            alert('Erro: ' + (data.message || 'Falha ao alterar status'));
+        }
+    })
+    .catch(err => console.error(err));
 }
 </script>
 

@@ -116,11 +116,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             if (!empty($htmlContent)) {
+                // Debug Log
+                file_put_contents('data/debug_import.txt', "--- New Import " . date('Y-m-d H:i:s') . " ---\n", FILE_APPEND);
+
                 $dom = new DOMDocument();
                 libxml_use_internal_errors(true);
-                // mb_convert_encoding helps with some charset issues if not properly defined in HTML
-                $dom->loadHTML(mb_convert_encoding($htmlContent, 'HTML-ENTITIES', 'UTF-8')); 
+                
+                // Force UTF-8 using mb_convert_encoding which handles special chars better for DOMDocument
+                // This converts chars to HTML entities (e.g. ã becomes &atilde;)
+                $htmlEncoded = mb_convert_encoding($htmlContent, 'HTML-ENTITIES', 'UTF-8');
+                
+                $dom->loadHTML($htmlEncoded, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD); 
                 libxml_clear_errors();
+
+                file_put_contents('data/debug_import.txt', "HTML Loaded. Length: " . strlen($htmlContent) . "\n", FILE_APPEND);
 
                 $xpath = new DOMXPath($dom);
 
@@ -128,16 +137,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $version = 'Nova Versão';
                 $h1 = $xpath->query('//h1');
                 if ($h1->length > 0) {
+                    $h1Text = $h1->item(0)->textContent;
+                    file_put_contents('data/debug_import.txt', "Found H1: " . $h1Text . "\n", FILE_APPEND);
                     // Try to extract "6.12.22" from "Versão 6.12.22-interno"
-                    if (preg_match('/Versão\s+([\d\.]+)/i', $h1->item(0)->textContent, $matches)) {
+                    if (preg_match('/Versão\s+([\d\.]+)/i', $h1Text, $matches)) {
                         $version = $matches[1];
                     } else {
-                        $version = trim($h1->item(0)->textContent);
+                        $version = trim($h1Text);
                     }
+                } else {
+                    file_put_contents('data/debug_import.txt', "No H1 found.\n", FILE_APPEND);
                 }
 
                 // Extract Notes from Table
                 $rows = $xpath->query('//table//tr');
+                file_put_contents('data/debug_import.txt', "Found Table Rows: " . $rows->length . "\n", FILE_APPEND);
                 $newNotes = [];
                 
                 foreach ($rows as $index => $row) {
@@ -391,6 +405,10 @@ usort($versions, function($a, $b) {
     </div>
 
     <?php if ($message): ?>
+        <div class="alert alert-<?php echo $messageType; ?> alert-dismissible fade show" role="alert">
+            <?php echo $message; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     <?php endif; ?>
 
     <!-- PREMIUM DARK THEME SYSTEM -->

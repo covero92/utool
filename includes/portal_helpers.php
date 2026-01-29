@@ -112,4 +112,21 @@ class SupportPortal {
         $this->updateConfig('blocked_cards', $blocked);
         return $isBlocked;
     }
+
+    public function getSystemVersion() {
+        $gitHead = __DIR__ . '/../.git/HEAD';
+        if (file_exists($gitHead)) {
+            $headContent = file_get_contents($gitHead);
+            if (strpos($headContent, 'ref:') === 0) {
+                $refPath = __DIR__ . '/../.git/' . trim(substr($headContent, 5));
+                if (file_exists($refPath)) {
+                    $hash = trim(file_get_contents($refPath));
+                    return substr($hash, 0, 7);
+                }
+            } else {
+                return substr(trim($headContent), 0, 7);
+            }
+        }
+        return 'Dev'; // Fallback
+    }
 }

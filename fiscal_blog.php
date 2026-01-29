@@ -161,6 +161,15 @@ $filteredPosts = array_filter($allPosts, function($p) use ($filterCategory, $fil
     return true;
 });
 
+// Pagination Logic
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$perPage = 7;
+$totalPosts = count($filteredPosts);
+$totalPages = ceil($totalPosts / $perPage);
+$offset = ($page - 1) * $perPage;
+
+$currentPosts = array_slice($filteredPosts, $offset, $perPage);
+
 // Extract Categories and Tags
 $categories = [];
 $allTags = [];
@@ -300,18 +309,19 @@ arsort($allTags);
     </div>
 
     <!-- Personalized Title Section -->
-    <div class="text-center mb-5 position-relative">
-        <h1 class="display-4 fw-bold ls-tight mb-2" style="
-            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: 'Outfit', sans-serif;
-            letter-spacing: -0.02em;
-        ">Fiscal News Suporte</h1>
-        <p class="text-secondary lead fs-6 mb-0 position-relative d-inline-block">
-            Central de atualizações tributárias e fiscais
-            <span class="position-absolute start-50 translate-middle-x top-100 mt-3" 
-                  style="width: 60px; height: 4px; background: #3b82f6; border-radius: 2px;"></span>
+    <div class="text-center mb-5 mt-2">
+        <div class="d-inline-flex align-items-center justify-content-center gap-3 mb-2 user-select-none">
+            <div class="bg-primary bg-gradient text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg" 
+                 style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                <i class="bi bi-newspaper fs-3"></i>
+            </div>
+            <h1 class="display-5 fw-bold ls-tight mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">
+                Fiscal<span class="text-primary">News</span>
+                <span class="fw-light text-muted ms-1" style="opacity: 0.7;">Suporte</span>
+            </h1>
+        </div>
+        <p class="text-secondary small text-uppercase fw-bold ls-3 opacity-50 mb-0" style="font-size: 0.7rem;">
+            Central de Atualizações & Conhecimento
         </p>
     </div>
 
@@ -371,7 +381,7 @@ arsort($allTags);
 
         <!-- Feed -->
         <div class="col-lg-9">
-            <?php if (empty($filteredPosts)): ?>
+            <?php if (empty($currentPosts)): ?>
                 <div class="glass-card p-5 text-center text-muted py-5">
                     <div class="mb-3 p-4 rounded-circle bg-light d-inline-block">
                         <i class="bi bi-search fs-1 opacity-25"></i>
@@ -382,13 +392,12 @@ arsort($allTags);
                 </div>
             <?php else: ?>
                 <div class="d-flex flex-column gap-4">
-                    <?php foreach ($filteredPosts as $post): ?>
+                    <?php foreach ($currentPosts as $post): ?>
                         <div class="card blog-post-card glass-card p-0">
                             <div class="row g-0">
                                 <?php if(!empty($post['cover_image'])): ?>
                                     <div class="col-md-4 position-relative overflow-hidden" style="min-height: 220px;">
-                                        <img src="<?php echo $uploadUrl . $post['cover_image']; ?>" class="w-100 h-100 object-fit-cover" alt="Cover">
-                                        <!-- Overlay gradient for text readability if we wanted text over image, but here just clean -->
+                                        <img src="<?php echo $uploadUrl . $post['cover_image']; ?>" class="w-100 h-100 object-fit-cover" alt="Cover" loading="lazy">
                                     </div>
                                 <?php endif; ?>
                                 
@@ -468,6 +477,42 @@ arsort($allTags);
                         </div>
                     <?php endforeach; ?>
                 </div>
+
+                <!-- Pagination Controls -->
+                <?php if ($totalPages > 1): ?>
+                    <nav class="mt-5" aria-label="Page navigation">
+                        <ul class="pagination justify-content-center gap-2">
+                            <!-- Previous -->
+                            <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
+                                <a class="page-link rounded-circle border-0 shadow-sm d-flex align-items-center justify-content-center" 
+                                   href="?page=<?php echo $page - 1; ?>&q=<?php echo urlencode($searchQuery); ?>&category=<?php echo urlencode($filterCategory); ?>&tag=<?php echo urlencode($filterTag); ?>" 
+                                   style="width: 40px; height: 40px;">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <!-- Numbers -->
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                                    <a class="page-link rounded-circle border-0 shadow-sm d-flex align-items-center justify-content-center fw-bold" 
+                                       href="?page=<?php echo $i; ?>&q=<?php echo urlencode($searchQuery); ?>&category=<?php echo urlencode($filterCategory); ?>&tag=<?php echo urlencode($filterTag); ?>"
+                                       style="width: 40px; height: 40px;">
+                                        <?php echo $i; ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <!-- Next -->
+                            <li class="page-item <?php echo ($page >= $totalPages) ? 'disabled' : ''; ?>">
+                                <a class="page-link rounded-circle border-0 shadow-sm d-flex align-items-center justify-content-center" 
+                                   href="?page=<?php echo $page + 1; ?>&q=<?php echo urlencode($searchQuery); ?>&category=<?php echo urlencode($filterCategory); ?>&tag=<?php echo urlencode($filterTag); ?>"
+                                   style="width: 40px; height: 40px;">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

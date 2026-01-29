@@ -1,7 +1,9 @@
 
     <footer class="py-4 text-center text-muted small border-top mt-5">
-        <div class="container">
-            <p class="mb-0">Criado por: leo.lemos992</p>
+        <div class="container d-flex justify-content-center align-items-center gap-2 opacity-75">
+            <span>Criado por: <strong>leo.lemos992</strong></span>
+            <span class="mx-1">&bull;</span>
+            <span>v. <span class="font-monospace"><?php echo isset($portal) ? $portal->getSystemVersion() : 'Dev'; ?></span></span>
         </div>
     </footer>
 
