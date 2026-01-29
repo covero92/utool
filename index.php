@@ -654,84 +654,8 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
         </div>
     </div>
 </div>
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Nome Completo</label>
-                                        <input type="text" class="form-control" name="full_name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Usuário</label>
-                                        <input type="text" class="form-control" name="user" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Senha</label>
-                                        <input type="password" class="form-control" name="pass" required>
-                                    </div>
-                                    
-                                    <?php if(isset($_SESSION['register_error'])): ?>
-                                        <div class="alert alert-danger py-2 small mb-3"><?php echo $_SESSION['register_error']; unset($_SESSION['register_error']); ?></div>
-                                    <?php endif; ?>
-
-                                    <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold py-2 text-white">Criar Conta</button>
-                              </form>
-                          </div>
-                        </div>
-                   </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
-/* Modern Card Styles */
-/* Modern Card Styles */
-.hover-card {
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border: 1px solid var(--color-glass-border) !important;
-    /* Background handled by .card !important in top block */
-}
-
-/* Modals Glass */
-.modal-content {
-    background: rgba(30, 41, 59, 0.85) !important;
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--color-glass-border);
-    color: var(--color-text-main);
-}
-.modal-header, .modal-footer {
-    border-color: var(--color-border) !important;
-}
-.btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-.section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 0.5rem;
-    color: var(--color-text-secondary);
-}
-
-/* Icon Boxes with Gradients */
-.icon-box {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-}
-
-.bg-primary-gradient { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); }
-.bg-success-gradient { background: linear-gradient(135deg, #198754 0%, #146c43 100%); }
-.bg-info-gradient { background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); }
-.bg-warning-gradient { background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%); }
-.bg-danger-gradient { background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%); }
-.bg-purple-gradient { background: linear-gradient(135deg, #6f42c1 0%, #59359a 100%); }
-.bg-orange-gradient { background: linear-gradient(135deg, #fd7e14 0%, #e35d0b 100%); }
-.bg-indigo-gradient { background: linear-gradient(135deg, #6610f2 0%, #520dc2 100%); }
-.bg-teal-gradient { background: linear-gradient(135deg, #20c997 0%, #1aa179 100%); }
 
 /* List View Styles */
 .list-view .tool-col {
