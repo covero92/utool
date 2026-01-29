@@ -72,9 +72,9 @@ class PortalAuth {
             return false;
         }
 
-        // Updated query to join with roles
+        // Updated query to join with roles and fetch profile data
         $stmt = $this->pdo->prepare("
-            SELECT u.id, u.username, u.password_hash, u.full_name, u.status, u.role_id, r.name as role_name, r.capabilities
+            SELECT u.id, u.username, u.password_hash, u.full_name, u.preferred_name, u.job_title, u.status, u.role_id, r.name as role_name, r.capabilities
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             WHERE u.username = :user
@@ -90,8 +90,9 @@ class PortalAuth {
 
             // Success
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['user_name'] = $user['full_name'];
+            $_SESSION['username'] = $user['username']; // Login user
+            $_SESSION['user_name'] = $user['full_name']; // Display Full Name
+            $_SESSION['user_preferred_name'] = $user['preferred_name'] ?? ''; // New
             $_SESSION['user_role_id'] = $user['role_id'];
             $_SESSION['user_role'] = strtolower($user['role_name'] ?? 'user'); 
             $_SESSION['user_role_label'] = $user['role_name'] ?? 'Usuário';
@@ -108,6 +109,17 @@ class PortalAuth {
 
         $_SESSION['login_error'] = "Usuário ou senha incorretos.";
         return false;
+    }
+
+    public function reloadSessionUser($userId) {
+        if (!$this->pdo) return;
+        $stmt = $this->pdo->prepare("SELECT full_name, preferred_name FROM users WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+        $u = $stmt->fetch();
+        if ($u) {
+            $_SESSION['user_name'] = $u['full_name'];
+            $_SESSION['user_preferred_name'] = $u['preferred_name'] ?? '';
+        }
     }
 
     public function register($username, $password, $fullName) {

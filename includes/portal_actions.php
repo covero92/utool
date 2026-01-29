@@ -80,6 +80,43 @@ if ($action === 'change_password') {
     exit;
 }
 
+if ($action === 'update_profile') {
+    $userId = $_SESSION['user_id'] ?? null;
+    if (!$userId) { echo json_encode(['success'=>false, 'message'=>'Session expired']); exit; }
+
+    $prefName = trim($_POST['preferred_name'] ?? '');
+    $jobTitle = trim($_POST['job_title'] ?? '');
+    $birthDate = $_POST['birth_date'] ?? '';
+    // $bio = trim($_POST['bio'] ?? ''); // Not requested yet but setup in DB
+    $fullName = trim($_POST['full_name'] ?? '');
+
+    if (empty($birthDate)) $birthDate = null;
+
+    $pdo = getDBConnection();
+    
+    $sql = "UPDATE users SET preferred_name = :pname, job_title = :job, birth_date = :bdate";
+    $params = [':pname' => $prefName, ':job' => $jobTitle, ':bdate' => $birthDate, ':id' => $userId];
+
+    if (!empty($fullName)) {
+        $sql .= ", full_name = :fname";
+        $params[':fname'] = $fullName;
+    }
+    
+    $sql .= " WHERE id = :id";
+    
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        
+        $auth->reloadSessionUser($userId);
+        
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+    exit;
+}
+
 // --- SUPPORT / ADMIN ACTIONS ---
 // (Notices, Weather, etc - Support can edit)
 if (isSupport() || isAdmin()) {

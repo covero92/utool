@@ -77,6 +77,14 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     
+    .card-glass {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border) !important;
+        box-shadow: var(--glass-shadow);
+    }
+    
     .hover-card:hover {
         background: var(--color-card-bg-hover) !important;
         transform: translateY(-4px);
@@ -151,9 +159,15 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 date_default_timezone_set('America/Sao_Paulo');
                 $hour = date('H');
                 $greeting = ($hour >= 5 && $hour < 12) ? 'Bom dia' : (($hour >= 12 && $hour < 18) ? 'Boa tarde' : 'Boa noite');
-                $parts = explode(' ', $currentUser);
-                $firstName = $parts[0]; 
-                echo "<div class='px-2 mb-2'><h4 class='fw-bold text-dark mb-0'>$greeting,</h4><h4 class='fw-light text-secondary'>$firstName.</h4></div>";
+                
+                // Greeting Logic: Preferred Name > First Name of Full Name
+                $displayName = $_SESSION['user_preferred_name'] ?? '';
+                if (empty($displayName)) {
+                    $parts = explode(' ', $currentUser); // $currentUser is FullName from auth
+                    $displayName = $parts[0];
+                }
+                
+                echo "<div class='px-2 mb-2'><h4 class='fw-bold text-dark mb-0'>$greeting,</h4><h4 class='fw-light text-secondary'>$displayName.</h4></div>";
              }
             ?>
 
@@ -275,6 +289,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-4 p-2">
                                     <li><h6 class="dropdown-header">Minha Conta: <?php echo htmlspecialchars($currentUser); ?></h6></li>
+                                    <li><a class="dropdown-item rounded-3" href="profile.php"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
                                     <?php if($isAdmin): ?>
                                         <li><a class="dropdown-item rounded-3" href="admin_users.php"><i class="bi bi-people me-2"></i>Gerenciar Usuários</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -546,51 +561,99 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 <!-- Auth Modal (Login/Register) -->
 <div class="modal fade" id="portalLoginModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
-            <div class="modal-body p-0">
-                <div class="row g-0">
-                   <!-- Sidebar Art (Optional, kept simple for now) -->
-                   <div class="col-12 p-4">
-                       <ul class="nav nav-pills nav-fill mb-4" id="pills-tab" role="tablist">
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link active rounded-pill fw-bold" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab">Login</button>
-                          </li>
-                          <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill fw-bold" id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab">Cadastrar</button>
-                          </li>
-                        </ul>
-                        
-                        <div class="tab-content" id="pills-tabContent">
-                          <!-- LOGIN FORM -->
-                          <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
-                              <form method="POST" action="includes/portal_actions.php">
-                                    <input type="hidden" name="portal_action" value="login">
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Usuário</label>
-                                        <input type="text" class="form-control" name="user" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Senha</label>
-                                        <input type="password" class="form-control" name="pass" required>
-                                    </div>
-                                    
-                                    <?php if(isset($_SESSION['login_error'])): ?>
-                                        <div class="alert alert-danger py-2 small mb-3"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></div>
-                                    <?php endif; ?>
-                                    
-                                    <?php if(isset($_SESSION['login_success_msg'])): ?>
-                                        <div class="alert alert-success py-2 small mb-3"><?php echo $_SESSION['login_success_msg']; unset($_SESSION['login_success_msg']); ?></div>
-                                    <?php endif; ?>
+        <div class="modal-content card-glass border-0 shadow-lg rounded-4 overflow-hidden" style="background: rgba(255, 255, 255, 0.95) !important;">
+            <div class="modal-header border-0 pb-0 justify-content-center pt-4">
+                <div class="text-center">
+                    <div class="bg-gradient-primary-to-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-3" 
+                         style="width: 48px; height: 48px; background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                        <i class="bi bi-person-fill fs-4"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold font-primary mx-auto">Acesso ao Hub</h5>
+                </div>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 pt-2">
+                
+                <ul class="nav nav-pills nav-fill mb-4 bg-light bg-opacity-50 p-1 rounded-pill border" id="pills-tab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-pill fw-bold small" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab">Entrar</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill fw-bold small" id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab">Criar Conta</button>
+                  </li>
+                </ul>
+                
+                <div class="tab-content" id="pills-tabContent">
+                  <!-- LOGIN FORM -->
+                  <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
+                      <form method="POST" action="includes/portal_actions.php">
+                            <input type="hidden" name="portal_action" value="login">
+                            
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control bg-light" id="loginUser" name="user" placeholder="Usuário" required>
+                                <label for="loginUser">Usuário</label>
+                            </div>
+                            
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control bg-light" id="loginPass" name="pass" placeholder="Senha" required>
+                                <label for="loginPass">Senha</label>
+                            </div>
+                            
+                            <?php if(isset($_SESSION['login_error'])): ?>
+                                <div class="alert alert-danger py-2 small mb-3 border-0 bg-danger bg-opacity-10 text-danger rounded-3 fw-medium">
+                                    <i class="bi bi-exclamation-circle me-1"></i> <?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if(isset($_SESSION['login_success_msg'])): ?>
+                                <div class="alert alert-success py-2 small mb-3 border-0 bg-success bg-opacity-10 text-success rounded-3 fw-medium">
+                                    <i class="bi bi-check-circle me-1"></i> <?php echo $_SESSION['login_success_msg']; unset($_SESSION['login_success_msg']); ?>
+                                </div>
+                            <?php endif; ?>
 
-                                    <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2">Entrar</button>
-                              </form>
-                          </div>
-                          
-                          <!-- REGISTER FORM -->
-                          <div class="tab-pane fade" id="pills-register" role="tabpanel">
-                              <form method="POST" action="includes/portal_actions.php">
-                                    <input type="hidden" name="portal_action" value="register">
-                                    <div class="mb-3">
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm">
+                                Entrar <i class="bi bi-arrow-right-short ms-1"></i>
+                            </button>
+                      </form>
+                  </div>
+                  
+                  <!-- REGISTER FORM -->
+                  <div class="tab-pane fade" id="pills-register" role="tabpanel">
+                      <form method="POST" action="includes/portal_actions.php">
+                            <input type="hidden" name="portal_action" value="register">
+                            
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control bg-light" id="regName" name="full_name" placeholder="Nome Completo" required>
+                                <label for="regName">Nome Completo</label>
+                            </div>
+                            
+                            <div class="form-floating mb-2">
+                                <input type="text" class="form-control bg-light" id="regUser" name="user" placeholder="Usuário" required>
+                                <label for="regUser">Usuário</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control bg-light" id="regPass" name="pass" placeholder="Senha" required>
+                                <label for="regPass">Senha</label>
+                            </div>
+
+                            <?php if(isset($_SESSION['register_error'])): ?>
+                                <div class="alert alert-danger py-2 small mb-3 border-0 bg-danger bg-opacity-10 text-danger rounded-3 fw-medium">
+                                    <?php echo $_SESSION['register_error']; unset($_SESSION['register_error']); ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm">
+                                Criar Conta
+                            </button>
+                      </form>
+                  </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
                                         <label class="form-label small text-muted text-uppercase fw-bold">Nome Completo</label>
                                         <input type="text" class="form-control" name="full_name" required>
                                     </div>
