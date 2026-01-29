@@ -1,0 +1,32 @@
+# Dependencies
+/vendor
+/node_modules
+
+# Environment
+.env
+
+# Deployment Archives
+utool-deployment-*.zip
+utool-temp-*
+*.tar.gz
+
+# Logs and Debug
+*.log
+includes/debug_log.txt
+includes/debug_save.txt
+validation_output.txt
+
+# Dynamic Data (Database files)
+data/fiscal_blog.json
+data/release_notes.json
+data/*.db
+
+# User Uploads
+/uploads
+/logs_uploaded
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db

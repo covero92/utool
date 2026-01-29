@@ -27,6 +27,9 @@ $exclude = @(
     "data/*.json",
     "data/*.db",
     "includes/debug_log.txt",
+    "uploads",
+    "release-notes.xlsx",
+    "release-notes.pdf",
     "*.log"
 )
 
@@ -52,6 +55,27 @@ $items = Get-ChildItem -Path . | Where-Object {
 foreach ($item in $items) {
     Copy-Item -Path $item.FullName -Destination $tempDir -Recurse -Force
     Write-Host "  + $($item.Name)" -ForegroundColor DarkGray
+}
+
+# Cleanup: Remove excluded files that might have been copied via recursion
+Write-Host "Cleaning up excluded files from package..." -ForegroundColor Gray
+$cleanupPatterns = @(
+    "data/*.json", 
+    "data/*.db", 
+    "includes/debug_log.txt",
+    "uploads",
+    "release-notes.xlsx",
+    "release-notes.pdf",
+    "*.log", 
+    "*.zip", 
+    "*.tar.gz"
+)
+
+foreach ($pattern in $cleanupPatterns) {
+    if (Test-Path "$tempDir/$pattern") {
+        Remove-Item "$tempDir/$pattern" -Force -Recurse -ErrorAction SilentlyContinue
+        Write-Host "  - Removed $pattern" -ForegroundColor Yellow
+    }
 }
 
 # Create setup script for Linux server
@@ -100,7 +124,13 @@ composer install --no-dev --optimize-autoloader
 echo -e "`${CYAN}Step 5: Setting up directories...`${NC}"
 mkdir -p logs_uploaded uploads data
 sudo chown -R www-data:www-data logs_uploaded uploads data
-sudo chmod -R 775 logs_uploaded uploads data
+sudo chmod -R 777 logs_uploaded uploads data
+mkdir -p uploads/blog
+sudo chmod -R 777 uploads/blog
+sudo touch data/release_notes.json
+sudo chmod 666 data/release_notes.json
+sudo touch data/fiscal_blog.json
+sudo chmod 666 data/fiscal_blog.json
 
 echo -e "`${CYAN}Step 6: Environment configuration...`${NC}"
 if [ ! -f .env ]; then
@@ -130,7 +160,8 @@ echo ""
 
 # Ensure Unix line endings (LF) for Linux script
 $setupScript = $setupScript -replace "`r`n", "`n"
-[System.IO.File]::WriteAllText("$tempDir\setup.sh", $setupScript)
+$setupPath = Join-Path (Get-Location).Path "$tempDir\setup.sh"
+[System.IO.File]::WriteAllText($setupPath, $setupScript)
 
 # Create README for deployment
 $readme = @"
