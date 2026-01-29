@@ -1,0 +1,11 @@
+Array
+(
+    [0] => id
+    [1] => codigo
+    [2] => nome
+    [3] => casasdecimais
+    [4] => currenttimemillis
+    [5] => tipovalor
+    [6] => percentualtolerancia
+    [7] => vendainteiragourmet
+)

@@ -1,0 +1,12 @@
+select idserie, * from notafiscal where tipodocumento = 'S' order by id desc
+
+
+select * from serie
+
+Para a serie id 4 (modelo 55), a sequencia configurada para próximo número é 3. Mas no banco já existe uma sequencia maior gravada, ou seja, o sistema vai validar como próximo número inválido, pois nessa sequencia gravada de notas, o próximo número válido é 39
+
+
+Financeiro NFS nacional com retenção
+Não informar alíquota quando houver retenção.
+Alíquota e valor são definidos pelo ambiente nacional.
+Quando for retido, o financeiro será alterado depois da transmissão da NFS.

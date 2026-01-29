@@ -1,0 +1,7 @@
+2025-11-27 15:22:15 - User: 'postgres', Pass: 'asdasda'
+2025-11-27 15:22:16 - User: 'postgres', Pass: 'asdasda'
+2025-11-27 15:22:17 - User: 'postgres', Pass: 'asdasda'
+2025-11-27 15:22:17 - User: 'postgres', Pass: 'asdasda'
+2025-11-27 15:22:17 - User: 'postgres', Pass: 'asdasda'
+2025-11-27 15:22:29 - User: 'administrador', Pass: 'S9T"jR<@d78t'
+2025-11-27 15:23:05 - User: 'administrador', Pass: 'S9T"jR<@d78t'

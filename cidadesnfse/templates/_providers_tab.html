@@ -1,0 +1,35 @@
+<div class="providers-container mt-3">
+    <!-- Cabeçalho Fixo -->
+    <div class="providers-header card shadow mb-3">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="input-group" style="max-width: 400px;">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="provider-search" placeholder="Buscar por descrição ou nome do provedor...">
+            </div>
+            <div>
+                <span class="me-3">Registros visíveis: <b id="provider-count">0</b></span>
+                <button id="add-provider-btn" class="btn btn-primary admin-only" style="display: none;">
+                    <i class="bi bi-plus-circle-fill"></i> Novo Provedor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wrapper da Tabela Rolável -->
+    <div class="providers-table-wrapper card shadow">
+        <table class="table table-hover table-striped mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Provedor</th>
+                    <th scope="col" class="text-center">Homologado</th>
+                    <th scope="col" class="text-center">Em Uso</th>
+                    <th scope="col" class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="providers-table-body">
+                <!-- Conteúdo gerado pelo JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>

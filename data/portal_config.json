@@ -1,0 +1,186 @@
+{
+    "weather": {
+        "city": "Brusque",
+        "lat": -27.1177,
+        "lon": -48.9103
+    },
+    "latest_version": {
+        "version": "6.12.23",
+        "date": "05\/12\/2025"
+    },
+    "notices": [
+        {
+            "id": "notice_69334765d2836",
+            "type": "info",
+            "title": "Reforma Tributária e NFS-e",
+            "description": "<p>O cenário da Reforma Tributária para NFS-e segue instável. Enquanto alguns municípios migram para o ambiente nacional, outros continuarão operando por meio de provedores. Isso exige que <strong>cada provedor atualize seu próprio padrão e publique a documentação necessária<\/strong>, permitindo que o Uniplus acompanhe as mudanças.<\/p><p><br><\/p><p>Sempre que o município ou provedor divulgar nova documentação, <strong>abra um ticket<\/strong> com as seguintes informações para que o desenvolvimento realize os ajustes necessários:<\/p><ul><li>Nome do município<\/li><li>Nome do provedor<\/li><li>Documentação recebida (PDF, link ou especificação técnica)<\/li><li>Base de dados do cliente<\/li><\/ul><p><br><\/p><p><strong> Atenção:<\/strong> Como esse processo depende de atualizações dos provedores, o volume de demandas deve aumentar nos próximos dias. A Intelidata está ajustando o Uniplus conforme as novas publicações, com a máxima agilidade possível.<\/p><p>Acompanhe as <strong>release notes<\/strong>, onde serão informadas as atualizações dos provedores que o desenvolvimento estiver implementando ao longo dos próximos dias e semanas.<\/p><p><strong>Obs.:<\/strong> Em último caso, a emissão da NFS-e poderá ser feita diretamente no site da prefeitura para evitar a interrupção do faturamento do cliente.<\/p><p>Dúvidas, estamos à disposição.<\/p>",
+            "team": "Suporte (geral)",
+            "date": "2025-12-05 21:58:13",
+            "author": "Jose Leonardo Lemos"
+        },
+        {
+            "id": "6932ea79a1130",
+            "title": "Férias Coletivas 2025",
+            "description": "Durante o período de férias coletivas, nosso suporte funcionará em regime de plantão, com equipe reduzida. Todo o atendimento será realizado exclusivamente pelo Beemore.\r\n\r\n\r\n✅Atendimentos urgentes, que impactem diretamente as vendas ou impeçam o cliente de operar, terão prioridade máxima e serão tratados com urgência.\r\n\r\n\r\n⌛Chamados não urgentes também serão recebidos normalmente, e faremos o possível para responder dentro do plantão. Porém, como estaremos com uma equipe menor, alguns atendimentos poderão ser finalizados após o retorno do recesso. Mesmo assim, seu chamado estará registrado, acompanhado e não ficará esquecido. \r\n\r\nAgradecemos a compreensão de todos e permanecemos à disposição para garantir que sua operação continue funcionando normalmente.",
+            "type": "info",
+            "date": "2025-12-05 15:21:45"
+        }
+    ],
+    "blocked_cards": [
+        "card-manifestador",
+        "card-team-intranet",
+        "card-extractor",
+        "card-editor"
+    ],
+    "debug_timestamp": "2025-12-05 15:05:41",
+    "meetings": [
+        {
+            "id": "6932ec8f9567c",
+            "title": "Reunião P1 e P2",
+            "date": "2025-12-03T16:15",
+            "location": "Sala Praia",
+            "link": "",
+            "agenda": [
+                {
+                    "text": "Suporte e Relacionamento: Núcleo de auxílio no Relacionamento.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Metas: Andamento para o encerramento de fim de ano.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Planejamento 2026: Devolutiva do processo entre Dev, Suporte e Comercial.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Modelo de Trabalho: Definição sobre modelo híbrido para 2026.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Comunicação N3: Problemas atuais e alinhamento com Deise.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Base de Conhecimento: Novo KB (opiniões diversas sobre o novo KB)",
+                    "status": "pending"
+                }
+            ]
+        },
+        {
+            "id": "6932eb02394fc",
+            "title": "Reunião P1 e P2",
+            "date": "2025-11-12T16:00",
+            "location": "Sala praia",
+            "link": "",
+            "agenda": [
+                {
+                    "text": "Plano 2026: Formalizar escopo do que não será tratado pelo suporte.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Canais de Dúvidas: Padronização e centralização.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Alinhamento de Fim de Ano: Avisos de plantão e escala de líderes\/comercial\/dev.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Acompanhamento de Melhoria: Status do ticket 2535 (Beemore).",
+                    "status": "pending"
+                },
+                {
+                    "text": "Convenção: Rotina do suporte durante a semana do evento.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Licenciamento: Mapa e migração para o novo modelo em 2026.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Test Item",
+                    "status": "pending"
+                }
+            ]
+        },
+        {
+            "id": "6932ed1485de0",
+            "title": "Reunião P1 e P2",
+            "date": "2025-10-29T16:00",
+            "location": "Auditório",
+            "link": "",
+            "agenda": [
+                {
+                    "text": "Plantão e Instabilidade: Definição do plantão Beemore (Felipe) e confirmação de estabilidade da ferramenta para o fim de ano.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Cobertura de Equipes: Regras para pausas e almoço para garantir que PDV, Retaguarda e Fiscal nunca fiquem descobertos.",
+                    "status": "pending"
+                },
+                {
+                    "text": "E-commerce: Definição do atendimento de fim de ano (Zink e Santos).",
+                    "status": "pending"
+                },
+                {
+                    "text": "Processos com GT: Encaminhar à liderança casos de tratativa paralela.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Qualidade do Ticket: Solicitar máximo de informações (logs, tenant, versões) antes de encaminhar atendimentos.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Padronização: Novas macros para conversão e encaminhamento de chats.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Melhoria de Sistema: A gravação de dados ao trocar de atendimento é inviável no momento.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Evidências: Manter prints e registros de todas as consultas feitas ao Desenvolvimento\/Comercial.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Treinamento Plantonistas: Solicitação de treinamento para identificar melhor o que é urgência de plantão versus horário comercial.",
+                    "status": "pending"
+                }
+            ]
+        },
+        {
+            "id": "6932ed8671a4f",
+            "title": "Reunião P1 e P2",
+            "date": "2025-10-15T16:00",
+            "location": "Auditório",
+            "link": "",
+            "agenda": [
+                {
+                    "text": "Fluxo de Melhorias via Chat: Educar revendas sobre o fluxo correto; se insistirem, converter chat em ticket e direcionar para fila de melhoria (Diego) com detalhes.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Capacitações: Avaliar necessidade de presença total ou uso de gravações para não impactar P1; reuniões de sexta (CIPA) divididas em duas turmas.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Dashboard Web: Anderson abrirá ticket interno para vincular reclamações de clientes e gerar evidências de inconsistência para reunião com Dev.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Macros N3: Novas macros padronizadas por área (PDV, Fiscal, etc.) para envio ao Desenvolvimento com checklist obrigatório.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Macro Chat > Ticket: Em fase de elaboração pela liderança.",
+                    "status": "pending"
+                },
+                {
+                    "text": "Cache no Beemore: Solicitação de melhoria para evitar perda de dados ao alternar telas durante abertura de ticket via chat.",
+                    "status": "pending"
+                }
+            ]
+        }
+    ]
+}

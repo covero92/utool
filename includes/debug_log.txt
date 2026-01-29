@@ -1,0 +1,232 @@
+Save Request: Year=2025, Entries=[{"key":"okr1_conteudo","month":"1","value":"5"},{"key":"okr1_conteudo","month":"2","value":""},{"key":"okr1_conteudo","month":"3","value":""},{"key":"okr1_conteudo","month":"4","value":""},{"key":"okr1_conteudo","month":"5","value":""},{"key":"okr1_conteudo","month":"6","value":""},{"key":"okr1_conteudo","month":"7","value":""},{"key":"okr1_conteudo","month":"8","value":""},{"key":"okr1_conteudo","month":"9","value":""},{"key":"okr1_conteudo","month":"10","value":""},{"key":"okr1_conteudo","month":"11","value":""},{"key":"okr1_conteudo","month":"12","value":""},{"key":"okr1_doc","month":"1","value":""},{"key":"okr1_doc","month":"2","value":""},{"key":"okr1_doc","month":"3","value":""},{"key":"okr1_doc","month":"4","value":""},{"key":"okr1_doc","month":"5","value":""},{"key":"okr1_doc","month":"6","value":""},{"key":"okr1_doc","month":"7","value":""},{"key":"okr1_doc","month":"8","value":""},{"key":"okr1_doc","month":"9","value":""},{"key":"okr1_doc","month":"10","value":""},{"key":"okr1_doc","month":"11","value":""},{"key":"okr1_doc","month":"12","value":""},{"key":"okr2_nps","month":"1","value":""},{"key":"okr2_nps","month":"2","value":""},{"key":"okr2_nps","month":"3","value":""},{"key":"okr2_nps","month":"4","value":""},{"key":"okr2_nps","month":"5","value":""},{"key":"okr2_nps","month":"6","value":""},{"key":"okr2_nps","month":"7","value":""},{"key":"okr2_nps","month":"8","value":""},{"key":"okr2_nps","month":"9","value":""},{"key":"okr2_nps","month":"10","value":""},{"key":"okr2_nps","month":"11","value":""},{"key":"okr2_nps","month":"12","value":""},{"key":"okr2_tmc","month":"1","value":""},{"key":"okr2_tmc","month":"2","value":""},{"key":"okr2_tmc","month":"3","value":""},{"key":"okr2_tmc","month":"4","value":""},{"key":"okr2_tmc","month":"5","value":""},{"key":"okr2_tmc","month":"6","value":""},{"key":"okr2_tmc","month":"7","value":""},{"key":"okr2_tmc","month":"8","value":""},{"key":"okr2_tmc","month":"9","value":""},{"key":"okr2_tmc","month":"10","value":""},{"key":"okr2_tmc","month":"11","value":""},{"key":"okr2_tmc","month":"12","value":""}]
+Metrics loaded: Array
+(
+    [1] => okr1_conteudo
+    [2] => okr1_doc
+    [3] => okr2_nps
+    [4] => okr2_tmc
+)
+
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Commit Success
+Save Request: Year=2025, Entries=[{"key":"okr1_conteudo","month":"1","value":"5"},{"key":"okr1_conteudo","month":"2","value":""},{"key":"okr1_conteudo","month":"3","value":""},{"key":"okr1_conteudo","month":"4","value":""},{"key":"okr1_conteudo","month":"5","value":""},{"key":"okr1_conteudo","month":"6","value":""},{"key":"okr1_conteudo","month":"7","value":""},{"key":"okr1_conteudo","month":"8","value":""},{"key":"okr1_conteudo","month":"9","value":""},{"key":"okr1_conteudo","month":"10","value":""},{"key":"okr1_conteudo","month":"11","value":""},{"key":"okr1_conteudo","month":"12","value":""},{"key":"okr1_doc","month":"1","value":""},{"key":"okr1_doc","month":"2","value":""},{"key":"okr1_doc","month":"3","value":""},{"key":"okr1_doc","month":"4","value":""},{"key":"okr1_doc","month":"5","value":""},{"key":"okr1_doc","month":"6","value":""},{"key":"okr1_doc","month":"7","value":""},{"key":"okr1_doc","month":"8","value":""},{"key":"okr1_doc","month":"9","value":""},{"key":"okr1_doc","month":"10","value":""},{"key":"okr1_doc","month":"11","value":""},{"key":"okr1_doc","month":"12","value":""},{"key":"okr2_nps","month":"1","value":""},{"key":"okr2_nps","month":"2","value":""},{"key":"okr2_nps","month":"3","value":""},{"key":"okr2_nps","month":"4","value":""},{"key":"okr2_nps","month":"5","value":""},{"key":"okr2_nps","month":"6","value":""},{"key":"okr2_nps","month":"7","value":""},{"key":"okr2_nps","month":"8","value":""},{"key":"okr2_nps","month":"9","value":""},{"key":"okr2_nps","month":"10","value":""},{"key":"okr2_nps","month":"11","value":""},{"key":"okr2_nps","month":"12","value":""},{"key":"okr2_tmc","month":"1","value":""},{"key":"okr2_tmc","month":"2","value":""},{"key":"okr2_tmc","month":"3","value":""},{"key":"okr2_tmc","month":"4","value":""},{"key":"okr2_tmc","month":"5","value":""},{"key":"okr2_tmc","month":"6","value":""},{"key":"okr2_tmc","month":"7","value":""},{"key":"okr2_tmc","month":"8","value":""},{"key":"okr2_tmc","month":"9","value":""},{"key":"okr2_tmc","month":"10","value":""},{"key":"okr2_tmc","month":"11","value":""},{"key":"okr2_tmc","month":"12","value":""}]
+Metrics loaded: Array
+(
+    [1] => okr1_conteudo
+    [2] => okr1_doc
+    [3] => okr2_nps
+    [4] => okr2_tmc
+)
+
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Commit Success
+Save Request: Year=2025, Entries=[{"key":"okr1_conteudo","month":"1","value":"5"},{"key":"okr1_conteudo","month":"2","value":""},{"key":"okr1_conteudo","month":"3","value":""},{"key":"okr1_conteudo","month":"4","value":""},{"key":"okr1_conteudo","month":"5","value":""},{"key":"okr1_conteudo","month":"6","value":""},{"key":"okr1_conteudo","month":"7","value":""},{"key":"okr1_conteudo","month":"8","value":""},{"key":"okr1_conteudo","month":"9","value":""},{"key":"okr1_conteudo","month":"10","value":""},{"key":"okr1_conteudo","month":"11","value":""},{"key":"okr1_conteudo","month":"12","value":""},{"key":"okr1_doc","month":"1","value":""},{"key":"okr1_doc","month":"2","value":""},{"key":"okr1_doc","month":"3","value":""},{"key":"okr1_doc","month":"4","value":""},{"key":"okr1_doc","month":"5","value":""},{"key":"okr1_doc","month":"6","value":""},{"key":"okr1_doc","month":"7","value":""},{"key":"okr1_doc","month":"8","value":""},{"key":"okr1_doc","month":"9","value":""},{"key":"okr1_doc","month":"10","value":""},{"key":"okr1_doc","month":"11","value":""},{"key":"okr1_doc","month":"12","value":""},{"key":"okr2_nps","month":"1","value":""},{"key":"okr2_nps","month":"2","value":""},{"key":"okr2_nps","month":"3","value":""},{"key":"okr2_nps","month":"4","value":""},{"key":"okr2_nps","month":"5","value":""},{"key":"okr2_nps","month":"6","value":""},{"key":"okr2_nps","month":"7","value":""},{"key":"okr2_nps","month":"8","value":""},{"key":"okr2_nps","month":"9","value":""},{"key":"okr2_nps","month":"10","value":""},{"key":"okr2_nps","month":"11","value":""},{"key":"okr2_nps","month":"12","value":""},{"key":"okr2_tmc","month":"1","value":""},{"key":"okr2_tmc","month":"2","value":""},{"key":"okr2_tmc","month":"3","value":""},{"key":"okr2_tmc","month":"4","value":""},{"key":"okr2_tmc","month":"5","value":""},{"key":"okr2_tmc","month":"6","value":""},{"key":"okr2_tmc","month":"7","value":""},{"key":"okr2_tmc","month":"8","value":""},{"key":"okr2_tmc","month":"9","value":""},{"key":"okr2_tmc","month":"10","value":""},{"key":"okr2_tmc","month":"11","value":""},{"key":"okr2_tmc","month":"12","value":""}]
+Metrics loaded: Array
+(
+    [1] => okr1_conteudo
+    [2] => okr1_doc
+    [3] => okr2_nps
+    [4] => okr2_tmc
+)
+
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_conteudo
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr1_doc
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_nps
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Metric Key Not Found: okr2_tmc
+Commit Success
+Save Request: Year=2025, Entries=[{"key":"okr1_conteudo","month":"1","value":"0"},{"key":"okr1_conteudo","month":"2","value":""},{"key":"okr1_conteudo","month":"3","value":""},{"key":"okr1_conteudo","month":"4","value":""},{"key":"okr1_conteudo","month":"5","value":""},{"key":"okr1_conteudo","month":"6","value":""},{"key":"okr1_conteudo","month":"7","value":""},{"key":"okr1_conteudo","month":"8","value":""},{"key":"okr1_conteudo","month":"9","value":""},{"key":"okr1_conteudo","month":"10","value":""},{"key":"okr1_conteudo","month":"11","value":""},{"key":"okr1_conteudo","month":"12","value":""},{"key":"okr1_doc","month":"1","value":"0"},{"key":"okr1_doc","month":"2","value":""},{"key":"okr1_doc","month":"3","value":""},{"key":"okr1_doc","month":"4","value":""},{"key":"okr1_doc","month":"5","value":""},{"key":"okr1_doc","month":"6","value":""},{"key":"okr1_doc","month":"7","value":""},{"key":"okr1_doc","month":"8","value":""},{"key":"okr1_doc","month":"9","value":""},{"key":"okr1_doc","month":"10","value":""},{"key":"okr1_doc","month":"11","value":""},{"key":"okr1_doc","month":"12","value":""},{"key":"okr2_nps","month":"1","value":""},{"key":"okr2_nps","month":"2","value":""},{"key":"okr2_nps","month":"3","value":""},{"key":"okr2_nps","month":"4","value":""},{"key":"okr2_nps","month":"5","value":""},{"key":"okr2_nps","month":"6","value":""},{"key":"okr2_nps","month":"7","value":""},{"key":"okr2_nps","month":"8","value":""},{"key":"okr2_nps","month":"9","value":""},{"key":"okr2_nps","month":"10","value":""},{"key":"okr2_nps","month":"11","value":""},{"key":"okr2_nps","month":"12","value":""},{"key":"okr2_tmc","month":"1","value":""},{"key":"okr2_tmc","month":"2","value":""},{"key":"okr2_tmc","month":"3","value":""},{"key":"okr2_tmc","month":"4","value":""},{"key":"okr2_tmc","month":"5","value":""},{"key":"okr2_tmc","month":"6","value":""},{"key":"okr2_tmc","month":"7","value":""},{"key":"okr2_tmc","month":"8","value":""},{"key":"okr2_tmc","month":"9","value":""},{"key":"okr2_tmc","month":"10","value":""},{"key":"okr2_tmc","month":"11","value":""},{"key":"okr2_tmc","month":"12","value":""}]
+Metrics loaded: Array
+(
+    [okr1_conteudo] => 1
+    [okr1_doc] => 2
+    [okr2_nps] => 3
+    [okr2_tmc] => 4
+)
+
+Upserted okr1_conteudo (1) = 0
+Upserted okr1_conteudo (2) = 
+Upserted okr1_conteudo (3) = 
+Upserted okr1_conteudo (4) = 
+Upserted okr1_conteudo (5) = 
+Upserted okr1_conteudo (6) = 
+Upserted okr1_conteudo (7) = 
+Upserted okr1_conteudo (8) = 
+Upserted okr1_conteudo (9) = 
+Upserted okr1_conteudo (10) = 
+Upserted okr1_conteudo (11) = 
+Upserted okr1_conteudo (12) = 
+Upserted okr1_doc (1) = 0
+Upserted okr1_doc (2) = 
+Upserted okr1_doc (3) = 
+Upserted okr1_doc (4) = 
+Upserted okr1_doc (5) = 
+Upserted okr1_doc (6) = 
+Upserted okr1_doc (7) = 
+Upserted okr1_doc (8) = 
+Upserted okr1_doc (9) = 
+Upserted okr1_doc (10) = 
+Upserted okr1_doc (11) = 
+Upserted okr1_doc (12) = 
+Upserted okr2_nps (1) = 
+Upserted okr2_nps (2) = 
+Upserted okr2_nps (3) = 
+Upserted okr2_nps (4) = 
+Upserted okr2_nps (5) = 
+Upserted okr2_nps (6) = 
+Upserted okr2_nps (7) = 
+Upserted okr2_nps (8) = 
+Upserted okr2_nps (9) = 
+Upserted okr2_nps (10) = 
+Upserted okr2_nps (11) = 
+Upserted okr2_nps (12) = 
+Upserted okr2_tmc (1) = 
+Upserted okr2_tmc (2) = 
+Upserted okr2_tmc (3) = 
+Upserted okr2_tmc (4) = 
+Upserted okr2_tmc (5) = 
+Upserted okr2_tmc (6) = 
+Upserted okr2_tmc (7) = 
+Upserted okr2_tmc (8) = 
+Upserted okr2_tmc (9) = 
+Upserted okr2_tmc (10) = 
+Upserted okr2_tmc (11) = 
+Upserted okr2_tmc (12) = 
+Commit Success

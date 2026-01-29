@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ListaDeclaracoes>
+    <declaracaoImportacao>
+        <adicao>
+            <cideValorAliquotaEspecifica>00000000000</cideValorAliquotaEspecifica>
+            <cideValorDevido>000000000000000</cideValorDevido>
+            <cideValorRecolher>000000000000000</cideValorRecolher>
+            <codigoRelacaoCompradorVendedor>2</codigoRelacaoCompradorVendedor>
+            <codigoVinculoCompradorVendedor>1</codigoVinculoCompradorVendedor>
+            <cofinsAliquotaAdValorem>00965</cofinsAliquotaAdValorem>
+            <cofinsAliquotaEspecificaQuantidadeUnidade>000000000</cofinsAliquotaEspecificaQuantidadeUnidade>
+            <cofinsAliquotaEspecificaValor>0000000000</cofinsAliquotaEspecificaValor>
+            <cofinsAliquotaReduzida>00000</cofinsAliquotaReduzida>
+            <cofinsAliquotaValorDevido>000000000000000</cofinsAliquotaValorDevido>
+            <cofinsAliquotaValorRecolher>000000000000000</cofinsAliquotaValorRecolher>
+            <condicaoVendaIncoterm>FCA</condicaoVendaIncoterm>
+            <condicaoVendaLocal>LOS ANDES - CHILE</condicaoVendaLocal>
+            <condicaoVendaMetodoValoracaoCodigo>01</condicaoVendaMetodoValoracaoCodigo>
+            <condicaoVendaMetodoValoracaoNome>METODO 1 - ART. 1 DO ACORDO (DECRETO 92930/86)</condicaoVendaMetodoValoracaoNome>
+            <condicaoVendaMoedaCodigo>220</condicaoVendaMoedaCodigo>
+            <condicaoVendaMoedaNome>DOLAR DOS EUA</condicaoVendaMoedaNome>
+            <condicaoVendaValorMoeda>000000002714400</condicaoVendaValorMoeda>
+            <condicaoVendaValorReais>000000014773936</condicaoVendaValorReais>
+            <dadosCambiaisCoberturaCambialCodigo>1</dadosCambiaisCoberturaCambialCodigo>
+            <dadosCambiaisCoberturaCambialNome>COM COBERTURA CAMBIAL E PAGAMENTO FINAL A PRAZO DE ATE' 180</dadosCambiaisCoberturaCambialNome>
+            <dadosCambiaisInstituicaoFinanciadoraCodigo>00</dadosCambiaisInstituicaoFinanciadoraCodigo>
+            <dadosCambiaisInstituicaoFinanciadoraNome>N/I</dadosCambiaisInstituicaoFinanciadoraNome>
+            <dadosCambiaisMotivoSemCoberturaCodigo>00</dadosCambiaisMotivoSemCoberturaCodigo>
+            <dadosCambiaisMotivoSemCoberturaNome>N/I</dadosCambiaisMotivoSemCoberturaNome>
+            <dadosCambiaisValorRealCambio>000000000000000</dadosCambiaisValorRealCambio>
+            <dadosCargaPaisProcedenciaCodigo>000</dadosCargaPaisProcedenciaCodigo>
+            <dadosCargaUrfEntradaCodigo>0000000</dadosCargaUrfEntradaCodigo>
+            <dadosCargaViaTransporteCodigo>00</dadosCargaViaTransporteCodigo>
+            <dadosMercadoriaAplicacao>REVENDA</dadosMercadoriaAplicacao>
+            <dadosMercadoriaCodigoNaladiNCCA>0000000</dadosMercadoriaCodigoNaladiNCCA>
+            <dadosMercadoriaCodigoNaladiSH>08105000</dadosMercadoriaCodigoNaladiSH>
+            <dadosMercadoriaCodigoNcm>08105000</dadosMercadoriaCodigoNcm>
+            <dadosMercadoriaCondicao>NOVA</dadosMercadoriaCondicao>
+            <dadosMercadoriaMedidaEstatisticaQuantidade>00000936000000</dadosMercadoriaMedidaEstatisticaQuantidade>
+            <dadosMercadoriaMedidaEstatisticaUnidade>QUILOGRAMA LIQUIDO</dadosMercadoriaMedidaEstatisticaUnidade>
+            <dadosMercadoriaNomeNcm>- Kiwis (quivis)</dadosMercadoriaNomeNcm>
+            <dadosMercadoriaPesoLiquido>000000936000000</dadosMercadoriaPesoLiquido>
+            <dcrCoeficienteReducao>00000</dcrCoeficienteReducao>
+            <dcrIdentificacao>00000000</dcrIdentificacao>
+            <dcrValorDevido>000000000000000</dcrValorDevido>
+            <dcrValorDolar>000000000000000</dcrValorDolar>
+            <dcrValorReal>000000000000000</dcrValorReal>
+            <dcrValorRecolher>000000000000000</dcrValorRecolher>
+            <fabricanteCidade>COMUNA VITACURA</fabricanteCidade>
+            <fabricanteComplemento>OFICINA 1201</fabricanteComplemento>
+            <fabricanteEstado>SANTIAGO</fabricanteEstado>
+            <fabricanteLogradouro>AV. ALONSO DE CORDOVA</fabricanteLogradouro>
+            <fabricanteNome>DOLE CHILE S.A</fabricanteNome>
+            <fabricanteNumero>4355</fabricanteNumero>
+            <fornecedorCidade>MONTEVIDEO</fornecedorCidade>
+            <fornecedorComplemento>OF. 410</fornecedorComplemento>
+            <fornecedorEstado>URUGUAI</fornecedorEstado>
+            <fornecedorLogradouro>RINCON</fornecedorLogradouro>
+            <fornecedorNome>ENTERCOR S.A</fornecedorNome>
+            <fornecedorNumero>610</fornecedorNumero>
+            <freteMoedaNegociadaCodigo>000</freteMoedaNegociadaCodigo>
+            <freteValorMoedaNegociada>000000000132220</freteValorMoedaNegociada>
+            <freteValorReais>000000000719647</freteValorReais>
+            <iiAcordoTarifarioAladiCodigo>335</iiAcordoTarifarioAladiCodigo>
+            <iiAcordoTarifarioAladiNome>ACORDO DE COMPLEMENTACAO ECONOMICA N. 35 - MERCOSUL/CHILE</iiAcordoTarifarioAladiNome>
+            <iiAcordoTarifarioAtoLegalAno>1996</iiAcordoTarifarioAtoLegalAno>
+            <iiAcordoTarifarioAtoLegalCodigo>DEC</iiAcordoTarifarioAtoLegalCodigo>
+            <iiAcordoTarifarioAtoLegalEX>000</iiAcordoTarifarioAtoLegalEX>
+            <iiAcordoTarifarioAtoLegalNumero>002075</iiAcordoTarifarioAtoLegalNumero>
+            <iiAcordoTarifarioAtoLegalOrgaoEmissor>EXEC</iiAcordoTarifarioAtoLegalOrgaoEmissor>
+            <iiAcordoTarifarioTipoCodigo>2</iiAcordoTarifarioTipoCodigo>
+            <iiAcordoTarifarioTipoNome>ALADI</iiAcordoTarifarioTipoNome>
+            <iiAliquotaAcordo>00000</iiAliquotaAcordo>
+            <iiAliquotaAdValorem>00900</iiAliquotaAdValorem>
+            <iiAliquotaPercentualReducao>00000</iiAliquotaPercentualReducao>
+            <iiAliquotaReduzida>00000</iiAliquotaReduzida>
+            <iiAliquotaValorCalculado>000000001394807</iiAliquotaValorCalculado>
+            <iiAliquotaValorDevido>000000000000000</iiAliquotaValorDevido>
+            <iiAliquotaValorRecolher>000000000000000</iiAliquotaValorRecolher>
+            <iiAliquotaValorReduzido>000000000000000</iiAliquotaValorReduzido>
+            <iiBaseCalculo>000000015497861</iiBaseCalculo>
+            <iiFundamentoLegalCodigo>00</iiFundamentoLegalCodigo>
+            <iiMotivoAdmissaoTemporariaCodigo>00</iiMotivoAdmissaoTemporariaCodigo>
+            <iiRegimeTributacaoCodigo>1</iiRegimeTributacaoCodigo>
+            <iiRegimeTributacaoNome>RECOLHIMENTO INTEGRAL</iiRegimeTributacaoNome>
+            <ipiAliquotaAdValorem>00000</ipiAliquotaAdValorem>
+            <ipiAliquotaEspecificaCapacidadeRecipciente>00000</ipiAliquotaEspecificaCapacidadeRecipciente>
+            <ipiAliquotaEspecificaQuantidadeUnidadeMedida>000000000</ipiAliquotaEspecificaQuantidadeUnidadeMedida>
+            <ipiAliquotaEspecificaTipoRecipienteCodigo>00</ipiAliquotaEspecificaTipoRecipienteCodigo>
+            <ipiAliquotaEspecificaValorUnidadeMedida>0000000000</ipiAliquotaEspecificaValorUnidadeMedida>
+            <ipiAliquotaNotaComplementarTIPI>00</ipiAliquotaNotaComplementarTIPI>
+            <ipiAliquotaReduzida>00000</ipiAliquotaReduzida>
+            <ipiAliquotaValorDevido>000000000000000</ipiAliquotaValorDevido>
+            <ipiAliquotaValorRecolher>000000000000000</ipiAliquotaValorRecolher>
+            <ipiRegimeTributacaoCodigo>3</ipiRegimeTributacaoCodigo>
+            <ipiRegimeTributacaoNome>NAO TRIBUTAVEL</ipiRegimeTributacaoNome>
+            <mercadoria>
+                <descricaoMercadoria>624 CAIXAS DE KIWIS FRESCOS (ACTINIDIA DELICIOSA) HAYWARD, ACONDICIONADA EM CAIXAS DE APROXIMADAMENTE 10 KG CADA UMA, CALIBRE: 20-25 EF, CAT. C1                                               &#xD;</descricaoMercadoria>
+                <numeroSequencialItem>01</numeroSequencialItem>
+                <quantidade>00000062400000</quantidade>
+                <unidadeMedida>CAIXAS              </unidadeMedida>
+                <valorUnitario>00000000000290000000</valorUnitario>
+            </mercadoria>
+            <mercadoria>
+                <descricaoMercadoria>312 CAIXAS DE KIWIS FRESCOS (ACTINIDIA DELICIOSA) HAYWARD, ACONDICIONADA EM CAIXAS DE APROXIMADAMENTE 10 KG CADA UMA, CALIBRE: 20-27 EA, CAT. C1                                               &#xD;</descricaoMercadoria>
+                <numeroSequencialItem>02</numeroSequencialItem>
+                <quantidade>00000031200000</quantidade>
+                <unidadeMedida>CAIXAS              </unidadeMedida>
+                <valorUnitario>00000000000290000000</valorUnitario>
+            </mercadoria>
+            <numeroAdicao>001</numeroAdicao>
+            <numeroDI>2519099932</numeroDI>
+            <numeroLI>2532770793</numeroLI>
+            <paisAquisicaoMercadoriaCodigo>845</paisAquisicaoMercadoriaCodigo>
+            <paisAquisicaoMercadoriaNome>URUGUAI</paisAquisicaoMercadoriaNome>
+            <paisOrigemMercadoriaCodigo>158</paisOrigemMercadoriaCodigo>
+            <paisOrigemMercadoriaNome>CHILE</paisOrigemMercadoriaNome>
+            <pisCofinsBaseCalculoAliquotaICMS>00000</pisCofinsBaseCalculoAliquotaICMS>
+            <pisCofinsBaseCalculoFundamentoLegalCodigo>20</pisCofinsBaseCalculoFundamentoLegalCodigo>
+            <pisCofinsBaseCalculoFundamentoLegalNome>PRODUTOS HORTICULAS E FRUTAS - CAPITULOS 7 E 8 DA TIPI - E O</pisCofinsBaseCalculoFundamentoLegalNome>
+            <pisCofinsBaseCalculoPercentualReducao>00000</pisCofinsBaseCalculoPercentualReducao>
+            <pisCofinsBaseCalculoValor>000000015497861</pisCofinsBaseCalculoValor>
+            <pisCofinsFundamentoLegalReducaoCodigo>00</pisCofinsFundamentoLegalReducaoCodigo>
+            <pisCofinsRegimeTributacaoCodigo>4</pisCofinsRegimeTributacaoCodigo>
+            <pisCofinsRegimeTributacaoNome>REDUCAO</pisCofinsRegimeTributacaoNome>
+            <pisPasepAliquotaAdValorem>00210</pisPasepAliquotaAdValorem>
+            <pisPasepAliquotaEspecificaQuantidadeUnidade>000000000</pisPasepAliquotaEspecificaQuantidadeUnidade>
+            <pisPasepAliquotaEspecificaValor>0000000000</pisPasepAliquotaEspecificaValor>
+            <pisPasepAliquotaReduzida>00000</pisPasepAliquotaReduzida>
+            <pisPasepAliquotaValorDevido>000000000000000</pisPasepAliquotaValorDevido>
+            <pisPasepAliquotaValorRecolher>000000000000000</pisPasepAliquotaValorRecolher>
+            <relacaoCompradorVendedor>Fabricante não é o Exportador</relacaoCompradorVendedor>
+            <seguroMoedaNegociadaCodigo>000</seguroMoedaNegociadaCodigo>
+            <seguroValorMoedaNegociada>000000000000000</seguroValorMoedaNegociada>
+            <seguroValorReais>000000000004278</seguroValorReais>
+            <sequencialRetificacao>00</sequencialRetificacao>
+            <valorMultaARecolher>000000000000000</valorMultaARecolher>
+            <valorMultaARecolherAjustado>000000000000000</valorMultaARecolherAjustado>
+            <valorReaisFreteInternacional>000000000719647</valorReaisFreteInternacional>
+            <valorReaisSeguroInternacional>000000000004278</valorReaisSeguroInternacional>
+            <valorTotalCondicaoVenda>271440000000</valorTotalCondicaoVenda>
+            <vinculoCompradorVendedor>Não há vinculação entre comprador e vendedor.</vinculoCompradorVendedor>
+        </adicao>
+        <armazem>
+            <nomeArmazem>CUF       </nomeArmazem>
+        </armazem>
+        <armazenamentoRecintoAduaneiroCodigo>0963701</armazenamentoRecintoAduaneiroCodigo>
+        <armazenamentoRecintoAduaneiroNome>CENTRO UNIF.DE FRONTEIRA SãO BORJA/SANTO TOMé - MERCOVIA S/A</armazenamentoRecintoAduaneiroNome>
+        <armazenamentoSetor>002</armazenamentoSetor>
+        <canalSelecaoParametrizada>001</canalSelecaoParametrizada>
+        <caracterizacaoOperacaoCodigoTipo>1</caracterizacaoOperacaoCodigoTipo>
+        <caracterizacaoOperacaoDescricaoTipo>Importação Própria</caracterizacaoOperacaoDescricaoTipo>
+        <cargaDataChegada>20250827</cargaDataChegada>
+        <cargaNumeroAgente>N/I</cargaNumeroAgente>
+        <cargaPaisProcedenciaCodigo>158</cargaPaisProcedenciaCodigo>
+        <cargaPaisProcedenciaNome>CHILE</cargaPaisProcedenciaNome>
+        <cargaPesoBruto>000001047600000</cargaPesoBruto>
+        <cargaPesoLiquido>000000936000000</cargaPesoLiquido>
+        <cargaUrfEntradaCodigo>1017503</cargaUrfEntradaCodigo>
+        <cargaUrfEntradaNome>IRF - SÃO BORJA</cargaUrfEntradaNome>
+        <conhecimentoCargaEmbarqueData>20250821</conhecimentoCargaEmbarqueData>
+        <conhecimentoCargaEmbarqueLocal>LOS ANDES - CHILE</conhecimentoCargaEmbarqueLocal>
+        <conhecimentoCargaId>2025CL0459003799</conhecimentoCargaId>
+        <conhecimentoCargaTipoCodigo>13</conhecimentoCargaTipoCodigo>
+        <conhecimentoCargaTipoNome>CRT</conhecimentoCargaTipoNome>
+        <conhecimentoCargaUtilizacao>1</conhecimentoCargaUtilizacao>
+        <conhecimentoCargaUtilizacaoNome>Total</conhecimentoCargaUtilizacaoNome>
+        <dataDesembaraco>20250828</dataDesembaraco>
+        <dataRegistro>20250828</dataRegistro>
+        <documentoChegadaCargaCodigoTipo>4</documentoChegadaCargaCodigoTipo>
+        <documentoChegadaCargaNome>MIC/DTA</documentoChegadaCargaNome>
+        <documentoChegadaCargaNumero>25CL358650J</documentoChegadaCargaNumero>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>01</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>FATURA COMERCIAL                                            </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>1731                     </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>29</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>ROMANEIO DE CARGA                                           </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>PACKING LIST             </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>02</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>CERTIFICADO DE ORIGEM                                       </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>7170004278               </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>28</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>CONHECIMENTO DE CARGA                                       </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>CRT CL459003799          </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>26</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>OUTROS DOCUMENTOS EXIGIDOS PELA LEGISLACAO                  </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>MIC/DTA 25CL358650J      </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>26</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>OUTROS DOCUMENTOS EXIGIDOS PELA LEGISLACAO                  </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>RELATÓRIO DE PESAGEM     </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <documentoInstrucaoDespacho>
+            <codigoTipoDocumentoDespacho>01</codigoTipoDocumentoDespacho>
+            <nomeDocumentoDespacho>FATURA COMERCIAL                                            </nomeDocumentoDespacho>
+            <numeroDocumentoDespacho>222571                   </numeroDocumentoDespacho>
+        </documentoInstrucaoDespacho>
+        <embalagem>
+            <codigoTipoEmbalagem>60</codigoTipoEmbalagem>
+            <nomeEmbalagem>PALLETS                                                     </nomeEmbalagem>
+            <quantidadeVolume>00009</quantidadeVolume>
+        </embalagem>
+        <freteCollect>000000000213700</freteCollect>
+        <freteEmTerritorioNacional>000000000081480</freteEmTerritorioNacional>
+        <freteMoedaNegociadaCodigo>220</freteMoedaNegociadaCodigo>
+        <freteMoedaNegociadaNome>DOLAR DOS EUA</freteMoedaNegociadaNome>
+        <fretePrepaid>000000000000000</fretePrepaid>
+        <freteTotalDolares>000000000132220</freteTotalDolares>
+        <freteTotalMoeda>132220</freteTotalMoeda>
+        <freteTotalReais>000000000719647</freteTotalReais>
+        <icms>
+            <agenciaIcms>00000</agenciaIcms>
+            <bancoIcms>000</bancoIcms>
+            <codigoTipoRecolhimentoIcms>3</codigoTipoRecolhimentoIcms>
+            <cpfResponsavelRegistro>78934036753</cpfResponsavelRegistro>
+            <dataRegistro>20250828</dataRegistro>
+            <horaRegistro>144239</horaRegistro>
+            <nomeTipoRecolhimentoIcms>Exoneração do ICMS</nomeTipoRecolhimentoIcms>
+            <numeroSequencialIcms>001</numeroSequencialIcms>
+            <ufIcms>RJ</ufIcms>
+            <valorTotalIcms>000000000000000</valorTotalIcms>
+        </icms>
+        <importadorCodigoTipo>1</importadorCodigoTipo>
+        <importadorCpfRepresentanteLegal>78934036753</importadorCpfRepresentanteLegal>
+        <importadorEnderecoBairro>IRAJA</importadorEnderecoBairro>
+        <importadorEnderecoCep>21530900</importadorEnderecoCep>
+        <importadorEnderecoComplemento>PAVILHAO 34 B</importadorEnderecoComplemento>
+        <importadorEnderecoLogradouro>BRASIL</importadorEnderecoLogradouro>
+        <importadorEnderecoMunicipio>RIO DE JANEIRO</importadorEnderecoMunicipio>
+        <importadorEnderecoNumero>19001</importadorEnderecoNumero>
+        <importadorEnderecoUf>RJ</importadorEnderecoUf>
+        <importadorNome>DISTRIBUIDORA VITFRUTTA LTDA</importadorNome>
+        <importadorNomeRepresentanteLegal>PAULO ROBERTO RODRIGUES CARVALHO</importadorNomeRepresentanteLegal>
+        <importadorNumero>45804565000160</importadorNumero>
+        <importadorNumeroTelefone>21  33715825</importadorNumeroTelefone>
+        <informacaoComplementar>REFERENCIA DO CLIENTE : EMBARQUE KIWIS
+EXPORTADOR : ENTERCOR S.A
+PACKING LIST : S/N
+CERTIFICADO DE ORIGEM : 7170004278
+FATURA : 1731
+CARRETA / REBOQUE: EZX9D62 / RCA8C53
+MIC/DTA : 25CL358650J
+CRT : CL459003799
+PRESENÇA DE CARGA: 2025CL0459003799
+CHEGADA : 27/08/2025
+TAXA US$ : 5.442800 28/08/2025
+TAXA SISCOMEX : 154,23
+09 PALLETS CONTENDO 936 CAIXAS DE KIWIS
+=================================================================
+ADICAO : 001 NCM : 0810.50
+VALOR ADUANEIRO : R$ 154.978,61
+BASE DE CALCULO PIS/CONFINS.R$ 154.978,61
+PIS : 2,10 RED : 0,00 R$ 0,00
+CONFINS: 9365 RED : 0,00 R$ 0,00
+=================================================================
+ESTAMOS EFETUADO A REDUCAO DO IMPOSTO DE IMPORTACAO DE 09% PARA 0% DE ACORDO COM O
+ACORDO DE COMPLEMENTACAO ECONOMICA NR. 35 BRASIL - CHILE - DECRETO 2075 DE 1996.
+=================================================================
+ICMS ISENTO CONFORME CONVENIO 94/05 CLAUSULA I RESOLUCAO SEFAZ - RJ N* 299 DE JUNHO DE 2010
+=================================================================
+ALIQUATAS DE PIS/PASEP E CONFINS REDUZIDAS A ZERO CONFORME A LEI 10.865 DE 30 DE ABRIL DE 2004
+ARTIGO 8, PARAGRAFO 12, INCISO 10.
+=================================================================
+O IMPORTADOR ASSUME QUALQUER ONUS TRIBUTARIO,FISCAL CIVIL OU CRIMINAL POR INEXATIDAO DE
+DECLARACAO QUE POR VENTURA VENHA A COMETER.
+Extrato da D.I. assinada pelo mandatário, conforme noticia Siscomex 009 de 26/02/2002.
+=================================================================
+DE ACORDO COM § 1º, ART. 715 DO REGULAMENTO ADUANEIRO APROVADO PELO DECRETO 6759 DE 05 DE
+FEVEREIRO DE 2009, (§ 1 o Simples enganos ou omissões na emissão da fatura comercial, corrigidos ou
+corretamente supridos na declaracao de importacao, nao acarretarao a aplicacao da penalidade referida no
+caput.)APRESENTA-SE AS SEGUINTES CORRECOES PARA A FATURA COMERCIAL Nº:
+=================================================================
+PAULO ROBERTO R. CARVALHO
+CPF: 789.340.367-53
+FELIPE LOPES FIGUEIREDO
+CPF: 042.473.347-19
+LEANDRO JUNIOR KLAGENBERG
+CPF 072.383.869-09</informacaoComplementar>
+        <localDescargaTotalDolares>000000002847406</localDescargaTotalDolares>
+        <localDescargaTotalReais>000000015497861</localDescargaTotalReais>
+        <localEmbarqueTotalDolares>000000002714400</localEmbarqueTotalDolares>
+        <localEmbarqueTotalReais>000000014773936</localEmbarqueTotalReais>
+        <modalidadeDespachoCodigo>1</modalidadeDespachoCodigo>
+        <modalidadeDespachoNome>Normal</modalidadeDespachoNome>
+        <numeroDI>2519099932</numeroDI>
+        <operacaoFundap>N</operacaoFundap>
+        <pagamento>
+            <agenciaPagamento>0258 </agenciaPagamento>
+            <bancoPagamento>001</bancoPagamento>
+            <codigoReceita>7811</codigoReceita>
+            <codigoTipoPagamento>1</codigoTipoPagamento>
+            <contaPagamento>            1063146</contaPagamento>
+            <dataPagamento>20250828</dataPagamento>
+            <nomeTipoPagamento>Débito em Conta</nomeTipoPagamento>
+            <numeroRetificacao>00</numeroRetificacao>
+            <valorJurosEncargos>000000000</valorJurosEncargos>
+            <valorMulta>000000000</valorMulta>
+            <valorReceita>000000000015423</valorReceita>
+        </pagamento>
+        <seguroMoedaNegociadaCodigo>220</seguroMoedaNegociadaCodigo>
+        <seguroMoedaNegociadaNome>DOLAR DOS EUA</seguroMoedaNegociadaNome>
+        <seguroTotalDolares>000000000000786</seguroTotalDolares>
+        <seguroTotalMoedaNegociada>000000000000786</seguroTotalMoedaNegociada>
+        <seguroTotalReais>000000000004278</seguroTotalReais>
+        <sequencialRetificacao>00</sequencialRetificacao>
+        <situacaoEntregaCarga>ENTREGA NAO PERMITIDA SOLICITACAO DE ICMS REALIZADA NO PUCOMEX NAO CONCLUIDA</situacaoEntregaCarga>
+        <tipoDeclaracaoCodigo>01</tipoDeclaracaoCodigo>
+        <tipoDeclaracaoNome>CONSUMO</tipoDeclaracaoNome>
+        <totalAdicoes>001</totalAdicoes>
+        <urfDespachoCodigo>1017503</urfDespachoCodigo>
+        <urfDespachoNome>IRF - SÃO BORJA</urfDespachoNome>
+        <valorTotalMultaARecolherAjustado>000000000000000</valorTotalMultaARecolherAjustado>
+        <viaTransporteCodigo>07</viaTransporteCodigo>
+        <viaTransporteMultimodal>N</viaTransporteMultimodal>
+        <viaTransporteNome>RODOVIÁRIA</viaTransporteNome>
+        <viaTransporteNomeTransportador>COOPERATIVA DE TRANSP. DE CARGA DE SEARA COOPERSEARA</viaTransporteNomeTransportador>
+        <viaTransporteNumeroVeiculo>EZX9D62/RCA8C53</viaTransporteNumeroVeiculo>
+        <viaTransportePaisTransportadorCodigo>000</viaTransportePaisTransportadorCodigo>
+    </declaracaoImportacao>
+</ListaDeclaracoes>

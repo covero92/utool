@@ -1,0 +1,134 @@
+:root {
+    --background: 210 20% 98%;
+    --foreground: 210 10% 23%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 210 20% 94%;
+    --secondary-foreground: 210 10% 23%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 210 10% 43%;
+    --accent: 210 20% 88%;
+    --accent-foreground: 210 10% 23%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 71% 45%;
+    --border: 210 20% 85%;
+    --input: 210 20% 85%;
+    --ring: 217 91% 60%;
+    --radius: 0.5rem;
+}
+
+body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Utility Classes mimicking Tailwind/Shadcn */
+.bg-background {
+    background-color: hsl(var(--background));
+}
+
+.bg-card {
+    background-color: hsl(var(--card));
+}
+
+.text-foreground {
+    color: hsl(var(--foreground));
+}
+
+.text-muted-foreground {
+    color: hsl(var(--muted-foreground));
+}
+
+.border-input {
+    border-color: hsl(var(--input)) !important;
+}
+
+/* Bootstrap Overrides */
+.card {
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: hsl(217, 91%, 50%);
+    /* Darker shade */
+    border-color: hsl(217, 91%, 50%);
+}
+
+.btn-outline-secondary {
+    color: hsl(var(--foreground));
+    border-color: hsl(var(--input));
+    background-color: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    border-color: hsl(var(--input));
+}
+
+.form-control {
+    border-color: hsl(var(--input));
+    border-radius: var(--radius);
+}
+
+.form-control:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+/* Navbar */
+.navbar {
+    border-bottom: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card)) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: hsl(var(--foreground)) !important;
+    letter-spacing: -0.025em;
+}
+
+.nav-link {
+    color: hsl(var(--muted-foreground)) !important;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: hsl(var(--foreground)) !important;
+}
+
+/* Hero Section */
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: hsl(var(--foreground));
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    color: hsl(var(--muted-foreground));
+    max-width: 600px;
+    margin: 0 auto;
+}

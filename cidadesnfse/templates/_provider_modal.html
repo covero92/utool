@@ -1,0 +1,69 @@
+<div class="modal fade" id="provider-modal" tabindex="-1" aria-labelledby="provider-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form id="provider-form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="provider-modal-title">Novo Provedor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="provider-form-descricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="provider-form-descricao" name="descricao" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="provider-form-provedor" class="form-label">Nome do Provedor (Único)</label>
+                            <input type="text" class="form-control" id="provider-form-provedor" name="provedor" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="provider-form-url_documentacao" class="form-label">URL da Documentação</label>
+                        <input type="url" class="form-control" id="provider-form-url_documentacao" name="url_documentacao">
+                    </div>
+                    <div class="mb-3">
+                        <label for="provider-form-observacao" class="form-label">Observações</label>
+                        <textarea class="form-control" id="provider-form-observacao" name="observacao" rows="2"></textarea>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="provider-form-homologado" name="homologado">
+                                <label class="form-check-label" for="provider-form-homologado">Homologado</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="provider-form-envio_em_lote" name="envio_em_lote">
+                                <label class="form-check-label" for="provider-form-envio_em_lote">Envio em Lote</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="provider-form-usa_certificado" name="usa_certificado">
+                                <label class="form-check-label" for="provider-form-usa_certificado">Usa Certificado</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                             <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="provider-form-possui_inutilizacao" name="possui_inutilizacao">
+                                <label class="form-check-label" for="provider-form-possui_inutilizacao">Possui Inutilização</label>
+                            </div>
+                        </div>
+                         <div class="col-md-4">
+                             <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="provider-form-possui_impressao_propria" name="possui_impressao_propria">
+                                <label class="form-check-label" for="provider-form-possui_impressao_propria">Impressão Própria</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Provedor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

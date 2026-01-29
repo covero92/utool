@@ -1,0 +1,56 @@
+{
+  "comunicados": [
+    {
+      "id": 1,
+      "titulo": "Escala de Plantão - Fim de Ano",
+      "conteudo": "A escala de plantão para o Natal e Ano Novo já está disponível no drive. Por favor, verifiquem seus dias.",
+      "equipe": "todos",
+      "autor": "Coordenação",
+      "tipo": "importante",
+      "data": "11/12/2025"
+    },
+    {
+      "id": 2,
+      "titulo": "Nova versão do Validador R2D2",
+      "conteudo": "Foi liberada uma correção para importação de XMLs com caracteres especiais. Atualizem seus ambientes.",
+      "equipe": "fiscal",
+      "autor": "Líder Fiscal",
+      "tipo": "aviso",
+      "data": "10/12/2025"
+    }
+  ],
+  "kb": [
+    {
+      "id": 101,
+      "titulo": "Reset de Senha Administrativa (SQL)",
+      "conteudo": "UPDATE usuarios SET senha = '123' WHERE usuario = 'ADMIN';",
+      "categoria": "SQL",
+      "equipe": "pdv",
+      "tags": ["senha", "reset", "admin"]
+    },
+    {
+      "id": 102,
+      "titulo": "Erro Rejeição 539 - Duplicidade",
+      "conteudo": "Verificar se a chave de acesso já existe na tabela de notas fiscais autorizadas.",
+      "categoria": "Dica",
+      "equipe": "fiscal",
+      "tags": ["nfe", "rejeicao", "duplicidade"]
+    },
+    {
+      "id": 103,
+      "titulo": "Ajuste de Estoque Negativo",
+      "conteudo": "Utilizar a rotina 504 para inventário parcial ou ajuste manual via banco se autorizado.",
+      "categoria": "Procedimento",
+      "equipe": "retaguarda",
+      "tags": ["estoque", "inventario"]
+    },
+    {
+      "id": 104,
+      "titulo": "Comando para limpar logs antigos",
+      "conteudo": "DELETE FROM logs WHERE data < CURRENT_DATE - 30;",
+      "categoria": "SQL",
+      "equipe": "todos",
+      "tags": ["manutencao", "logs"]
+    }
+  ]
+}
