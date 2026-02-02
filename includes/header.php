@@ -13,6 +13,7 @@
     <!-- Custom CSS -->
     <link href="assets/css/shadcn-compat.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/glass-theme.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 

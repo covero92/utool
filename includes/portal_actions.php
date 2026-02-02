@@ -387,6 +387,55 @@ if (isSupport() || isAdmin()) {
         }
         exit;
     }
+
+    // Save Card Permission (Edit Tools capability)
+    if ($action === 'save_card_permission') {
+        if (!hasCapability('edit_tools')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+        
+        $cardId = $_POST['card_id'] ?? '';
+        $role = $_POST['role'] ?? ''; // Can be empty to reset
+        
+        if ($cardId) {
+            $portal->setCardPermission($cardId, $role);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Card ID missing']);
+        }
+        exit;
+    }
+
+    // Get Available Roles for Dropdown
+    if ($action === 'get_roles_list') {
+        if (!hasCapability('edit_tools')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+
+        // Start with defined constants if any, or just hardcode the defaults + DB roles
+        // Ideally we fetch from DB roles table
+        $pdo = getDBConnection();
+        $stmt = $pdo->query("SELECT name, description FROM roles ORDER BY name ASC");
+        $dbRoles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Also add the hardcoded levels used in code if they are not in DB (e.g. 'admin' vs 'administrador')
+        // The code uses keys like 'suporte', 'admin', 'lider'. 
+        // We should unify this. For now let's just return what is in DB + the special keys used in renderCard
+        
+        $specialKeys = [
+            ['name' => 'admin', 'description' => 'Requer Admin (Nível Code)'],
+            ['name' => 'suporte', 'description' => 'Requer Suporte/Admin (Nível Code)'],
+            ['name' => 'lider', 'description' => 'Requer Líder/Admin (Nível Code)']
+        ];
+        
+        // Merge DB roles
+        $output = array_merge($specialKeys, $dbRoles);
+        
+        // Remove duplicates on name
+        $unique = [];
+        foreach($output as $r) {
+            $unique[strtolower($r['name'])] = $r;
+        }
+        
+        echo json_encode(['success' => true, 'data' => array_values($unique)]);
+        exit;
+    }
     
     // Delete Notice (Support/Admin)
     if ($action === 'delete_notice') {

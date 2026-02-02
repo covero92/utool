@@ -25,117 +25,8 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 
 <!-- FORCE GLASS THEME OVERRIDES -->
 <!-- GLASS THEME SYSTEM -->
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+<!-- Styles loaded via includes/header.php -> assets/css/glass-theme.css -->
 
-    :root {
-        /* LIGHT GLASS THEME VARS */
-        --glass-border: rgba(255, 255, 255, 0.4);
-        --glass-highlight: rgba(255, 255, 255, 0.7);
-        --glass-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.08);
-
-        /* Background */
-        --color-body-bg: #f3f5f9;
-        --color-body-bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #dbeafe 100%);
-
-        /* Cards & Glass */
-        --color-card-bg: rgba(255, 255, 255, 0.75);
-        --color-card-bg-hover: rgba(255, 255, 255, 0.95);
-        
-        /* Text */
-        --font-primary: 'Outfit', sans-serif;
-        --font-body: 'Inter', sans-serif;
-        
-        --color-text-main: #1e293b;
-        --color-accent: #3b82f6; 
-    }
-
-    /* GLOBAL STYLES */
-    body {
-        font-family: var(--font-body);
-        background: var(--color-body-bg-gradient) !important;
-        background-attachment: fixed !important;
-        color: var(--color-text-main);
-        min-height: 100vh;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        font-family: var(--font-primary);
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        color: #0f172a;
-    }
-
-    /* GLASS UTILITIES */
-    .glass-panel, .card {
-        background: var(--color-card-bg) !important;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border) !important;
-        box-shadow: var(--glass-shadow);
-        border-radius: 20px !important;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-    
-    .card-glass {
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--glass-border) !important;
-        box-shadow: var(--glass-shadow);
-    }
-    
-    .hover-card:hover {
-        background: var(--color-card-bg-hover) !important;
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12) !important;
-        border-color: #fff !important;
-    }
-
-    /* WIDGETS */
-    .widget-value {
-        font-family: var(--font-primary);
-        font-weight: 700;
-        letter-spacing: -1px;
-    }
-
-    /* SEARCH BAR */
-    #tool-search {
-        background: rgba(255, 255, 255, 0.85) !important;
-        border: 1px solid rgba(255,255,255,0.8) !important;
-        backdrop-filter: blur(10px);
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
-    #tool-search:focus {
-        background: #fff !important;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
-        border-color: var(--color-accent) !important;
-    }
-
-    /* ICON BOXES */
-    .icon-box {
-        border-radius: 16px;
-        box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1); 
-        width: 60px;
-        height: 60px;
-        font-size: 1.6rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* GRADIENTS (Updated) */
-    .bg-primary-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-    .bg-success-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .bg-info-gradient { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
-    .bg-warning-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .bg-danger-gradient { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-    .bg-purple-gradient { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .bg-orange-gradient { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
-    .bg-indigo-gradient { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
-    .bg-teal-gradient { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
-</style>
 <script>
     // Body cleanup
     document.addEventListener('DOMContentLoaded', () => {
@@ -405,10 +296,47 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
             <div id="tools-main-container">
                 <?php
                 if (!function_exists('renderCard')) {
-                    function renderCard($id, $title, $desc, $link, $iconClass, $iconName, $portal, $isAdmin, $isDev = false, $openNewTab = false) {
+                    function renderCard($id, $title, $desc, $link, $iconClass, $iconName, $portal, $isAdmin, $isDev = false, $openNewTab = false, $requiredLevel = null) {
+                        
+                        // 1. Check Stored Permission (Priority)
+                        $storedRole = $portal->getCardPermission($id);
+                        $finalRequiredLevel = $storedRole ?: $requiredLevel; // Stored overrides code
+
+                        // 2. Permission Check
+                        if ($finalRequiredLevel) {
+                            $hasAccess = false;
+                            
+                            // Normalize
+                            $req = strtolower($finalRequiredLevel);
+
+                            if ($req === 'admin' || $req === 'administrador') {
+                                $hasAccess = isAdmin();
+                            } elseif ($req === 'suporte') {
+                                $hasAccess = isSupport();
+                            } elseif ($req === 'lider' || $req === 'líder suporte') {
+                                $hasAccess = hasCapability('manage_users');
+                            } else {
+                                // Dynamic Role Check (Database Roles)
+                                // If the user has this specific role active
+                                $hasAccess = hasRole($req) || isAdmin(); // Admin always sees everything? Or should we strict check? 
+                                // Let's keep Admin seeing everything for now to avoid lockout.
+                                if (!$hasAccess && isSupport()) {
+                                     // Maybe Support can see everything? No, "Card do PPR only for Support" implies standard users don't see.
+                                     // Use hasRole logic or capability logic.
+                                     // For simplicity: storedRole matches user_role in session?
+                                     // Let's rely on standard logic: 
+                                     if (isset($_SESSION['user_role']) && strtolower($_SESSION['user_role']) === $req) {
+                                         $hasAccess = true;
+                                     }
+                                }
+                            }
+                            
+                            if (!$hasAccess) return; // Don't render
+                        }
+
                         $isHidden = $portal->isBlocked($id); 
                         global $isSupport; 
-                        $canSeeHidden = $isAdmin || $isSupport;
+                        $canSeeHidden = $isAdmin || $isSupport; 
 
                         if ($isHidden && !$canSeeHidden) return;
     
@@ -433,12 +361,20 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                 
                                 if (hasCapability('edit_tools')) {
                                     echo '
-                                    <button class="btn btn-sm btn-white position-absolute top-0 end-0 m-2 rounded-circle shadow-sm btn-admin-toggle"
-                                            style="width: 32px; height: 32px; padding: 0; z-index: 10;"
-                                            onclick="toggleCard(\''.$id.'\', this); event.preventDefault();"
-                                            title="Ocultar/Exibir">
-                                        <i class="bi '.$eyeIcon.' '.$eyeColor.' small"></i>
-                                    </button>';
+                                    <div class="position-absolute top-0 end-0 m-2" style="z-index: 10;">
+                                        <button class="btn btn-sm btn-white rounded-circle shadow-sm me-1"
+                                                style="width: 32px; height: 32px; padding: 0;"
+                                                onclick="openCardConfig(\''.$id.'\', \''.($storedRole ?? '').'\'); event.preventDefault();"
+                                                title="Configurar Permissões">
+                                            <i class="bi bi-gear-fill text-secondary small"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-white rounded-circle shadow-sm btn-admin-toggle"
+                                                style="width: 32px; height: 32px; padding: 0;"
+                                                onclick="toggleCard(\''.$id.'\', this); event.preventDefault();"
+                                                title="Ocultar/Exibir">
+                                            <i class="bi '.$eyeIcon.' '.$eyeColor.' small"></i>
+                                        </button>
+                                    </div>';
                                 }
     
                                 echo '
@@ -468,7 +404,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 <div class="row g-4 helper-row-container">
                     <?php
                     renderCard('card-team-intranet', 'Intranet Suporte', 'Ferramentas internas e gestão de conhecimento.', 'intranet.php', 'bg-indigo-gradient', 'bi-globe-americas', $portal, $isAdmin);
-                    renderCard('card-team-ppr', 'Gestão PPR', 'Acompanhamento de metas e resultados PPR.', 'ppr_manager.php', 'bg-warning-gradient', 'bi-trophy-fill', $portal, $isAdmin);
+                    renderCard('card-team-ppr', 'Gestão PPR', 'Acompanhamento de metas e resultados PPR.', 'ppr_manager.php', 'bg-warning-gradient', 'bi-trophy-fill', $portal, $isAdmin, false, false, 'suporte');
                     renderCard('card-team-meetings', 'Reuniões & Pautas', 'Agenda de reuniões, atas e pautas do setor de suporte.', 'meetings.php', 'bg-teal-gradient', 'bi-calendar-event', $portal, $isAdmin);
                     ?>
                 </div>
@@ -480,7 +416,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 <div class="row g-4 helper-row-container">
                     <?php
                     // Helper for card rendering
-
+ 
         
                     // Apply Cards (Internal)
                     renderCard('card-fiscal-blog', 'Blog Fiscal', 'Notícias e atualizações tributárias.', 'fiscal_blog.php', 'bg-danger-gradient', 'bi-newspaper', $portal, $isAdmin);
@@ -500,7 +436,6 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                     ?>
                 </div>
             </div>
-
 
 
             <!-- Utilities -->
@@ -557,6 +492,102 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
         
     </div> <!-- Close Row -->
 </div> <!-- Close Container -->
+
+<!-- CARD CONFIG MODAL -->
+<div class="modal fade" id="cardConfigModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="cardConfigForm" class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Configurar Card</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="configCardId" name="card_id">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Permissão Mínima / Role</label>
+                    <select class="form-select" id="configCardRole" name="role">
+                        <option value="">Aberto (Público / Padrão)</option>
+                        <!-- Options loaded via JS -->
+                    </select>
+                    <div class="form-text small">
+                        Selecione o nível mínimo para visualizar este card. <br>
+                        <strong>Nota:</strong> Administradores sempre visualizam tudo.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-primary w-100 rounded-pill" onclick="saveCardConfig()">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let availableRoles = [];
+
+function loadRoles() {
+    fetch('includes/portal_actions.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'portal_action=get_roles_list'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            availableRoles = data.data;
+        }
+    });
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', loadRoles);
+
+function openCardConfig(cardId, currentRole) {
+    document.getElementById('configCardId').value = cardId;
+    const select = document.getElementById('configCardRole');
+    
+    // Clear
+    select.innerHTML = '<option value="">Aberto (Público / Padrão)</option>';
+    
+    // Populate
+    availableRoles.forEach(r => {
+        const option = document.createElement('option');
+        option.value = r.name.toLowerCase();
+        option.textContent = r.name.charAt(0).toUpperCase() + r.name.slice(1) + (r.description ? ` (${r.description})` : '');
+        select.appendChild(option);
+    });
+    
+    // Set Value
+    select.value = currentRole.toLowerCase();
+    
+    const bsModal = new bootstrap.Modal(document.getElementById('cardConfigModal'));
+    bsModal.show();
+}
+
+function saveCardConfig() {
+    const cardId = document.getElementById('configCardId').value;
+    const role = document.getElementById('configCardRole').value;
+    
+    const formData = new FormData();
+    formData.append('portal_action', 'save_card_permission');
+    formData.append('card_id', cardId);
+    formData.append('role', role);
+    
+    fetch('includes/portal_actions.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            location.reload(); // Reload to see changes
+        } else {
+            alert('Erro ao salvar: ' + (data.message || 'Erro desconhecido'));
+        }
+    })
+    .catch(err => alert('Erro de conexão.'));
+}
+</script>
 
 <!-- Auth Modal (Login/Register) -->
 <div class="modal fade" id="portalLoginModal" tabindex="-1">

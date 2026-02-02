@@ -113,6 +113,21 @@ class SupportPortal {
         return $isBlocked;
     }
 
+    public function getCardPermission($cardId) {
+        $files = $this->getConfig('card_permissions') ?? [];
+        return $files[$cardId] ?? null;
+    }
+
+    public function setCardPermission($cardId, $role) {
+        $perms = $this->getConfig('card_permissions') ?? [];
+        if ($role === null || $role === 'null' || $role === '') {
+            unset($perms[$cardId]);
+        } else {
+            $perms[$cardId] = $role;
+        }
+        $this->updateConfig('card_permissions', $perms);
+    }
+
     public function getSystemVersion() {
         $gitHead = __DIR__ . '/../.git/HEAD';
         if (file_exists($gitHead)) {
