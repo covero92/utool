@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -1798,44 +1799,89 @@
 
             if (viewMode === 'landing') {
                 return (
-                    <div className="min-h-screen flex flex-col justify-center items-center p-4">
-                        <div className="max-w-2xl w-full text-center space-y-8 animate-fadeIn">
-                            <div>
-                                <h1 className="text-4xl font-bold text-[var(--color-header-text)] mb-2">Gerador de XML NFe <span className="text-lg font-normal text-[var(--color-text-muted)]">v1.0.3</span></h1>
-                                <p className="text-[var(--color-text-secondary)]">IMPORTAÇÃO E CORREÇÃO</p>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="card-hover glass-panel p-6 rounded-xl flex flex-col items-center cursor-pointer transition-all hover:scale-105" onClick={() => document.getElementById('landing-xml-upload').click()}>
-                                    <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-2">Corrigir XML</h3>
-                                    <p className="text-xs text-[var(--color-text-muted)]">Importe um XML existente para validar e corrigir erros.</p>
-                                    <input type="file" id="landing-xml-upload" accept=".xml" className="hidden" onChange={(e) => { handleNFeImport(e); setViewMode('editor'); }} />
+                    <div className="min-h-screen flex flex-col">
+                        {/* Header Section */}
+                        <div className="container-fluid px-4 py-4">
+                            <div className="flex justify-content-between align-items-start mb-4">
+                                <div>
+                                    <h1 className="text-4xl font-bold mb-2" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                                        Gerador de XML NFe
+                                    </h1>
+                                    <p className="text-[var(--color-text-muted)] mb-0">Importação e correção de XML para Nota Fiscal Eletrônica</p>
                                 </div>
-
-                                <div className="card-hover glass-panel p-6 rounded-xl flex flex-col items-center cursor-pointer transition-all hover:scale-105" onClick={() => document.getElementById('landing-di-upload').click()}>
-                                    <div className="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-2">Importar DI</h3>
-                                    <p className="text-xs text-[var(--color-text-muted)]">Gere a nota importando XML ou PDF da Declaração de Importação.</p>
-                                    <input type="file" id="landing-di-upload" accept=".xml,.pdf" className="hidden" onChange={(e) => { handleDIImport(e); setViewMode('editor'); }} />
-                                </div>
-
-                                <div className="card-hover glass-panel p-6 rounded-xl flex flex-col items-center cursor-pointer transition-all hover:scale-105" onClick={startManualEntry}>
-                                    <div className="w-16 h-16 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-lg mb-2">Digitar Manual</h3>
-                                    <p className="text-xs text-[var(--color-text-muted)]">Preencha os campos manualmente a partir de uma DI impressa.</p>
+                                <div className="d-flex gap-2 align-items-center">
+                                    <button onClick={toggleTheme} className="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                                        <span>Tema</span>
+                                    </button>
+                                    <a href="index.php" className="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1 text-decoration-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                                        <span>Voltar</span>
+                                    </a>
                                 </div>
                             </div>
+                        </div>
 
-                            <button onClick={toggleTheme} className="text-sm text-[var(--color-text-muted)] hover:underline mt-8">
-                                Alternar Tema
-                            </button>
+                        {/* Cards Section */}
+                        <div className="flex-grow flex items-center justify-center p-4">
+                            <div className="max-w-5xl w-full">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    {/* Card 1: Corrigir XML */}
+                                    <div 
+                                        className="glass-panel p-8 rounded-2xl flex flex-col items-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
+                                        onClick={() => document.getElementById('landing-xml-upload').click()}
+                                    >
+                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center mb-6 shadow-lg group-hover:shadow-blue-500/50 transition-shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className="font-bold text-xl mb-3 text-[var(--color-text-primary)]">Corrigir XML</h3>
+                                        <p className="text-sm text-[var(--color-text-secondary)] text-center leading-relaxed">
+                                            Importe um XML existente para validar e corrigir erros.
+                                        </p>
+                                        <input type="file" id="landing-xml-upload" accept=".xml" className="hidden" onChange={(e) => { handleNFeImport(e); setViewMode('editor'); }} />
+                                    </div>
+
+                                    {/* Card 2: Importar DI */}
+                                    <div 
+                                        className="glass-panel p-8 rounded-2xl flex flex-col items-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
+                                        onClick={() => document.getElementById('landing-di-upload').click()}
+                                    >
+                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white flex items-center justify-center mb-6 shadow-lg group-hover:shadow-green-500/50 transition-shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                            </svg>
+                                        </div>
+                                        <h3 className="font-bold text-xl mb-3 text-[var(--color-text-primary)]">Importar DI</h3>
+                                        <p className="text-sm text-[var(--color-text-secondary)] text-center leading-relaxed">
+                                            Gere a nota importando XML ou PDF da Declaração de Importação.
+                                        </p>
+                                        <input type="file" id="landing-di-upload" accept=".xml,.pdf" className="hidden" onChange={(e) => { handleDIImport(e); setViewMode('editor'); }} />
+                                    </div>
+
+                                    {/* Card 3: Digitar Manual */}
+                                    <div 
+                                        className="glass-panel p-8 rounded-2xl flex flex-col items-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
+                                        onClick={startManualEntry}
+                                    >
+                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white flex items-center justify-center mb-6 shadow-lg group-hover:shadow-purple-500/50 transition-shadow">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                            </svg>
+                                        </div>
+                                        <h3 className="font-bold text-xl mb-3 text-[var(--color-text-primary)]">Digitar Manual</h3>
+                                        <p className="text-sm text-[var(--color-text-secondary)] text-center leading-relaxed">
+                                            Preencha os campos manualmente a partir de uma DI impressa.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Version Info */}
+                                <div className="text-center mt-12">
+                                    <p className="text-xs text-[var(--color-text-muted)]">Versão 1.0.3</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );

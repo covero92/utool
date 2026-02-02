@@ -371,39 +371,6 @@ usort($versions, function($a, $b) {
 </div> <!-- Close header container -->
 <div class="container-fluid px-4 py-4 bg-light min-vh-100">
 
-    <div class="row align-items-center mb-4">
-        <div class="col-md-2">
-            <h1 class="h3 mb-0 text-gray-800">Release Notes Uniplus</h1>
-            <p class="text-muted small mb-0">Gerencie e visualize o histórico de atualizações.</p>
-        </div>
-        <div class="col-md-10 d-flex justify-content-end gap-2">
-            <?php if ($isAdmin): ?>
-                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
-                    <i class="bi bi-filetype-html me-2"></i>Importar HTML
-                </button>
-                <button class="btn btn-primary btn-sm" onclick="openAddNoteModal()">
-                    <i class="bi bi-plus-lg me-2"></i>Adicionar Nota
-                </button>
-                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addVersionModal">
-                    <i class="bi bi-folder-plus me-2"></i>Nova Versão
-                </button>
-                <form method="POST" class="d-inline">
-                    <input type="hidden" name="action" value="logout">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                        <i class="bi bi-box-arrow-right me-2"></i>Sair
-                    </button>
-                </form>
-            <?php else: ?>
-                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    <i class="bi bi-shield-lock me-2"></i>Admin
-                </button>
-            <?php endif; ?>
-            <a href="index.php" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-2"></i>Voltar
-            </a>
-        </div>
-    </div>
-
     <?php if ($message): ?>
         <div class="alert alert-<?php echo $messageType; ?> alert-dismissible fade show" role="alert">
             <?php echo $message; ?>
@@ -742,6 +709,43 @@ usort($versions, function($a, $b) {
     </script>
     
     <div class="container-fluid px-4 py-4 min-vh-100">
+    
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="display-5 fw-bold mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Release Notes Uniplus
+            </h1>
+            <p class="text-muted mb-0">Gerência e visualize o histórico de atualizações.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <?php if ($isAdmin): ?>
+                <button class="btn btn-outline-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addVersionModal" onclick="openAddVersionModal()">
+                    <i class="bi bi-plus-lg me-1"></i>Nova Versão
+                </button>
+                <button class="btn btn-primary btn-sm rounded-pill" onclick="openAddNoteModal()">
+                    <i class="bi bi-file-earmark-plus me-1"></i>Adicionar Nota
+                </button>
+                <button class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#importModal">
+                    <i class="bi bi-file-earmark-arrow-up me-1"></i>Importar
+                </button>
+                <form method="POST" class="d-inline">
+                    <input type="hidden" name="action" value="logout">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                        <i class="bi bi-box-arrow-right me-1"></i>Sair
+                    </button>
+                </form>
+            <?php else: ?>
+                <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="bi bi-shield-lock me-1"></i>Admin
+                </button>
+            <?php endif; ?>
+            <a href="index.php" class="btn btn-outline-secondary btn-sm rounded-pill">
+                <i class="bi bi-house me-1"></i>Voltar
+            </a>
+        </div>
+    </div>
+
     <?php
     // Calculate Stats
     $stats = [
@@ -1042,6 +1046,62 @@ usort($versions, function($a, $b) {
         }
     }
 
+    // --- Enhanced Actions ---
+    async function copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            // Optional: Show toast?
+            return true;
+        } catch (err) {
+            console.error('Failed to copy', err);
+            return false;
+        }
+    }
+
+    async function copyTicket(ticketId, btn) {
+        // Copy ID ONLY
+        await copyToClipboard(ticketId);
+        
+        // Visual Feedback
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2"></i>';
+        btn.classList.add('text-success');
+        setTimeout(() => {
+            btn.innerHTML = originalHtml;
+            btn.classList.remove('text-success');
+        }, 1500);
+    }
+
+    async function copyReleaseText(note, version, date, downloadLink, btn) {
+        // Clean HTML from description for clipboard text
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = note.description;
+        let cleanDesc = tempDiv.textContent || tempDiv.innerText || "";
+        
+        // Template requested by user
+        const text = `Olá!
+
+Informamos que foi liberada a build ${version}
+
+Link para download da build: 
+${downloadLink}
+
+${note.type} ${note.scope} Ref: #${note.ref}
+${cleanDesc}
+${note.observation ? 'Obs: ' + note.observation : ''}`;
+        
+        await copyToClipboard(text);
+
+        // Visual Feedback
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2"></i>';
+        btn.classList.add('text-success');
+        setTimeout(() => {
+            btn.innerHTML = originalHtml;
+            btn.classList.remove('text-success');
+        }, 1500);
+    }
+
     function renderVersionCard(ver) {
         const dateFormatted = formatDate(ver.date);
         const isImportTitle = (ver.title || '').toLowerCase().includes('importado via html');
@@ -1124,15 +1184,39 @@ usort($versions, function($a, $b) {
                         </thead>
                         <tbody>
                             ${(ver.notes && ver.notes.length > 0) ? ver.notes.map(note => `
-                                <tr class="note-row">
+                                <tr class="note-row text-dark">
                                     <td class="fw-bold text-secondary small text-nowrap">${escapeHtml(note.theme)}</td>
                                     <td class="text-nowrap">
                                         <span class="badge ${getBadgeClass(note.type)}">${getTypeIcon(note.type)}${escapeHtml(note.type)}</span>
                                     </td>
                                     <td class="text-nowrap"><span class="badge border border-secondary text-secondary">${escapeHtml(note.scope)}</span></td>
                                     <td class="text-wrap note-desc" style="min-width: 300px; line-height: 1.6; font-size: 15px;">${parseLinks(nl2br(escapeHtml(note.description)))}</td>
-                                    <td class="small note-ref text-nowrap col-ref">${parseLinks(escapeHtml(note.ref))}</td>
-                                    <td class="small text-muted note-obs text-wrap col-obs">${parseLinks(nl2br(escapeHtml(note.observation)))}</td>
+                                    
+                                    <!-- Ref Column with Actions -->
+                                    <td class="small note-ref text-nowrap col-ref">
+                                        ${note.ref ? `
+                                            <div class="d-flex align-items-center gap-1">
+                                                <a href="https://app.beemore.com/go/item/${note.ref}" target="_blank" class="ref-link" title="Abrir Ticket (Nova Aba)">
+                                                    <i class="bi bi-hash"></i>${escapeHtml(note.ref)}
+                                                </a>
+                                                <button class="btn btn-sm btn-light border shadow-sm text-secondary p-0 d-flex align-items-center justify-content-center" 
+                                                        style="width: 24px; height: 24px;"
+                                                        title="Copiar Número do Ticket"
+                                                        onclick='copyTicket("${note.ref}", this)'>
+                                                    <i class="bi bi-clipboard" style="font-size: 0.75rem;"></i>
+                                                </button>
+                                                    <button class="btn btn-sm btn-light border shadow-sm text-secondary p-0 d-flex align-items-center justify-content-center" 
+                                                            style="width: 24px; height: 24px;"
+                                                            title="Copiar Texto de Liberação"
+                                                            onclick='copyReleaseText(${JSON.stringify(note).replace(/'/g, "&#39;")}, "${escapeHtml(ver.version)}", "${ver.date}", "${escapeHtml(ver.download_desktop || ver.download_web || '')}", this)'>
+                                                        <i class="bi bi-envelope" style="font-size: 0.75rem;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ` : '-'}
+                                    </td>
+                                    
+                                    <td class="small text-muted note-obs text-wrap col-obs opacity-75">${parseLinks(nl2br(escapeHtml(note.observation)))}</td>
                                     ${IS_ADMIN ? `
                                         <td class="text-end text-nowrap col-actions">
                                             <div class="d-flex justify-content-end gap-2">
