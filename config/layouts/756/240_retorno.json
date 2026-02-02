@@ -1,0 +1,609 @@
+{
+    "bank_code": "756",
+    "bank_name": "Sicoob",
+    "layout_type": "240",
+    "segments": {
+        "header_arquivo": {
+            "description": "Header do Arquivo",
+            "match": [
+                {
+                    "pos": 8,
+                    "value": "0"
+                }
+            ],
+            "fields": [
+                {
+                    "name": "banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "numeric"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_inscricao_empresa",
+                    "start": 18,
+                    "end": 18,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nr_inscricao_empresa",
+                    "start": 19,
+                    "end": 32,
+                    "type": "numeric"
+                },
+                {
+                    "name": "convenio",
+                    "start": 33,
+                    "end": 52,
+                    "type": "string"
+                },
+                {
+                    "name": "agencia",
+                    "start": 53,
+                    "end": 57,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_agencia",
+                    "start": 58,
+                    "end": 58,
+                    "type": "string"
+                },
+                {
+                    "name": "conta",
+                    "start": 59,
+                    "end": 70,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_conta",
+                    "start": 71,
+                    "end": 71,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nome_empresa",
+                    "start": 73,
+                    "end": 102,
+                    "type": "string"
+                },
+                {
+                    "name": "nome_banco",
+                    "start": 103,
+                    "end": 132,
+                    "type": "string"
+                },
+                {
+                    "name": "codigo_rem_ret",
+                    "start": 143,
+                    "end": 143,
+                    "type": "numeric"
+                },
+                {
+                    "name": "data_geracao",
+                    "start": 144,
+                    "end": 151,
+                    "type": "date"
+                },
+                {
+                    "name": "hora_geracao",
+                    "start": 152,
+                    "end": 157,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nr_sequencial",
+                    "start": 158,
+                    "end": 163,
+                    "type": "numeric"
+                },
+                {
+                    "name": "versao_layout",
+                    "start": 164,
+                    "end": 166,
+                    "type": "numeric"
+                }
+            ]
+        },
+        "header_lote": {
+            "description": "Header de Lote",
+            "match": [
+                {
+                    "pos": 8,
+                    "value": "1"
+                }
+            ],
+            "fields": [
+                {
+                    "name": "banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "numeric"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_operacao",
+                    "start": 9,
+                    "end": 9,
+                    "type": "string"
+                },
+                {
+                    "name": "tipo_servico",
+                    "start": 10,
+                    "end": 11,
+                    "type": "numeric"
+                },
+                {
+                    "name": "versao_layout_lote",
+                    "start": 14,
+                    "end": 16,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_inscricao_empresa",
+                    "start": 18,
+                    "end": 18,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nr_inscricao_empresa",
+                    "start": 19,
+                    "end": 33,
+                    "type": "numeric"
+                },
+                {
+                    "name": "convenio",
+                    "start": 34,
+                    "end": 53,
+                    "type": "string"
+                },
+                {
+                    "name": "agencia",
+                    "start": 54,
+                    "end": 58,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_agencia",
+                    "start": 59,
+                    "end": 59,
+                    "type": "string"
+                },
+                {
+                    "name": "conta",
+                    "start": 60,
+                    "end": 71,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_conta",
+                    "start": 72,
+                    "end": 72,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nome_empresa",
+                    "start": 74,
+                    "end": 103,
+                    "type": "string"
+                },
+                {
+                    "name": "nr_rem_ret",
+                    "start": 184,
+                    "end": 191,
+                    "type": "numeric"
+                },
+                {
+                    "name": "data_gravacao",
+                    "start": 192,
+                    "end": 199,
+                    "type": "date"
+                }
+            ]
+        },
+        "segmento_t": {
+            "description": "Segmento T",
+            "match": [
+                {
+                    "pos": 8,
+                    "value": "3"
+                },
+                {
+                    "pos": 14,
+                    "value": "T"
+                }
+            ],
+            "fields": [
+                {
+                    "name": "banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "numeric"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nr_sequencial_lote",
+                    "start": 9,
+                    "end": 13,
+                    "type": "numeric"
+                },
+                {
+                    "name": "cod_segmento",
+                    "start": 14,
+                    "end": 14,
+                    "type": "string"
+                },
+                {
+                    "name": "cod_movimento",
+                    "start": 16,
+                    "end": 17,
+                    "type": "numeric"
+                },
+                {
+                    "name": "agencia",
+                    "start": 18,
+                    "end": 22,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_agencia",
+                    "start": 23,
+                    "end": 23,
+                    "type": "string"
+                },
+                {
+                    "name": "conta",
+                    "start": 24,
+                    "end": 35,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_conta",
+                    "start": 36,
+                    "end": 36,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nosso_numero",
+                    "start": 38,
+                    "end": 57,
+                    "type": "string"
+                },
+                {
+                    "name": "carteira",
+                    "start": 58,
+                    "end": 58,
+                    "type": "numeric"
+                },
+                {
+                    "name": "seu_numero",
+                    "start": 59,
+                    "end": 73,
+                    "type": "string"
+                },
+                {
+                    "name": "vencimento",
+                    "start": 74,
+                    "end": 81,
+                    "type": "date"
+                },
+                {
+                    "name": "valor_titulo",
+                    "start": 82,
+                    "end": 96,
+                    "type": "money"
+                },
+                {
+                    "name": "banco_cobrador",
+                    "start": 97,
+                    "end": 99,
+                    "type": "numeric"
+                },
+                {
+                    "name": "agencia_cobradora",
+                    "start": 100,
+                    "end": 104,
+                    "type": "numeric"
+                },
+                {
+                    "name": "dv_agencia_cobradora",
+                    "start": 105,
+                    "end": 105,
+                    "type": "string"
+                },
+                {
+                    "name": "identificacao_titulo",
+                    "start": 106,
+                    "end": 130,
+                    "type": "string"
+                },
+                {
+                    "name": "cod_moeda",
+                    "start": 131,
+                    "end": 132,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_inscricao_sacado",
+                    "start": 133,
+                    "end": 133,
+                    "type": "numeric"
+                },
+                {
+                    "name": "numero_inscricao_sacado",
+                    "start": 134,
+                    "end": 148,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nome_sacado",
+                    "start": 149,
+                    "end": 188,
+                    "type": "string"
+                },
+                {
+                    "name": "valor_tarifas",
+                    "start": 199,
+                    "end": 213,
+                    "type": "money"
+                },
+                {
+                    "name": "motivo_ocorrencia",
+                    "start": 214,
+                    "end": 223,
+                    "type": "string"
+                }
+            ]
+        },
+        "segmento_u": {
+            "description": "Segmento U",
+            "match": [
+                {
+                    "pos": 8,
+                    "value": "3"
+                },
+                {
+                    "pos": 14,
+                    "value": "U"
+                }
+            ],
+            "fields": [
+                {
+                    "name": "banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "numeric"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "numeric"
+                },
+                {
+                    "name": "nr_sequencial_lote",
+                    "start": 9,
+                    "end": 13,
+                    "type": "numeric"
+                },
+                {
+                    "name": "cod_segmento",
+                    "start": 14,
+                    "end": 14,
+                    "type": "string"
+                },
+                {
+                    "name": "cod_movimento",
+                    "start": 16,
+                    "end": 17,
+                    "type": "numeric"
+                },
+                {
+                    "name": "valor_juros_multa",
+                    "start": 18,
+                    "end": 32,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_desconto",
+                    "start": 33,
+                    "end": 47,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_abatimento",
+                    "start": 48,
+                    "end": 62,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_iof",
+                    "start": 63,
+                    "end": 77,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_pago",
+                    "start": 78,
+                    "end": 92,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_liquido",
+                    "start": 93,
+                    "end": 107,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_outras_despesas",
+                    "start": 108,
+                    "end": 122,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_outros_creditos",
+                    "start": 123,
+                    "end": 137,
+                    "type": "money"
+                },
+                {
+                    "name": "data_ocorrencia",
+                    "start": 138,
+                    "end": 145,
+                    "type": "date"
+                },
+                {
+                    "name": "data_credito",
+                    "start": 146,
+                    "end": 153,
+                    "type": "date"
+                }
+            ]
+        },
+        "trailer_lote": {
+            "description": "Trailer de Lote",
+            "match": [
+                {
+                    "pos": 8,
+                    "value": "5"
+                }
+            ],
+            "fields": [
+                {
+                    "name": "banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "numeric"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "numeric"
+                },
+                {
+                    "name": "qtd_registros",
+                    "start": 18,
+                    "end": 23,
+                    "type": "numeric"
+                },
+                {
+                    "name": "total_cobranca_simples",
+                    "start": 24,
+                    "end": 41,
+                    "type": "money"
+                },
+                {
+                    "name": "total_cobranca_vinculada",
+                    "start": 42,
+                    "end": 59,
+                    "type": "money"
+                },
+                {
+                    "name": "total_cobranca_caucionada",
+                    "start": 60,
+                    "end": 77,
+                    "type": "money"
+                },
+                {
+                    "name": "total_cobranca_descontada",
+                    "start": 78,
+                    "end": 95,
+                    "type": "money"
+                }
+            ]
+        },
+        "trailer_arquivo": {
+            "description": "Trailer de Arquivo",
+            "match": [
+                {
+                    "pos": 8,
+                    "value": "9"
+                }
+            ],
+            "fields": [
+                {
+                    "name": "banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "numeric"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "numeric"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "numeric"
+                },
+                {
+                    "name": "qtd_lotes",
+                    "start": 18,
+                    "end": 23,
+                    "type": "numeric"
+                },
+                {
+                    "name": "qtd_registros",
+                    "start": 24,
+                    "end": 29,
+                    "type": "numeric"
+                },
+                {
+                    "name": "qtd_contas_concil",
+                    "start": 30,
+                    "end": 35,
+                    "type": "numeric"
+                }
+            ]
+        }
+    }
+}

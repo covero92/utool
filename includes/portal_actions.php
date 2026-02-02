@@ -80,43 +80,6 @@ if ($action === 'change_password') {
     exit;
 }
 
-if ($action === 'update_profile') {
-    $userId = $_SESSION['user_id'] ?? null;
-    if (!$userId) { echo json_encode(['success'=>false, 'message'=>'Session expired']); exit; }
-
-    $prefName = trim($_POST['preferred_name'] ?? '');
-    $jobTitle = trim($_POST['job_title'] ?? '');
-    $birthDate = $_POST['birth_date'] ?? '';
-    // $bio = trim($_POST['bio'] ?? ''); // Not requested yet but setup in DB
-    $fullName = trim($_POST['full_name'] ?? '');
-
-    if (empty($birthDate)) $birthDate = null;
-
-    $pdo = getDBConnection();
-    
-    $sql = "UPDATE users SET preferred_name = :pname, job_title = :job, birth_date = :bdate";
-    $params = [':pname' => $prefName, ':job' => $jobTitle, ':bdate' => $birthDate, ':id' => $userId];
-
-    if (!empty($fullName)) {
-        $sql .= ", full_name = :fname";
-        $params[':fname'] = $fullName;
-    }
-    
-    $sql .= " WHERE id = :id";
-    
-    try {
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        
-        $auth->reloadSessionUser($userId);
-        
-        echo json_encode(['success' => true]);
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-    }
-    exit;
-}
-
 // --- SUPPORT / ADMIN ACTIONS ---
 // (Notices, Weather, etc - Support can edit)
 if (isSupport() || isAdmin()) {
@@ -385,55 +348,6 @@ if (isSupport() || isAdmin()) {
             $newState = $portal->toggleBlockToken($cardId);
             echo json_encode(['success' => true, 'blocked' => $newState]);
         }
-        exit;
-    }
-
-    // Save Card Permission (Edit Tools capability)
-    if ($action === 'save_card_permission') {
-        if (!hasCapability('edit_tools')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-        
-        $cardId = $_POST['card_id'] ?? '';
-        $role = $_POST['role'] ?? ''; // Can be empty to reset
-        
-        if ($cardId) {
-            $portal->setCardPermission($cardId, $role);
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Card ID missing']);
-        }
-        exit;
-    }
-
-    // Get Available Roles for Dropdown
-    if ($action === 'get_roles_list') {
-        if (!hasCapability('edit_tools')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-
-        // Start with defined constants if any, or just hardcode the defaults + DB roles
-        // Ideally we fetch from DB roles table
-        $pdo = getDBConnection();
-        $stmt = $pdo->query("SELECT name, description FROM roles ORDER BY name ASC");
-        $dbRoles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Also add the hardcoded levels used in code if they are not in DB (e.g. 'admin' vs 'administrador')
-        // The code uses keys like 'suporte', 'admin', 'lider'. 
-        // We should unify this. For now let's just return what is in DB + the special keys used in renderCard
-        
-        $specialKeys = [
-            ['name' => 'admin', 'description' => 'Requer Admin (Nível Code)'],
-            ['name' => 'suporte', 'description' => 'Requer Suporte/Admin (Nível Code)'],
-            ['name' => 'lider', 'description' => 'Requer Líder/Admin (Nível Code)']
-        ];
-        
-        // Merge DB roles
-        $output = array_merge($specialKeys, $dbRoles);
-        
-        // Remove duplicates on name
-        $unique = [];
-        foreach($output as $r) {
-            $unique[strtolower($r['name'])] = $r;
-        }
-        
-        echo json_encode(['success' => true, 'data' => array_values($unique)]);
         exit;
     }
     

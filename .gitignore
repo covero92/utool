@@ -9,6 +9,9 @@
 utool-deployment-*.zip
 utool-temp-*
 *.tar.gz
+*.zip
+*.rar
+backup*
 
 # Logs and Debug
 *.log

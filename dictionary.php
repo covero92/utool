@@ -3,7 +3,143 @@ session_start();
 include 'includes/header.php';
 
 // Glass Theme Styles
-// Styles loaded via includes/header.php -> assets/css/glass-theme.css
+echo '<style>
+    :root {
+        /* Base Glass Vars - Light Mode */
+        --glass-border: rgba(0, 0, 0, 0.1);
+        --glass-highlight: rgba(255, 255, 255, 0.4);
+        --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        
+        /* Light Theme */
+        --color-body-bg: #f8fafc; /* Plain White/Light Gray Background */
+
+        --color-card-bg: rgba(255, 255, 255, 0.8);
+        --color-card-header-bg: rgba(241, 245, 249, 0.8);
+        --color-card-item-header-bg: rgba(241, 245, 249, 0.6);
+        --color-card-subtle-bg: rgba(255, 255, 255, 0.5);
+
+        --color-text-main: #0f172a;      /* Dark text */
+        --color-text-primary: #1e293b;   /* Darker text */
+        --color-text-secondary: #334155;
+        --color-text-muted: #64748b;
+        --color-text-placeholder: #94a3b8;
+        --color-text-inverted: #f8fafc;
+
+        --color-border: rgba(203, 213, 225, 0.6);
+        --color-border-accent: rgba(14, 165, 233, 0.5);
+
+        --color-input-bg: rgba(255, 255, 255, 0.9);
+
+        --color-header-bg: rgba(255, 255, 255, 0.8);
+        --color-header-border: rgba(226, 232, 240, 0.6);
+        --color-header-text: #0f172a;
+
+        --color-glass-border: rgba(0, 0, 0, 0.05);
+    }
+
+    /* GLOBAL STYLES */
+    body {
+        font-family: "Inter", sans-serif;
+        background: var(--color-body-bg);
+        color: var(--color-text-main);
+        min-height: 100vh;
+    }
+
+    /* GLASS UTILITIES */
+    .glass-panel, .card, .modal-content {
+        background: var(--color-card-bg) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--color-glass-border) !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        color: var(--color-text-main);
+    }
+
+    .bg-light, .bg-white {
+        background-color: transparent !important;
+    }
+
+    .text-dark {
+        color: var(--color-text-main) !important;
+    }
+
+    .text-muted {
+        color: var(--color-text-muted) !important;
+    }
+
+    /* INPUTS */
+    .form-control, .form-select {
+        background-color: var(--color-input-bg) !important;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-main) !important;
+    }
+    .form-control::placeholder {
+        color: var(--color-text-placeholder);
+    }
+    .form-control:focus, .form-select:focus {
+        background-color: #ffffff !important;
+        border-color: var(--color-border-accent);
+        box-shadow: 0 0 0 0.25rem rgba(14, 165, 233, 0.15);
+        color: var(--color-text-main) !important;
+    }
+
+    /* TABLES */
+    .table {
+        color: var(--color-text-main);
+        --bs-table-bg: transparent;
+        --bs-table-hover-bg: rgba(0, 0, 0, 0.03);
+        --bs-table-border-color: var(--color-border);
+    }
+    .table thead {
+        border-bottom: 2px solid var(--color-border);
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    /* SIDEBAR */
+    .dict-sidebar {
+        border-right: 1px solid var(--color-border);
+    }
+    .dict-table-item {
+        color: var(--color-text-secondary);
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+    .dict-table-item:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--color-text-primary);
+    }
+    .dict-table-item.active {
+        background: rgba(14, 165, 233, 0.1);
+        color: #0ea5e9;
+        border-left: 3px solid #0ea5e9;
+    }
+    
+    /* MODALS */
+    .modal-header, .modal-footer {
+        border-color: var(--color-border);
+    }
+    .btn-close {
+        filter: none; /* Reset invert for light mode */
+    }
+
+    /* NAV TABS */
+    .nav-tabs .nav-link {
+        color: var(--color-text-muted);
+        border: none;
+        background: transparent;
+    }
+    .nav-tabs .nav-link:hover {
+        color: var(--color-text-main);
+        border-color: transparent;
+    }
+    .nav-tabs .nav-link.active {
+        color: #0ea5e9;
+        background: transparent;
+        border-bottom: 2px solid #0ea5e9;
+    }
+</style>';
 
 $tables = [];
 $stats = ['tables' => 0, 'columns' => 0, 'fks' => 0];
@@ -51,146 +187,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && $_FILES['
     }
 }
 
-// Cache Handling
-$cacheFile = 'dictionary_cache.json';
-$useCache = false;
-
-// Check if cache is valid (exists and newer than source file)
-if (file_exists($defaultFile) && file_exists($cacheFile)) {
-    if (filemtime($cacheFile) >= filemtime($defaultFile)) {
-        $useCache = true;
-    }
+// Load Dictionary Data
+if ($content === null && file_exists($defaultFile)) {
+    $content = file_get_contents($defaultFile);
 }
 
-// Force reload if temporary upload
-if ($content !== null && $isTemp) {
-    $useCache = false;
-}
+if ($content) {
+    libxml_use_internal_errors(true);
+    $dom = new DOMDocument();
+    // Hack to handle UTF-8 correctly in loadHTML
+    $dom->loadHTML('<?xml encoding="utf-8" ?>' . $content);
+    libxml_clear_errors();
 
-if ($useCache) {
-    // Load from Cache
-    $cacheData = json_decode(file_get_contents($cacheFile), true);
-    if ($cacheData) {
-        $tables = $cacheData['tables'];
-        $stats = $cacheData['stats'];
-        $hasData = true;
-    } else {
-        $useCache = false; // Corrupt cache
-    }
-}
-
-if (!$useCache && ($content || file_exists($defaultFile))) {
-    // Load content if not already loaded (and not using cache)
-    if (!$content) {
-        $content = file_get_contents($defaultFile);
-    }
+    $allTables = $dom->getElementsByTagName('table');
     
-    if ($content) {
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        // Hack to handle UTF-8 correctly in loadHTML
-        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $content);
-        libxml_clear_errors();
+    foreach ($allTables as $table) {
+        $rows = $table->getElementsByTagName('tr');
+        if ($rows->length < 2) continue;
 
-        $allTables = $dom->getElementsByTagName('table');
+        // Clean up Table Name and Description
+        $rawName = trim($rows->item(0)->nodeValue);
+        $tableName = trim(str_ireplace('Nome da tabela', '', $rawName));
         
-        foreach ($allTables as $table) {
-            $rows = $table->getElementsByTagName('tr');
-            if ($rows->length < 2) continue;
+        $rawDesc = trim($rows->item(1)->nodeValue);
+        $tableDesc = trim(str_ireplace('Descrição', '', $rawDesc));
+        
+        $fields = [];
+        $foreignKeys = [];
+        $section = '';
 
-            // Clean up Table Name and Description
-            $rawName = trim($rows->item(0)->nodeValue);
-            $tableName = trim(str_ireplace('Nome da tabela', '', $rawName));
-            
-            $rawDesc = trim($rows->item(1)->nodeValue);
-            $tableDesc = trim(str_ireplace('Descrição', '', $rawDesc));
-            
-            $fields = [];
-            $foreignKeys = [];
-            $section = '';
+        foreach ($rows as $row) {
+            $ths = $row->getElementsByTagName('th');
+            $tds = $row->getElementsByTagName('td');
 
-            // Optimization: Get all row data at once instead of repeated DOM calls if possible,
-            // but structure varies. Stick to existing logic but maybe buffer heavy calls.
-            // Actually, the main bottleneck is just parsing thousands of tables.
-            
-            foreach ($rows as $row) {
-                $ths = $row->getElementsByTagName('th');
-                $tds = $row->getElementsByTagName('td'); // This is fast enough locally
-
-                if ($ths->length > 0) {
-                    $headerText = trim($ths->item(0)->nodeValue);
-                    if ($headerText === 'Lista de campos') {
-                        $section = 'fields';
-                        continue;
-                    }
-                    if ($headerText === 'Chaves Estrangeiras') {
-                        $section = 'fks';
-                        continue;
-                    }
+            if ($ths->length > 0) {
+                $headerText = trim($ths->item(0)->nodeValue);
+                if ($headerText === 'Lista de campos') {
+                    $section = 'fields';
+                    continue;
                 }
-
-                if ($tds->length === 4) {
-                    if ($section === 'fields') {
-                        $fields[] = [
-                            'name' => trim($tds->item(0)->nodeValue),
-                            'type' => trim($tds->item(1)->nodeValue),
-                            'size' => trim(str_replace('&nbsp;', '', $tds->item(2)->nodeValue)),
-                            'desc' => trim($tds->item(3)->nodeValue),
-                        ];
-                    } elseif ($section === 'fks') {
-                        $foreignKeys[] = [
-                            'name' => trim($tds->item(0)->nodeValue),
-                            'col'  => trim($tds->item(1)->nodeValue),
-                            'refTable' => trim($tds->item(2)->nodeValue),
-                            'refCol' => trim($tds->item(3)->nodeValue),
-                        ];
-                    }
+                if ($headerText === 'Chaves Estrangeiras') {
+                    $section = 'fks';
+                    continue;
                 }
             }
 
-            if (!empty($fields)) {
-                $tables[] = [
-                    'name' => $tableName,
-                    'desc' => $tableDesc,
-                    'fields' => $fields,
-                    'fks' => $foreignKeys
-                ];
-                $stats['columns'] += count($fields);
-                $stats['fks'] += count($foreignKeys);
+            if ($tds->length === 4) {
+                if ($section === 'fields') {
+                    $fields[] = [
+                        'name' => trim($tds->item(0)->nodeValue),
+                        'type' => trim($tds->item(1)->nodeValue),
+                        'size' => trim(str_replace('&nbsp;', '', $tds->item(2)->nodeValue)),
+                        'desc' => trim($tds->item(3)->nodeValue),
+                    ];
+                } elseif ($section === 'fks') {
+                    $foreignKeys[] = [
+                        'name' => trim($tds->item(0)->nodeValue),
+                        'col'  => trim($tds->item(1)->nodeValue),
+                        'refTable' => trim($tds->item(2)->nodeValue),
+                        'refCol' => trim($tds->item(3)->nodeValue),
+                    ];
+                }
             }
         }
-        $stats['tables'] = count($tables);
-        $hasData = !empty($tables);
 
-        // Save to Cache (only if not temporary upload and valid data)
-        if ($hasData && !$isTemp) {
-            file_put_contents($cacheFile, json_encode(['tables' => $tables, 'stats' => $stats]));
+        if (!empty($fields)) {
+            $tables[] = [
+                'name' => $tableName,
+                'desc' => $tableDesc,
+                'fields' => $fields,
+                'fks' => $foreignKeys
+            ];
+            $stats['columns'] += count($fields);
+            $stats['fks'] += count($foreignKeys);
         }
     }
+    $stats['tables'] = count($tables);
+    $hasData = !empty($tables);
 }
 ?>
 </div>
-<div class="main-container bg-light">
-    <div class="dict-header p-4" id="dictHeader">
-        <div class="toggle-header-container">
-            <button class="btn btn-sm rounded-circle shadow-sm toggle-header-btn" onclick="toggleHeader()" title="Alternar Cabeçalho">
-                <i class="bi bi-arrows-collapse" id="toggleHeaderIcon"></i>
-            </button>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-sm btn-outline-secondary bg-white shadow-sm" onclick="toggleSidebar()" title="Alternar Sidebar">
-                <i class="bi bi-layout-sidebar" id="sidebarToggleIcon"></i>
-            </button>
-            <div>
-                <h1 class="h4 fw-bold text-dark mb-0">Analisador de Dicionário de Dados</h1>
-                <?php if ($isTemp): ?>
-                    <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Versão Temporária</span>
-                <?php else: ?>
-                    <p class="text-muted small mb-0">Versão Base: <?php echo date('d/m/Y', filemtime($defaultFile)); ?></p>
-                <?php endif; ?>
-            </div>
+<div class="container-fluid px-4 py-4 bg-light min-vh-100">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h4 fw-bold text-dark mb-0">Analisador de Dicionário de Dados</h1>
+            <?php if ($isTemp): ?>
+                <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Versão Temporária</span>
+            <?php else: ?>
+                <p class="text-muted small mb-0">Versão Base: 6.12.24</p>
+            <?php endif; ?>
         </div>
         <div class="d-flex gap-2">
             <?php if ($hasData): ?>
@@ -198,6 +283,7 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
                     <i class="bi bi-question-circle me-2"></i>Ajuda
                 </button>
             <?php endif; ?>
+
             <?php if ($isTemp): ?>
                 <a href="dictionary.php" class="btn btn-outline-danger btn-sm bg-white">
                     <i class="bi bi-arrow-counterclockwise me-2"></i>Restaurar Padrão
@@ -312,7 +398,7 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
                 <div class="col-md-10">
                     <div class="position-relative">
                         <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                        <input type="text" id="searchInput" class="form-control dict-search-input ps-5" placeholder="Buscar em todas as tabelas, colunas, tipos..." oninput="handleSearchInput()">
+                        <input type="text" id="searchInput" class="form-control dict-search-input ps-5" placeholder="Buscar em todas as tabelas, colunas, tipos..." onkeyup="filterTables()">
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -344,96 +430,80 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
             </div>
         </div>
 
-        </div> <!-- End dict-header -->
-
-        <!-- Header Collapsed Show Button -->
-        <div id="collapsedHeaderShowBtn" class="position-absolute start-50 translate-middle-x top-0 mt-2" style="display:none; z-index: 1060;">
-             <button class="btn btn-sm btn-white shadow-sm border rounded-pill px-3" onclick="toggleHeader()">
-                <i class="bi bi-chevron-down me-2"></i>Mostrar Cabeçalho
-             </button>
-        </div>
-
         <!-- Main Content Area -->
-        <div class="row g-0 dict-layout-row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-xl-2 dict-sidebar-container d-flex flex-column h-100">
-                <div class="p-3 border-bottom bg-white sticky-top shadow-sm" style="z-index: 10;">
-                    <h6 class="fw-bold mb-2">Tabelas (<?php echo $stats['tables']; ?>)</h6>
-                    <input type="text" class="form-control form-control-sm bg-light border-0" placeholder="Filtrar tabelas..." id="sidebarFilter" oninput="handleSidebarInput()">
+        <div class="card shadow-sm border-0 overflow-hidden">
+            <div class="row g-0">
+                <!-- Sidebar -->
+                <div class="col-md-3 border-end">
+                    <div class="p-3 border-bottom bg-white">
+                        <h6 class="fw-bold mb-2">Tabelas (<?php echo $stats['tables']; ?>)</h6>
+                        <input type="text" class="form-control form-control-sm bg-light border-0" placeholder="Filtrar tabelas..." id="sidebarFilter" onkeyup="filterSidebar()">
+                    </div>
+                    <div class="dict-sidebar" id="tableList">
+                        <?php foreach ($tables as $index => $table): ?>
+                            <div class="dict-table-item" 
+                                 onclick="showTable(<?php echo $index; ?>, this)"
+                                 data-index="<?php echo $index; ?>"
+                                 data-name="<?php echo strtolower($table['name']); ?>"
+                                 data-desc="<?php echo strtolower($table['desc']); ?>"
+                                 data-columns="<?php echo strtolower(implode(' ', array_column($table['fields'], 'name'))); ?>">
+                                <div class="fw-bold text-dark mb-1 text-truncate"><?php echo htmlspecialchars($table['name']); ?></div>
+                                <div class="small text-muted text-truncate"><?php echo htmlspecialchars($table['desc']); ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="dict-sidebar flex-grow-1" id="tableList" style="overflow-y: auto;">
-                    <?php foreach ($tables as $index => $table): ?>
-                         <div class="dict-table-item" 
-                             onclick="showTable(<?php echo $index; ?>, this)"
-                             data-index="<?php echo $index; ?>"
-                             data-name="<?php echo strtolower($table['name']); ?>"
-                             data-desc="<?php echo strtolower($table['desc']); ?>"
-                             data-columns="<?php echo strtolower(implode(' ', array_column($table['fields'], 'name'))); ?>">
-                            <div class="fw-bold text-dark mb-1 text-truncate"><?php echo htmlspecialchars($table['name']); ?></div>
-                            <div class="small text-muted text-truncate"><?php echo htmlspecialchars($table['desc']); ?></div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
 
-            <!-- Content -->
-            <div class="col-md-9 col-xl-10 dict-content-container bg-white d-flex flex-column position-relative">
-                <!-- Tab Bar -->
-                <div class="dict-tabs border-bottom px-3 pt-3 bg-light d-flex flex-shrink-0" style="z-index:100; min-height: 45px;" id="dictTabs">
-                    <!-- Tabs injected by JS -->
-                </div>
+                <!-- Content -->
+                <div class="col-md-9 bg-white">
                     <div id="emptyState" class="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
                         <i class="bi bi-table display-4 mb-3 opacity-25"></i>
                         <p>Selecione uma tabela para ver os detalhes.</p>
                     </div>
 
                     <?php foreach ($tables as $index => $table): ?>
-                        <div id="table-details-<?php echo $index; ?>" class="table-details h-100 d-none flex-column overflow-hidden">
-                            <!-- Fixed Header Section -->
-                            <div class="flex-shrink-0 bg-white" style="z-index: 10;">
-                                <div class="p-4 border-bottom d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h2 class="h4 fw-bold text-dark mb-1 font-monospace"><?php echo htmlspecialchars($table['name']); ?></h2>
-                                        <p class="text-muted mb-0"><?php echo htmlspecialchars($table['desc']); ?></p>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-outline-success btn-sm" onclick="exportSchema(<?php echo $index; ?>)">
-                                            <i class="bi bi-filetype-json me-2"></i>Exportar Schema
-                                        </button>
-                                        <button class="btn btn-outline-primary btn-sm" onclick="openSqlGenerator(<?php echo $index; ?>)">
-                                            <i class="bi bi-code-slash me-2"></i>Gerador SQL
-                                        </button>
-                                    </div>
+                        <div id="table-details-<?php echo $index; ?>" class="table-details h-100 d-none flex-column">
+                            <div class="p-4 border-bottom d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h2 class="h4 fw-bold text-dark mb-1"><?php echo htmlspecialchars($table['name']); ?></h2>
+                                    <p class="text-muted mb-0"><?php echo htmlspecialchars($table['desc']); ?></p>
                                 </div>
-                                
-                                <div class="px-4 pt-3 border-bottom shadow-sm d-flex justify-content-between align-items-end">
-                                    <ul class="nav nav-tabs nav-tabs-custom border-bottom-0" role="tablist">
-                                        <li class="nav-item">
-                                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cols-<?php echo $index; ?>">
-                                                Colunas
-                                            </button>
-                                        </li>
-                                        <li class="nav-item">
-                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fks-<?php echo $index; ?>">
-                                                Chaves Estrangeiras (<?php echo count($table['fks']); ?>)
-                                            </button>
-                                        </li>
-                                    </ul>
-                                    <div class="mb-2 w-25">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Filtrar..." onkeyup="filterActiveTab(this, <?php echo $index; ?>)">
-                                    </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-success btn-sm" onclick="exportSchema(<?php echo $index; ?>)">
+                                        <i class="bi bi-filetype-json me-2"></i>Exportar Schema
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="openSqlGenerator(<?php echo $index; ?>)">
+                                        <i class="bi bi-code-slash me-2"></i>Gerador SQL
+                                    </button>
                                 </div>
                             </div>
+                            
+                            <div class="px-4 pt-3">
+                                <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+                                    <li class="nav-item">
+                                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cols-<?php echo $index; ?>">
+                                            Colunas
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fks-<?php echo $index; ?>">
+                                            Chaves Estrangeiras (<?php echo count($table['fks']); ?>)
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
 
-                            <!-- Scrollable Content -->
-                            <div class="tab-content flex-grow-1 overflow-auto p-4 bg-light">
+                            <div class="tab-content flex-grow-1 overflow-auto p-4">
                                 <!-- Columns Tab -->
                                 <div class="tab-pane fade show active" id="cols-<?php echo $index; ?>">
-                                    <div class="border rounded bg-white">
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <input type="text" class="form-control form-control-sm w-25" placeholder="Filtrar colunas..." onkeyup="filterColumns(this, 'cols-<?php echo $index; ?>')">
+                                    </div>
+                                    <div class="border rounded">
                                         <table class="table table-hover mb-0">
-                                            <thead class="bg-light sticky-top" style="z-index: 5;">
+                                            <thead class="bg-light">
                                                 <tr>
-                                                    <th class="border-bottom-0 text-muted small font-weight-bold ps-3">Nome</th>
+                                                    <th class="border-bottom-0 text-muted small font-weight-bold">Nome</th>
                                                     <th class="border-bottom-0 text-muted small font-weight-bold">Tipo</th>
                                                     <th class="border-bottom-0 text-muted small font-weight-bold">Tamanho</th>
                                                     <th class="border-bottom-0 text-muted small font-weight-bold">Descrição</th>
@@ -442,7 +512,7 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
                                             <tbody>
                                                 <?php foreach ($table['fields'] as $field): ?>
                                                     <tr>
-                                                        <td class="fw-medium ps-3"><?php echo htmlspecialchars($field['name']); ?></td>
+                                                        <td class="fw-medium"><?php echo htmlspecialchars($field['name']); ?></td>
                                                         <td><span class="badge bg-light text-dark border"><?php echo htmlspecialchars($field['type']); ?></span></td>
                                                         <td class="text-muted small"><?php echo htmlspecialchars($field['size']); ?></td>
                                                         <td class="text-muted small"><?php echo htmlspecialchars($field['desc']); ?></td>
@@ -458,31 +528,31 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
                                     <?php if (empty($table['fks'])): ?>
                                         <p class="text-muted text-center py-5">Nenhuma chave estrangeira encontrada.</p>
                                     <?php else: ?>
-                                        <div class="border rounded bg-white">
+                                        <div class="d-flex justify-content-end mb-3">
+                                            <input type="text" class="form-control form-control-sm w-25" placeholder="Filtrar chaves..." onkeyup="filterForeignKeys(this, 'fks-<?php echo $index; ?>')">
+                                        </div>
+                                        <div class="border rounded">
                                             <table class="table table-hover mb-0">
-                                                <thead class="bg-light sticky-top" style="z-index: 5;">
+                                                <thead class="bg-light">
                                                     <tr>
-                                                        <th class="border-bottom-0 text-muted small font-weight-bold ps-3">Nome</th>
+                                                        <th class="border-bottom-0 text-muted small font-weight-bold">Nome</th>
                                                         <th class="border-bottom-0 text-muted small font-weight-bold">Coluna</th>
                                                         <th class="border-bottom-0 text-muted small font-weight-bold">Tabela Relacionada</th>
                                                         <th class="border-bottom-0 text-muted small font-weight-bold">Coluna Relacionada</th>
-                                                        <th class="border-bottom-0 text-muted small font-weight-bold">Ações</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($table['fks'] as $fk): ?>
                                                         <tr>
-                                                            <td class="text-muted small ps-3"><?php echo htmlspecialchars($fk['name']); ?></td>
+                                                            <td class="text-muted small"><?php echo htmlspecialchars($fk['name']); ?></td>
                                                             <td class="font-monospace small"><?php echo htmlspecialchars($fk['col']); ?></td>
-                                                            <td class="text-primary"><?php echo htmlspecialchars($fk['refTable']); ?></td>
-                                                            <td class="font-monospace small"><?php echo htmlspecialchars($fk['refCol']); ?></td>
                                                             <td>
-                                                                <button class="btn btn-sm btn-outline-primary py-0 px-2" 
-                                                                        onclick="openTabByName('<?php echo htmlspecialchars($fk['refTable']); ?>')"
-                                                                        title="Abrir Tabela">
-                                                                    <i class="bi bi-box-arrow-up-right small"></i>
-                                                                </button>
+                                                                <a href="#" class="text-primary text-decoration-none" 
+                                                                   onclick="openTableModal('<?php echo htmlspecialchars($fk['refTable']); ?>'); return false;">
+                                                                    <?php echo htmlspecialchars($fk['refTable']); ?>
+                                                                </a>
                                                             </td>
+                                                            <td class="font-monospace small"><?php echo htmlspecialchars($fk['refCol']); ?></td>
                                                         </tr>
                                                     <?php endforeach; ?>
                                                 </tbody>
@@ -701,178 +771,23 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
                 }, 5000);
             });
 
-            // Tab System State
-            let activeTabs = []; // Array of indices
-            let activeTabIndex = null;
-
-            function toggleHeader() {
-                const header = document.getElementById('dictHeader');
-                const showBtn = document.getElementById('collapsedHeaderShowBtn');
-                
-                if (header.classList.contains('collapsed')) {
-                    header.classList.remove('collapsed');
-                    showBtn.style.display = 'none';
-                } else {
-                    header.classList.add('collapsed');
-                    showBtn.style.display = 'block';
-                }
-            }
-
             function showTable(index, element) {
-                // If tab exists, activate it. If not, add it.
-                if (!activeTabs.includes(index)) {
-                     activeTabs.push(index);
-                     renderTabs();
-                }
-                activateTab(index);
-            }
-
-            function openTabByName(tableName) {
-                const index = dictData.findIndex(t => t.name.toLowerCase() === tableName.toLowerCase());
-                if (index !== -1) {
-                    showTable(index);
-                } else {
-                    alert('Tabela não encontrada: ' + tableName);
-                }
-            }
-
-            function filterActiveTab(input, index) {
-                const colsTab = document.getElementById('cols-' + index);
-                const fksTab = document.getElementById('fks-' + index);
-                
-                if (colsTab && colsTab.classList.contains('active')) {
-                    filterColumns(input, 'cols-' + index);
-                } else if (fksTab && fksTab.classList.contains('active')) {
-                    filterForeignKeys(input, 'fks-' + index);
-                }
-            }
-            
-            // Sidebar Toggle
-            function toggleSidebar() {
-                const sidebar = document.querySelector('.dict-sidebar-container');
-                const content = document.querySelector('.dict-content-container');
-                
-                if (sidebar.classList.contains('d-none')) {
-                    sidebar.classList.remove('d-none');
-                    content.classList.remove('col-md-12');
-                    content.classList.add('col-md-9', 'col-xl-10');
-                } else {
-                    sidebar.classList.add('d-none');
-                    content.classList.remove('col-md-9', 'col-xl-10');
-                    content.classList.add('col-md-12');
-                }
-            }
-
-            function activateTab(index) {
-                activeTabIndex = index;
-                
-                // Show/Hide Content
                 document.querySelectorAll('.table-details').forEach(el => {
                     el.classList.remove('d-flex');
                     el.classList.add('d-none');
                 });
-                
+                document.getElementById('emptyState').classList.remove('d-flex');
+                document.getElementById('emptyState').classList.add('d-none');
+
                 const detail = document.getElementById('table-details-' + index);
-                if (detail) {
-                    detail.classList.remove('d-none');
-                    detail.classList.add('d-flex');
-                    document.getElementById('emptyState').classList.remove('d-flex');
-                    document.getElementById('emptyState').classList.add('d-none');
-                } else {
-                     document.getElementById('emptyState').classList.remove('d-none');
-                     document.getElementById('emptyState').classList.add('d-flex');
-                }
+                detail.classList.remove('d-none');
+                detail.classList.add('d-flex');
 
-                // Sidebar Active State
                 document.querySelectorAll('.dict-table-item').forEach(el => el.classList.remove('active'));
-                const sidebarItem = document.querySelector(`.dict-table-item[data-index="${index}"]`);
-                if (sidebarItem) {
-                    sidebarItem.classList.add('active');
+                if (element) {
+                    element.classList.add('active');
+                    element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
-
-                updateTabUI();
-            }
-
-            function closeTab(e, index) {
-                e.stopPropagation();
-                activeTabs = activeTabs.filter(i => i !== index);
-                
-                if (activeTabIndex === index) {
-                    if (activeTabs.length > 0) {
-                        // Switch to last active tab
-                        activateTab(activeTabs[activeTabs.length - 1]);
-                    } else {
-                        activeTabIndex = null;
-                        activateTab(null); // Will show empty state
-                    }
-                }
-                renderTabs();
-                updateTabUI();
-            }
-
-            function closeAllTabs() {
-                activeTabs = [];
-                activeTabIndex = null;
-                renderTabs();
-                activateTab(null);
-            }
-
-            function closeOtherTabs() {
-                if (activeTabIndex !== null) {
-                    activeTabs = [activeTabIndex];
-                    renderTabs();
-                    // View remains same
-                }
-            }
-
-            function renderTabs() {
-                const container = document.getElementById('dictTabs');
-                container.innerHTML = '';
-
-                activeTabs.forEach(idx => {
-                    const table = dictData[idx];
-                    const name = table ? table.name : 'Tabela';
-
-                    const btn = document.createElement('button');
-                    btn.className = 'nav-link d-flex align-items-center';
-                    btn.dataset.index = idx;
-                    btn.onclick = () => activateTab(idx);
-                    btn.innerHTML = `
-                        <i class="bi bi-table me-2 small text-muted"></i>
-                        <span class="text-truncate" style="max-width: 150px;">${name}</span>
-                        <i class="bi bi-x-circle-fill btn-close-tab" onclick="closeTab(event, ${idx})"></i>
-                    `;
-                    container.appendChild(btn);
-                });
-
-                // Append Actions Dropdown if there are tabs
-                if (activeTabs.length > 0) {
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'dict-tabs-actions dropdown';
-                    actionsDiv.innerHTML = `
-                        <button class="btn btn-sm btn-link text-muted no-decoration" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-glass border-0 shadow-lg">
-                            <li><a class="dropdown-item small" href="#" onclick="closeOtherTabs()"><i class="bi bi-x-circle me-2"></i>Fechar Outras</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item small text-danger" href="#" onclick="closeAllTabs()"><i class="bi bi-trash me-2"></i>Fechar Todas</a></li>
-                        </ul>
-                    `;
-                    container.appendChild(actionsDiv);
-                }
-                
-                updateTabUI();
-            }
-
-            function updateTabUI() {
-                document.querySelectorAll('#dictTabs .nav-link').forEach(btn => {
-                    if (parseInt(btn.dataset.index) === activeTabIndex) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
             }
 
             function openTableModal(tableName) {
@@ -922,22 +837,6 @@ if (!$useCache && ($content || file_exists($defaultFile))) {
                 
                 const modal = new bootstrap.Modal(document.getElementById('tableModal'));
                 modal.show();
-            }
-
-            // Utils
-            function debounce(func, wait) {
-                let timeout;
-                return function(...args) {
-                    const context = this;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
-
-            const debouncedFilterTables = debounce(() => filterTables(), 300);
-
-            function handleSearchInput() {
-                debouncedFilterTables();
             }
 
             function filterTables() {
@@ -1469,5 +1368,4 @@ function handleLogin(e) {
 }
 </script>
 
-</div> <!-- Close main-container -->
 <?php include 'includes/footer.php'; ?>

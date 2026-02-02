@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once 'includes/header.php';
+require_once 'includes/portal_auth.php'; 
+
 // --- CONFIGURATION ---
 $jsonFile = __DIR__ . '/data/fiscal_blog.json';
 $uploadDir = __DIR__ . '/uploads/blog/';
@@ -8,6 +11,9 @@ $uploadUrl = 'uploads/blog/';
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
+
+$isAdmin = isAdmin(); 
+$currentUser = $_SESSION['user_full_name'] ?? 'Admin'; 
 
 // --- HELPER FUNCTIONS ---
 function loadPosts($file) {
@@ -44,58 +50,6 @@ function handleUpload($fileInput, $targetDir) {
     }
     return null;
 }
-
-// Handler for Ratings (AJAX) - Available to all logged users
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'rate_post') {
-    header('Content-Type: application/json');
-    
-    $postId = $_POST['id'] ?? '';
-    $rating = (int)($_POST['rating'] ?? 0);
-    $userKey = $_SESSION['user_full_name'] ?? 'Anonymous'; // Or user_id if available
-
-    if (!$postId || $rating < 1 || $rating > 5) {
-        echo json_encode(['success' => false, 'message' => 'Dados inválidos']);
-        exit;
-    }
-
-    $data = loadPosts($jsonFile);
-    $found = false;
-    $newAvg = 0;
-    $newCount = 0;
-
-    foreach ($data as &$p) {
-        if ($p['id'] === $postId) {
-            if (!isset($p['ratings'])) $p['ratings'] = [];
-            
-            $p['ratings'][$userKey] = $rating;
-            
-            // Recalculate
-            $count = count($p['ratings']);
-            $sum = array_sum($p['ratings']);
-            $p['rating_avg'] = $count > 0 ? round($sum / $count, 1) : 0;
-            $p['rating_count'] = $count;
-            
-            $newAvg = $p['rating_avg'];
-            $newCount = $p['rating_count'];
-            $found = true;
-            break;
-        }
-    }
-    
-    if ($found) {
-        savePosts($jsonFile, $data);
-        echo json_encode(['success' => true, 'avg' => $newAvg, 'count' => $newCount]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Post não encontrado']);
-    }
-    exit; 
-}
-
-require_once 'includes/header.php';
-require_once 'includes/portal_auth.php'; 
-
-$isAdmin = isAdmin(); 
-$currentUser = $_SESSION['user_full_name'] ?? 'Admin'; 
 
 // --- ACTION HANDLING ---
 $message = '';
@@ -227,17 +181,6 @@ foreach ($allPosts as $p) {
 }
 arsort($categories);
 arsort($allTags);
-
-// --- DEEP LINKING LOGIC ---
-$autoOpenPost = null;
-if (isset($_GET['post_id'])) {
-    foreach ($allPosts as $p) {
-        if ($p['id'] === $_GET['post_id']) {
-            $autoOpenPost = $p;
-            break;
-        }
-    }
-}
 ?>
 
 <!-- TinyMCE (Free CDN) -->
@@ -342,78 +285,6 @@ if (isset($_GET['post_id'])) {
         background: #f7fafc;
         padding: 1rem;
         border-radius: 0 8px 8px 0;
-    }
-
-    /* ToC Styles */
-    .toc-container {
-        position: sticky;
-        top: 1rem;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    .toc-link {
-        display: block;
-        padding: 0.25rem 0;
-        color: #718096;
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: all 0.2s;
-        border-left: 2px solid transparent;
-        padding-left: 0.75rem;
-    }
-    .toc-link:hover, .toc-link.active {
-        color: var(--color-accent);
-        border-left-color: var(--color-accent);
-    }
-    .toc-link.h3-link {
-        padding-left: 1.5rem;
-        font-size: 0.85rem;
-    }
-    /* Scroll margin for headers so they don't hide behind sticky elements if any */
-    #view-content h2, #view-content h3 {
-        scroll-margin-top: 1rem;
-    }
-
-    /* Responsive Modal Width */
-    @media (min-width: 1200px) {
-        .modal-xl {
-            --bs-modal-width: 1400px;
-            max-width: 90vw; 
-        }
-    }
-    
-    /* Star Rating Styles */
-    .star-rating {
-        direction: rtl;
-        display: inline-flex;
-        font-size: 1.5rem;
-        cursor: pointer;
-    }
-    .star-rating input {
-        display: none;
-    }
-    .star-rating label {
-        color: #ddd;
-        transition: color 0.2s;
-        padding: 0 2px;
-    }
-    .star-rating label:hover,
-    .star-rating label:hover ~ label,
-    .star-rating input:checked ~ label {
-        color: #ffc107;
-    }
-    .star-rating-display {
-        color: #ffc107;
-    }
-
-    @media (max-width: 991.98px) {
-        .toc-container {
-            position: static;
-            margin-bottom: 2rem;
-            max-height: none;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 1rem;
-        }
     }
 </style>
 
@@ -722,117 +593,49 @@ if (isset($_GET['post_id'])) {
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
             <!-- Full Width Cover -->
-            <div id="view-cover-container" class="position-relative" style="display:none; height: 350px;">
+            <div id="view-cover-container" class="position-relative" style="display:none; height: 300px;">
                 <img id="view-cover" src="" class="w-100 h-100 object-fit-cover">
-                <div class="position-absolute bottom-0 start-0 w-100 p-5" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);">
-                     <h2 class="text-white fw-bold display-6 mb-2" id="view-title" style="text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></h2>
-                     <div class="d-flex align-items-center text-white-50 small gap-3">
-                        <span class="badge bg-white text-primary rounded-pill px-3 py-1 fw-bold topic-badge" id="view-category"></span>
-                        <span><i class="bi bi-person-fill me-1"></i> <span id="view-author"></span></span>
-                        <span><i class="bi bi-calendar3 me-1"></i> <span id="view-date"></span></span>
-                        
-                        <!-- Rating Display Header -->
-                        <span class="d-flex align-items-center gap-1" title="Avaliação Média">
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <span id="view-rating-header" class="fw-bold text-white">0.0</span>
-                            <span id="view-rating-count-header" class="opacity-75">(0)</span>
-                        </span>
-                     </div>
+                <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                     <!-- Optional: Title over image? Kept separate for cleaner read -->
                 </div>
             </div>
 
-            <div class="modal-header border-0 pb-0 px-0 d-none">
-                 <!-- Hidden header, using Cover or Custom Layout -->
-                 <button type="button" class="btn-close ms-2 align-self-start z-3 position-absolute top-0 end-0 m-3 bg-white p-2" data-bs-dismiss="modal"></button>
-            </div>
-            
-            <!-- Controls Overlay -->
-            <div class="position-absolute top-0 end-0 m-4 z-3 d-flex gap-2">
-                <button type="button" class="btn btn-light shadow-sm rounded-circle p-2" onclick="sharePost(this)" title="Copiar Link" data-bs-toggle="tooltip" data-bs-placement="left">
-                    <i class="bi bi-share-fill text-primary"></i>
-                </button>
-                <button type="button" class="btn-close bg-white p-2 shadow-sm" data-bs-dismiss="modal" id="close-btn-overlay"></button>
-            </div>
-
-
-            <div class="modal-body px-0 py-0 bg-white">
-                <div class="container-fluid px-0">
-                    <div class="row g-0">
-                        <!-- Sidebar ToC (Desktop) -->
-                        <div class="col-lg-3 bg-light border-end d-none d-lg-block">
-                            <div class="toc-container p-4">
-                                <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-1">Neste Artigo</h6>
-                                <nav id="view-toc" class="nav flex-column">
-                                    <!-- JS will populate this -->
-                                </nav>
-                            </div>
-                        </div>
-
-                        <!-- Content -->
-                        <div class="col-lg-9">
-                            <div class="p-4 p-lg-5">
-                                <!-- Mobile Title if no cover logic needs adjustment, but for now assuming cover always exists or using fallback -->
-                                <div id="view-header-fallback" class="mb-4" style="display:none;">
-                                     <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-1 fw-bold topic-badge mb-2" id="view-category-fb"></span>
-                                     <h2 class="fw-bold text-dark lh-sm mb-2" id="view-title-fb"></h2>
-                                      <div class="text-muted small">
-                                         Por <strong id="view-author-fb"></strong> &bull; <span id="view-date-fb"></span>
-                                    </div>
-                                    <hr>
-                                </div>
-
-                                <!-- Mobile ToC -->
-                                <div class="d-lg-none mb-4 p-3 bg-light rounded-3 border">
-                                    <h6 class="text-uppercase text-muted fw-bold small mb-2 ls-1" data-bs-toggle="collapse" data-bs-target="#mobileTocCollapse" style="cursor:pointer">
-                                        <i class="bi bi-list-ul me-1"></i> Índice <i class="bi bi-chevron-down float-end"></i>
-                                    </h6>
-                                    <div class="collapse" id="mobileTocCollapse">
-                                        <nav id="view-toc-mobile" class="nav flex-column mt-2">
-                                            <!-- JS will populate this -->
-                                        </nav>
-                                    </div>
-                                </div>
-
-                                <div id="view-content" class="lh-lg text-dark fs-6 content-body" style="font-size: 1.1rem !important; color: #2d3748;">
-                                    <!-- HTML Content -->
-                                </div>
-                                
-                                <div id="view-attachment-container" class="mt-5 p-3 bg-light rounded-3 border align-items-center" style="display:none;">
-                                    <div class="bg-white p-2 rounded-circle shadow-sm me-3 text-primary">
-                                        <i class="bi bi-file-earmark-arrow-down fs-4"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0 fw-bold text-dark">Material Complementar</h6>
-                                        <small class="text-muted">Clique para baixar o arquivo anexo.</small>
-                                    </div>
-                                    <a href="#" id="view-attachment-link" class="btn btn-primary rounded-pill px-4 fw-bold" target="_blank">
-                                        Baixar
-                                    </a>
-                                </div>
-
-                                <hr class="my-5 opacity-10">
-                                
-                                <!-- Rating Interface -->
-                                <div class="glass-card p-4 rounded-4 mb-4 text-center border">
-                                    <h6 class="fw-bold text-secondary mb-3">O que você achou deste artigo?</h6>
-                                    
-                                    <div class="star-rating mb-2">
-                                        <input type="radio" name="rating" id="star5" value="5" onclick="ratePost(5)"><label for="star5" title="Excelente"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" name="rating" id="star4" value="4" onclick="ratePost(4)"><label for="star4" title="Muito Bom"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" name="rating" id="star3" value="3" onclick="ratePost(3)"><label for="star3" title="Bom"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" name="rating" id="star2" value="2" onclick="ratePost(2)"><label for="star2" title="Regular"><i class="bi bi-star-fill"></i></label>
-                                        <input type="radio" name="rating" id="star1" value="1" onclick="ratePost(1)"><label for="star1" title="Ruim"><i class="bi bi-star-fill"></i></label>
-                                    </div>
-                                    <small class="text-muted d-block" id="rating-status">Clique para avaliar</small>
-                                </div>
-
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="small text-muted fw-bold me-2">TAGS:</span>
-                                    <div id="view-tags" class="d-flex flex-wrap gap-2"></div>
-                                </div>
-                            </div>
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <div class="w-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-1 fw-bold topic-badge" id="view-category"></span>
+                        <div class="text-muted small">
+                             <i class="bi bi-calendar3 me-1"></i> <span id="view-date"></span>
                         </div>
                     </div>
+                    <h2 class="modal-title fw-bold text-dark lh-sm mb-2" id="view-title" style="font-size: 1.75rem;"></h2>
+                    <p class="text-secondary small mb-0">Publicado por <strong class="text-dark" id="view-author"></strong></p>
+                </div>
+                <button type="button" class="btn-close ms-2 align-self-start" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body px-4 py-4">
+                <div id="view-content" class="lh-lg text-dark fs-6" style="font-size: 1.1rem !important; color: #333;">
+                    <!-- HTML Content -->
+                </div>
+                
+                <div id="view-attachment-container" class="mt-5 p-3 bg-light rounded-3 border align-items-center" style="display:none;">
+                    <div class="bg-white p-2 rounded-circle shadow-sm me-3 text-primary">
+                        <i class="bi bi-file-earmark-arrow-down fs-4"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0 fw-bold text-dark">Material Complementar</h6>
+                        <small class="text-muted">Clique para baixar o arquivo anexo.</small>
+                    </div>
+                    <a href="#" id="view-attachment-link" class="btn btn-primary rounded-pill px-4 fw-bold" target="_blank">
+                        Baixar
+                    </a>
+                </div>
+
+                <hr class="my-4 opacity-10">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small text-muted fw-bold me-2">TAGS:</span>
+                    <div id="view-tags" class="d-flex flex-wrap gap-2"></div>
                 </div>
             </div>
             <!-- No footer, clean look -->
@@ -845,15 +648,6 @@ if (isset($_GET['post_id'])) {
     const editorModal = new bootstrap.Modal(document.getElementById('editorModal'));
     const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
     const uploadUrl = '<?php echo $uploadUrl; ?>'; // Pass JS variable
-    let currentViewedPostId = null;
-
-    // Auto-open logic
-    <?php if ($autoOpenPost): ?>
-        window.addEventListener('DOMContentLoaded', () => {
-            viewPost(<?php echo json_encode($autoOpenPost); ?>);
-        });
-    <?php endif; ?>
-
 
     // Fix TinyMCE inside Bootstrap Modal focus issue
     document.addEventListener('focusin', (e) => {
@@ -896,82 +690,20 @@ if (isset($_GET['post_id'])) {
     }
 
     function viewPost(post) {
-        currentViewedPostId = post.id; // Store globally for sharing
-        
-        // Update URL to deep link (without reloading)
-        const newUrl = window.location.origin + window.location.pathname + '?post_id=' + post.id;
-        history.replaceState({path: newUrl}, '', newUrl);
-
-        // Populate Header Data
         document.getElementById('view-title').innerText = post.title;
         document.getElementById('view-category').innerText = post.category;
-
         document.getElementById('view-date').innerText = new Date(post.date).toLocaleDateString(); 
         document.getElementById('view-author').innerText = post.author;
-        
-        // Rating Setup
-        const avg = post.rating_avg || 0;
-        const count = post.rating_count || 0;
-        document.getElementById('view-rating-header').innerText = avg;
-        document.getElementById('view-rating-count-header').innerText = `(${count})`;
-        
-        // Reset stars
-        document.querySelectorAll('input[name="rating"]').forEach(el => el.checked = false);
-        const myRating = post.ratings ? post.ratings['<?php echo $_SESSION['user_full_name'] ?? 'User'; ?>'] : null;
-        if(myRating) {
-             const starEl = document.getElementById('star' + myRating);
-             if(starEl) starEl.checked = true;
-             document.getElementById('rating-status').innerText = 'Sua avaliação: ' + myRating + ' estrelas';
-        } else {
-             document.getElementById('rating-status').innerText = 'Dê sua nota';
-        }
-
-
-        // Fallback Header (for Mobile or No Cover)
-        document.getElementById('view-title-fb').innerText = post.title;
-        document.getElementById('view-category-fb').innerText = post.category;
-        document.getElementById('view-date-fb').innerText = new Date(post.date).toLocaleDateString();
-        document.getElementById('view-author-fb').innerText = post.author;
-
-        // Process Content for ToC
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(post.content, 'text/html');
-        const headers = doc.querySelectorAll('h2, h3');
-        let tocHtml = '';
-        
-        if (headers.length > 0) {
-            headers.forEach((header, index) => {
-                const text = header.innerText;
-                const id = 'chapter-' + index;
-                header.id = id; // Set ID in the virtual DOM
-                
-                const isH3 = header.tagName.toLowerCase() === 'h3';
-                tocHtml += `<a href="#${id}" class="toc-link ${isH3 ? 'h3-link' : ''}" onclick="setTimeout(()=>document.getElementById('${id}').scrollIntoView({behavior: 'smooth', block: 'start'}), 100); return false;">${text}</a>`;
-            });
-            // Update content with IDs
-            document.getElementById('view-content').innerHTML = doc.body.innerHTML; 
-            document.getElementById('view-toc').innerHTML = tocHtml;
-            document.getElementById('view-toc-mobile').innerHTML = tocHtml;
-        } else {
-            // No chapters
-            document.getElementById('view-content').innerHTML = post.content;
-            document.getElementById('view-toc').innerHTML = '<span class="text-muted small">Sem índice.</span>';
-             document.getElementById('view-toc-mobile').innerHTML = '<span class="text-muted small">Sem índice.</span>';
-        }
-        
+        document.getElementById('view-content').innerHTML = post.content;
         
         // Handle Cover Image
         const coverContainer = document.getElementById('view-cover-container');
-        const headerFallback = document.getElementById('view-header-fallback');
         const coverImg = document.getElementById('view-cover');
-        
         if (post.cover_image) {
             coverImg.src = uploadUrl + post.cover_image;
             coverContainer.style.display = 'block';
-            headerFallback.style.display = 'none';
         } else {
             coverContainer.style.display = 'none';
-            headerFallback.style.display = 'block';
         }
 
         // Handle Attachment
@@ -1009,124 +741,6 @@ if (isset($_GET['post_id'])) {
     function clearSearch() {
         document.getElementById('searchInput').value = '';
         window.location.href = 'fiscal_blog.php';
-    }
-    
-    // Reset URL when modal closes
-    document.getElementById('viewModal').addEventListener('hidden.bs.modal', function () {
-        const cleanUrl = window.location.origin + window.location.pathname;
-        history.replaceState({path: cleanUrl}, '', cleanUrl);
-    });
-
-    function sharePost(btnElement) {
-        if (!currentViewedPostId) return;
-        
-        const url = window.location.origin + window.location.pathname + '?post_id=' + currentViewedPostId;
-        
-        const visualFeedback = () => {
-             const icon = btnElement.querySelector('i');
-             if(icon) {
-                 const originalClass = icon.className;
-                 icon.className = 'bi bi-check-lg text-success';
-                 
-                 // Also ensure tooltip updates if possible (Bootstrap)
-                 const tooltip = bootstrap.Tooltip.getInstance(btnElement);
-                 if(tooltip) {
-                     btnElement.setAttribute('data-bs-original-title', 'Copiado!');
-                     tooltip.show();
-                 }
-
-                 setTimeout(() => { 
-                    icon.className = originalClass; 
-                    if(tooltip) {
-                        btnElement.setAttribute('data-bs-original-title', 'Copiar Link');
-                        tooltip.hide();
-                    }
-                 }, 2000);
-             }
-        };
-
-        const manualCopy = (err) => {
-             console.error('Failed to copy', err);
-             prompt("Copie o link:", url);
-        };
-
-        const fallbackCopy = () => {
-            const textArea = document.createElement("textarea");
-            textArea.value = url;
-            
-            // Minimal visible style to ensure execCommand works
-            textArea.style.position = "fixed";
-            textArea.style.left = "50%";
-            textArea.style.top = "50%";
-            textArea.style.opacity = "0.01";
-            textArea.style.pointerEvents = "none";
-            textArea.style.zIndex = "10000";
-            
-            // Append to the BUTTON'S PARENT (Controls Overlay) to avoid Focus Trap
-            // If btnElement is valid, use it. Else document.body
-            if (btnElement && btnElement.parentNode) {
-                 btnElement.parentNode.appendChild(textArea);
-            } else {
-                 document.body.appendChild(textArea);
-            }
-            
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if(successful) visualFeedback();
-                else manualCopy({ message: "execCommand failed" });
-            } catch (err) {
-                manualCopy(err);
-            }
-            
-            // Cleanup
-            if (textArea.parentNode) {
-                textArea.parentNode.removeChild(textArea);
-            }
-        };
-
-        // Check for Secure Context AND API availability
-        if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
-             navigator.clipboard.writeText(url).then(visualFeedback).catch(() => {
-                 fallbackCopy();
-             });
-        } else {
-            fallbackCopy();
-        }
-    }
-
-    function ratePost(rating) {
-        if (!currentViewedPostId) return;
-
-        const formData = new FormData();
-        formData.append('action', 'rate_post');
-        formData.append('id', currentViewedPostId);
-        formData.append('rating', rating);
-
-        document.getElementById('rating-status').innerText = 'Enviando...';
-        
-        fetch('fiscal_blog.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('rating-status').innerText = 'Avaliação salva! Obrigado.';
-                // Update Header
-                document.getElementById('view-rating-header').innerText = data.avg;
-                document.getElementById('view-rating-count-header').innerText = `(${data.count})`;
-            } else {
-                alert('Erro ao avaliar: ' + data.message);
-                document.getElementById('rating-status').innerText = 'Erro ao avaliar.';
-            }
-        })
-        .catch(err => {
-            console.error(err);
-             document.getElementById('rating-status').innerText = 'Erro de conexão.';
-        });
     }
 </script>
 </body>

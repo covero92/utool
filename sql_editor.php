@@ -11,164 +11,61 @@ session_start();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
 
 <style>
-    /* Modern SQL Editor Styles */
+    /* Custom SQL Editor Styles */
     :root {
-        /* Light Theme (Default) */
-        --color-body-bg: radial-gradient(at 0% 0%, #e0e7ff 0px, transparent 50%), 
-                         radial-gradient(at 100% 0%, #ddd6fe 0px, transparent 50%), 
-                         linear-gradient(to bottom, #f8fafc, #f1f5f9);
-        --color-text-main: #1e293b;
-        --color-text-secondary: #64748b;
-        --color-text-muted: #94a3b8;
-        --color-panel-bg: rgba(255, 255, 255, 0.7);
-        --color-border: rgba(226, 232, 240, 0.8);
+        --color-panel-bg: #ffffff;
         --color-border-contrast: #cbd5e1;
-        --color-accent: #6366f1;
-        --color-accent-hover: #4f46e5;
-        --color-success: #10b981;
-        --color-danger: #ef4444;
-        --color-warning: #f59e0b;
-        --glass-bg: rgba(255, 255, 255, 0.7);
-        --glass-border: rgba(255, 255, 255, 0.3);
-        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
     }
 
-    :root.plus {
-        /* Dark Theme */
-        --color-body-bg: radial-gradient(at 0% 0%, #1e293b 0px, transparent 50%), 
-                         radial-gradient(at 100% 0%, #312e81 0px, transparent 50%), 
-                         linear-gradient(to bottom, #0f172a, #020617);
-        --color-text-main: #f1f5f9;
-        --color-text-secondary: #cbd5e1;
-        --color-text-muted: #94a3b8;
-        --color-panel-bg: rgba(30, 41, 59, 0.7);
-        --color-border: rgba(71, 85, 105, 0.5);
-        --color-border-contrast: #475569;
-        --color-accent: #818cf8;
-        --color-accent-hover: #6366f1;
-        --glass-bg: rgba(30, 41, 59, 0.7);
-        --glass-border: rgba(148, 163, 184, 0.1);
-        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-
-    body {
-        background: var(--color-body-bg);
-        background-attachment: fixed;
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        color: var(--color-text-main);
-        transition: all 0.3s ease;
-    }
-
-    @keyframes gradientBG {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-    }
-
-    /* Glassmorphism */
     .glass-panel {
-        background: var(--glass-bg) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border) !important;
-        box-shadow: var(--glass-shadow);
-        border-radius: 12px;
-        transition: all 0.3s ease;
+        background: var(--color-panel-bg) !important;
+        border: 1px solid var(--color-border-contrast) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-    .glass-panel:hover {
-        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
-        transform: translateY(-2px);
-    }
-
-    /* Editor Container */
     #editor-container {
         height: 300px;
-        border-radius: 12px;
-        border: 1px solid var(--color-border-contrast);
-        overflow: hidden;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        border-radius: 8px;
+        border: 1px solid #94a3b8; /* Darker border for editor */
     }
     
-    /* Results Container */
     #results-container {
         height: 400px;
         overflow: auto;
         border-radius: 8px;
-        background: var(--glass-bg);
+        background: #fff;
+        border-top: 1px solid var(--color-border-contrast);
     }
 
-    /* Custom Scrollbar */
-    .sidebar-list::-webkit-scrollbar,
-    #results-container::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-
-    .sidebar-list::-webkit-scrollbar-track,
-    #results-container::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .sidebar-list::-webkit-scrollbar-thumb,
-    #results-container::-webkit-scrollbar-thumb {
-        background: var(--color-border-contrast);
-        border-radius: 4px;
-    }
-
-    .sidebar-list::-webkit-scrollbar-thumb:hover,
-    #results-container::-webkit-scrollbar-thumb:hover {
-        background: var(--color-accent);
-    }
-
-    /* Form Controls */
+    /* Form controls contrast */
     .form-control, .form-select {
-        border-color: var(--color-border-contrast) !important;
-        background-color: var(--glass-bg) !important;
-        color: var(--color-text-main) !important;
-        transition: all 0.2s ease;
+        border-color: #cbd5e1 !important;
+        background-color: #f8fafc !important;
     }
-
     .form-control:focus, .form-select:focus {
-        border-color: var(--color-accent) !important;
-        background-color: var(--glass-bg) !important;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
-    }
-
-    /* Table Styles */
-    .table-result {
-        color: var(--color-text-main);
+        border-color: #3b82f6 !important;
+        background-color: #fff !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
     .table-result th {
         position: sticky;
         top: 0;
-        background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
-        color: white;
+        background: #f8f9fa;
         z-index: 10;
         font-size: 0.8rem;
-        padding: 12px 8px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        padding: 8px;
     }
 
     .table-result td {
-        font-size: 0.85rem;
-        padding: 8px;
+        font-size: 0.8rem;
+        padding: 4px 8px;
         white-space: nowrap;
         max-width: 300px;
         overflow: hidden;
         text-overflow: ellipsis;
-        border-bottom: 1px solid var(--color-border);
-        transition: background 0.2s ease;
-    }
-
-    .table-result tbody tr:hover td {
-        background: rgba(99, 102, 241, 0.05);
     }
     
-    /* Sidebar */
     .sidebar-list {
         max-height: calc(100vh - 200px);
         overflow-y: auto;
@@ -176,101 +73,36 @@ session_start();
     
     .db-item, .table-item {
         cursor: pointer;
-        padding: 8px 12px;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-        font-size: 0.9rem;
-        margin-bottom: 4px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background 0.2s;
+        font-size: 0.85rem;
     }
     
     .db-item:hover, .table-item:hover {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
+        background: rgba(59, 130, 246, 0.1);
         color: var(--color-accent);
-        transform: translateX(4px);
     }
     
-    .table-icon { 
-        font-size: 0.9rem; 
-        margin-right: 8px; 
-        color: #6366f1;
-    }
-    
-    .view-icon { 
-        font-size: 0.9rem; 
-        margin-right: 8px; 
-        color: #10b981;
-    }
-    
-    .info-icon { 
-        font-size: 0.9rem; 
-        margin-left: auto; 
-        color: var(--color-text-muted);
-        opacity: 0.5;
-        transition: all 0.2s ease;
-    }
-    
-    .table-item:hover .info-icon { 
-        opacity: 1; 
+    .db-item:hover, .table-item:hover {
+        background: rgba(59, 130, 246, 0.1);
         color: var(--color-accent);
-        transform: scale(1.2);
     }
-
-    /* Buttons */
-    .btn-primary {
-        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-        border: none;
-        box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-        box-shadow: 0 6px 12px -1px rgba(99, 102, 241, 0.4);
-        transform: translateY(-2px);
-    }
+    
+    .table-icon { font-size: 0.8rem; margin-right: 6px; color: #64748b; }
+    .view-icon { font-size: 0.8rem; margin-right: 6px; color: #059669; }
+    .info-icon { font-size: 0.8rem; margin-left: auto; color: #94a3b8; opacity: 0.5; }
+    .table-item:hover .info-icon { opacity: 1; color: var(--color-accent); }
 
     /* Loading Overlay */
     #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.9);
+        position: fixed; top:0; left:0; width:100%; height:100%;
+        background: rgba(255,255,255,0.7);
         z-index: 9999;
         display: none;
         align-items: center;
         justify-content: center;
-        backdrop-filter: blur(4px);
-    }
-
-    :root.plus #loading-overlay {
-        background: rgba(15, 23, 42, 0.9);
-    }
-
-    /* Modal Improvements */
-    .modal-content {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--glass-shadow);
-    }
-
-    /* Badges */
-    .badge {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-weight: 500;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .glass-panel {
-        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(2px);
     }
 </style>
 
@@ -280,35 +112,26 @@ session_start();
 
 <div class="container-fluid px-4 pt-3">
     <!-- Header -->
-    <div class="container-fluid px-4 py-4">
-        <div class="d-flex justify-content-between align-items-start mb-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <a href="index.php" class="btn btn-light border btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Voltar">
+                <i class="bi bi-arrow-left"></i>
+            </a>
             <div>
-                <h1 class="text-4xl font-bold mb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem;">
-                    Editor SQL Postgres
-                </h1>
-                <p class="text-muted mb-2" style="font-size: 0.95rem;">Execute queries, navegue pelo banco de dados e exporte resultados</p>
-                <div class="d-flex align-items-center gap-2" id="connection-status">
-                    <span class="badge bg-danger">
-                        <i class="bi bi-circle-fill me-1" style="font-size: 0.6em;"></i>Desconectado
-                    </span>
+                <h5 class="fw-bold mb-0 text-dark">Editor SQL Postgres</h5>
+                <div class="small text-muted d-flex align-items-center" id="connection-status">
+                     <span class="text-danger"><i class="bi bi-circle-fill small me-1" style="font-size: 0.6em;"></i>Desconectado</span>
                 </div>
             </div>
-            <div class="d-flex gap-2 align-items-center">
-                <button onclick="toggleTheme()" class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
-                    <span>Tema</span>
-                </button>
-                <a href="index.php" class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1 text-decoration-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                    <span>Voltar</span>
-                </a>
-                <button class="btn btn-sm btn-primary shadow-sm" onclick="showConnectModal()">
-                    <i class="bi bi-plug-fill me-1"></i> Conectar
-                </button>
-                <button class="btn btn-sm btn-outline-danger" onclick="disconnect()">
-                    <i class="bi bi-power me-1"></i> Desconectar
-                </button>
-            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-primary shadow-sm" onclick="showConnectModal()">
+                <i class="bi bi-plug-fill me-1"></i> Nova Conexão
+            </button>
+             <button class="btn btn-sm btn-white border shadow-sm text-danger" onclick="disconnect()">
+                <i class="bi bi-power me-1"></i> Desconectar
+            </button>
         </div>
     </div>
 
@@ -398,65 +221,48 @@ session_start();
 <!-- Connection Modal -->
 <div class="modal fade" id="connectModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <div class="modal-header border-0 pb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px 16px 0 0;">
-                <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
-                    <i class="bi bi-plug-fill"></i>
-                    Conexão Postgres
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Conexão Postgres</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body">
                 <form id="connectForm" onsubmit="handleConnect(event)">
-                    <div class="row g-3">
+                    <div class="row g-2">
                         <div class="col-md-9">
-                            <label class="form-label small fw-bold text-muted">
-                                <i class="bi bi-hdd me-1"></i>Host
-                            </label>
+                            <label class="form-label small fw-bold">Host</label>
                             <input type="text" class="form-control" name="host" placeholder="localhost" required value="localhost">
-                            <div class="form-text x-small">
-                                <i class="bi bi-info-circle me-1"></i> 'localhost' refere-se ao servidor (PC do Léo), não ao seu PC.
-                            </div>
+                            <div class="form-text x-small text-muted"><i class="bi bi-info-circle me-1"></i> 'localhost' refere-se ao servidor (PC do Léo), não ao seu PC.</div>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label small fw-bold text-muted">
-                                <i class="bi bi-ethernet me-1"></i>Porta
-                            </label>
+                            <label class="form-label small fw-bold">Porta</label>
                             <input type="text" class="form-control" name="port" value="5432" required>
                         </div>
                     </div>
-                    <div class="row g-3 mt-1">
+                    <div class="row g-2 mt-2">
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">
-                                <i class="bi bi-person me-1"></i>Usuário
-                            </label>
+                            <label class="form-label small fw-bold">Usuário</label>
                             <input type="text" class="form-control" name="user" required value="postgres">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">
-                                <i class="bi bi-key me-1"></i>Senha
-                            </label>
+                            <label class="form-label small fw-bold">Senha</label>
                             <input type="password" class="form-control" name="password" required>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <label class="form-label small fw-bold text-muted">
-                            <i class="bi bi-database me-1"></i>Database (Opcional)
-                        </label>
+                        <label class="form-label small fw-bold">Database (Opcional)</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="dbname" list="db-list" placeholder="Nome da base...">
-                            <button type="button" class="btn btn-outline-secondary" onclick="testConnection()" title="Testar conexão e listar bancos">
-                                <i class="bi bi-arrow-repeat"></i> Testar
+                            <button type="button" class="btn btn-outline-secondary bg-light text-secondary" onclick="testConnection()" title="Testar conexão e listar bancos">
+                                <i class="bi bi-arrow-repeat"></i> Testar / Listar
                             </button>
                         </div>
                         <datalist id="db-list"></datalist>
-                        <div id="server-stats" class="mt-2 small d-none"></div>
+                        <div id="server-stats" class="mt-2 small text-muted d-none"></div>
                     </div>
                     
                     <div class="mt-4 d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg fw-bold">
-                            <i class="bi bi-check-circle me-2"></i>Conectar
-                        </button>
+                        <button type="submit" class="btn btn-primary fw-bold">Conectar</button>
                     </div>
                 </form>
             </div>
@@ -467,23 +273,18 @@ session_start();
 <!-- History Modal -->
 <div class="modal fade" id="historyModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <div class="modal-header border-0 pb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px 16px 0 0;">
-                <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
-                    <i class="bi bi-clock-history"></i>
-                    Histórico de Queries
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Histórico de Queries</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-3">
+            <div class="modal-body">
                 <div id="history-list" class="list-group list-group-flush">
                     <!-- Items -->
                 </div>
             </div>
-            <div class="modal-footer border-0 pt-0 bg-light">
-                <button class="btn btn-sm btn-outline-danger" onclick="clearHistory()">
-                    <i class="bi bi-trash me-1"></i>Limpar Histórico
-                </button>
+            <div class="modal-footer border-0 pt-0">
+                <button class="btn btn-sm btn-link text-danger text-decoration-none" onclick="clearHistory()">Limpar Histórico</button>
             </div>
         </div>
     </div>
@@ -495,13 +296,10 @@ session_start();
 <!-- Schema Modal -->
 <div class="modal fade" id="schemaModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <div class="modal-header border-0 pb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px 16px 0 0;">
-                <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2" id="schemaModalTitle">
-                    <i class="bi bi-table"></i>
-                    Estrutura da Tabela
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="schemaModalTitle">Estrutura da Tabela</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
                 <div id="schema-content" class="table-responsive p-3">
@@ -755,44 +553,15 @@ session_start();
     function updateConnectionUI(connected, meta = null) {
         const statusEl = document.getElementById('connection-status');
         if (connected) {
-            let html = '<span class="badge bg-success"><i class="bi bi-circle-fill me-1" style="font-size: 0.6em;"></i>Conectado</span>';
+            let html = '<span class="text-success"><i class="bi bi-circle-fill small me-1" style="font-size: 0.6em;"></i>Conectado</span>';
             if (meta) {
-                 html += ` <span class="badge bg-light text-dark border"><i class="bi bi-hdd me-1"></i>${meta.host}</span>`;
-                 html += ` <span class="badge bg-primary"><i class="bi bi-database me-1"></i>${meta.dbname}</span>`;
+                 html += ` <span class="text-muted mx-1">|</span> <span class="fw-bold text-dark">${meta.host}</span> <span class="text-muted">/</span> <span class="fw-bold text-primary">${meta.dbname}</span>`;
             }
             statusEl.innerHTML = html;
         } else {
-            statusEl.innerHTML = '<span class="badge bg-danger"><i class="bi bi-circle-fill me-1" style="font-size: 0.6em;"></i>Desconectado</span>';
+            statusEl.innerHTML = '<span class="text-danger"><i class="bi bi-circle-fill small me-1" style="font-size: 0.6em;"></i>Desconectado</span>';
         }
     }
-
-    // Theme Toggle
-    function toggleTheme() {
-        const root = document.documentElement;
-        const currentTheme = root.classList.contains('plus') ? 'dark' : 'light';
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
-        if (newTheme === 'dark') {
-            root.classList.add('plus');
-            // Update Ace Editor theme
-            if (editor) editor.setTheme('ace/theme/monokai');
-        } else {
-            root.classList.remove('plus');
-            // Update Ace Editor theme
-            if (editor) editor.setTheme('ace/theme/tomorrow');
-        }
-        
-        // Save preference
-        localStorage.setItem('sql-editor-theme', newTheme);
-    }
-
-    // Load theme on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('sql-editor-theme');
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('plus');
-        }
-    });
 
     // --- Metadata & Navigation ---
 

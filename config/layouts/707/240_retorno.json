@@ -1,0 +1,180 @@
+{
+    "bank_code": 707,
+    "bank_name": "Daycoval",
+    "layout_type": "240",
+    "description": "Layout padrão gerado automaticamente",
+    "segments": {
+        "T": {
+            "match": [
+                {
+                    "pos": 14,
+                    "value": "T"
+                }
+            ],
+            "description": "Segmento T",
+            "fields": [
+                {
+                    "name": "cod_banco",
+                    "start": 1,
+                    "end": 3,
+                    "type": "string"
+                },
+                {
+                    "name": "lote",
+                    "start": 4,
+                    "end": 7,
+                    "type": "int"
+                },
+                {
+                    "name": "tipo_registro",
+                    "start": 8,
+                    "end": 8,
+                    "type": "int"
+                },
+                {
+                    "name": "num_registro",
+                    "start": 9,
+                    "end": 13,
+                    "type": "int"
+                },
+                {
+                    "name": "segmento",
+                    "start": 14,
+                    "end": 14,
+                    "type": "string"
+                },
+                {
+                    "name": "cod_movimento",
+                    "start": 16,
+                    "end": 17,
+                    "type": "string"
+                },
+                {
+                    "name": "nosso_numero",
+                    "start": 38,
+                    "end": 57,
+                    "type": "string"
+                },
+                {
+                    "name": "carteira",
+                    "start": 58,
+                    "end": 58,
+                    "type": "int"
+                },
+                {
+                    "name": "doc_numero",
+                    "start": 59,
+                    "end": 73,
+                    "type": "string"
+                },
+                {
+                    "name": "vencimento",
+                    "start": 74,
+                    "end": 81,
+                    "type": "date"
+                },
+                {
+                    "name": "valor_titulo",
+                    "start": 82,
+                    "end": 96,
+                    "type": "money"
+                },
+                {
+                    "name": "banco_cobrador",
+                    "start": 97,
+                    "end": 99,
+                    "type": "string"
+                },
+                {
+                    "name": "agencia_cobradora",
+                    "start": 100,
+                    "end": 104,
+                    "type": "int"
+                },
+                {
+                    "name": "dv_agencia_cobradora",
+                    "start": 105,
+                    "end": 105,
+                    "type": "string"
+                },
+                {
+                    "name": "identificacao_titulo",
+                    "start": 106,
+                    "end": 130,
+                    "type": "string"
+                },
+                {
+                    "name": "cod_moeda",
+                    "start": 131,
+                    "end": 132,
+                    "type": "int"
+                },
+                {
+                    "name": "tipo_inscricao",
+                    "start": 133,
+                    "end": 133,
+                    "type": "int"
+                },
+                {
+                    "name": "numero_inscricao",
+                    "start": 134,
+                    "end": 148,
+                    "type": "int"
+                },
+                {
+                    "name": "nome_pagador",
+                    "start": 149,
+                    "end": 188,
+                    "type": "string"
+                },
+                {
+                    "name": "valor_tarifa",
+                    "start": 199,
+                    "end": 213,
+                    "type": "money"
+                },
+                {
+                    "name": "motivo_ocorrencia",
+                    "start": 214,
+                    "end": 223,
+                    "type": "string"
+                }
+            ]
+        },
+        "U": {
+            "match": [
+                {
+                    "pos": 14,
+                    "value": "U"
+                }
+            ],
+            "description": "Segmento U (Pagamento)",
+            "fields": [
+                {
+                    "name": "valor_pago",
+                    "start": 78,
+                    "end": 92,
+                    "type": "money"
+                },
+                {
+                    "name": "valor_liquido",
+                    "start": 93,
+                    "end": 107,
+                    "type": "money"
+                },
+                {
+                    "name": "data_ocorrencia",
+                    "start": 138,
+                    "end": 145,
+                    "type": "date"
+                },
+                {
+                    "name": "data_credito",
+                    "start": 146,
+                    "end": 153,
+                    "type": "date"
+                }
+            ]
+        }
+    }
+}

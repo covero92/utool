@@ -1,0 +1,103 @@
+{
+    "bank_code": "001",
+    "bank_name": "Banco do Brasil",
+    "layout_type": "400",
+    "description": "Layout padrão CNAB 400",
+    "segments": {
+        "1": {
+            "match": [
+                {
+                    "pos": 1,
+                    "value": "1"
+                }
+            ],
+            "description": "Transação",
+            "fields": [
+                {
+                    "name": "tipo_registro",
+                    "start": 1,
+                    "end": 1,
+                    "type": "int"
+                },
+                {
+                    "name": "agencia",
+                    "start": 18,
+                    "end": 21,
+                    "type": "string"
+                },
+                {
+                    "name": "conta",
+                    "start": 23,
+                    "end": 30,
+                    "type": "string"
+                },
+                {
+                    "name": "nosso_numero",
+                    "start": 86,
+                    "end": 93,
+                    "type": "string"
+                },
+                {
+                    "name": "cod_ocorrencia",
+                    "start": 109,
+                    "end": 110,
+                    "type": "string"
+                },
+                {
+                    "name": "data_ocorrencia",
+                    "start": 111,
+                    "end": 116,
+                    "type": "date"
+                },
+                {
+                    "name": "num_documento",
+                    "start": 117,
+                    "end": 126,
+                    "type": "string"
+                },
+                {
+                    "name": "vencimento",
+                    "start": 147,
+                    "end": 152,
+                    "type": "date"
+                },
+                {
+                    "name": "valor_titulo",
+                    "start": 153,
+                    "end": 165,
+                    "type": "money"
+                },
+                {
+                    "name": "banco_recebedor",
+                    "start": 166,
+                    "end": 168,
+                    "type": "string"
+                },
+                {
+                    "name": "agencia_recebedora",
+                    "start": 169,
+                    "end": 173,
+                    "type": "string"
+                },
+                {
+                    "name": "valor_pago",
+                    "start": 254,
+                    "end": 266,
+                    "type": "money"
+                },
+                {
+                    "name": "data_credito",
+                    "start": 296,
+                    "end": 301,
+                    "type": "date"
+                },
+                {
+                    "name": "motivo_ocorrencia",
+                    "start": 319,
+                    "end": 328,
+                    "type": "string"
+                }
+            ]
+        }
+    }
+}
