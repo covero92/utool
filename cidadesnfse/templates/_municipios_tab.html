@@ -1,0 +1,164 @@
+<!-- /cidadesnfse/templates/_municipios_tab.html -->
+<div class="row mt-3">
+    <!-- Coluna da Lista de Municípios e Filtros -->
+    <div class="col-lg-5 d-flex flex-column" style="max-height: 85vh;">
+        
+        <!-- NOVO: Botão de controle -->
+        <div class="d-flex justify-content-end mb-2">
+            <button id="toggle-filters-btn" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-chevron-up"></i> Esconder Filtros
+            </button>
+        </div>
+
+        <!-- NOVO: Wrapper para o painel de filtros -->
+        <div id="filters-panel">
+            <!-- Painel de Filtros -->
+            <div class="card shadow mb-3">
+                <div class="card-body">
+                    <!-- Filtro de Busca por Nome -->
+                    <div class="input-group mb-2">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="municipio-search" placeholder="Buscar município por nome...">
+                    </div>
+
+                    <!-- Acordeão de Filtros Avançados -->
+                    <div class="accordion accordion-flush" id="advanced-filters-accordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-uf">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-uf" aria-expanded="false" aria-controls="collapse-uf">
+                                    <i class="bi bi-geo-alt-fill me-2"></i> Filtrar por UF
+                                </button>
+                            </h2>
+                            <div id="collapse-uf" class="accordion-collapse collapse" aria-labelledby="heading-uf" data-bs-parent="#advanced-filters-accordion">
+                                <div class="accordion-body" id="uf-filter-options" style="max-height: 200px; overflow-y: auto;">
+                                    <!-- Checkboxes de UF serão gerados pelo JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-adesao">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-adesao" aria-expanded="false" aria-controls="collapse-adesao">
+                                    <i class="bi bi-patch-check-fill me-2"></i> Adesão Padrão Nacional
+                                </button>
+                            </h2>
+                            <div id="collapse-adesao" class="accordion-collapse collapse" aria-labelledby="heading-adesao" data-bs-parent="#advanced-filters-accordion">
+                                <div class="accordion-body">
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="filter-adesao" id="adesao-todos" value="todos" checked><label class="form-check-label" for="adesao-todos">Todos</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="filter-adesao" id="adesao-sim" value="sim"><label class="form-check-label" for="adesao-sim">Sim</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="filter-adesao" id="adesao-nao" value="nao"><label class="form-check-label" for="adesao-nao">Não</label></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-homologado">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-homologado" aria-expanded="false" aria-controls="collapse-homologado">
+                                    <i class="bi bi-shield-check me-2"></i> Status Homologado Uniplus
+                                </button>
+                            </h2>
+                            <div id="collapse-homologado" class="accordion-collapse collapse" aria-labelledby="heading-homologado" data-bs-parent="#advanced-filters-accordion">
+                                <div class="accordion-body">
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="filter-homologado" id="homologado-todos" value="todos" checked><label class="form-check-label" for="homologado-todos">Todos</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="filter-homologado" id="homologado-sim" value="sim"><label class="form-check-label" for="homologado-sim">Sim</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="filter-homologado" id="homologado-nao" value="nao"><label class="form-check-label" for="homologado-nao">Não</label></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel da Lista de Municípios -->
+        <div class="card shadow flex-grow-1" style="overflow-y: auto;">
+            <div class="accordion" id="municipios-list">
+                <!-- Conteúdo gerado pelo JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna dos Detalhes e Histórico -->
+    <div class="col-lg-7">
+        <div id="municipio-details-card" class="card shadow" style="display: none; position: sticky; top: 80px;">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 id="municipio-detail-title">Detalhes do Município</h5>
+                </div>
+                 <!-- Abas de Navegação -->
+                <ul class="nav nav-tabs card-header-tabs mt-2" id="municipio-info-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="details-tab-link" data-bs-toggle="tab" data-bs-target="#details-tab-pane" type="button" role="tab">
+                            <i class="bi bi-pencil-square"></i> Detalhes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-tab-link" data-bs-toggle="tab" data-bs-target="#history-tab-pane" type="button" role="tab">
+                            <i class="bi bi-clock-history"></i> Histórico
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="myTabContent">
+                    <!-- Painel de Detalhes -->
+                    <div class="tab-pane fade show active" id="details-tab-pane" role="tabpanel">
+                        <form id="form-municipio-details">
+                            <input type="hidden" id="form-municipio-codigomunicipio" name="codigomunicipio">
+                            
+                            <div class="mb-3">
+                                <label for="form-municipio-provedor" class="form-label">Provedor</label>
+                                <div class="input-group">
+                                    <select id="form-municipio-provedor" name="provedor" class="form-select"></select>
+                                    <a id="provider-doc-link" href="#" target="_blank" class="btn btn-outline-info d-none" title="Ver Documentação do Provedor">
+                                        <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="form-municipio-urlprovedor" class="form-label">URL do Provedor</label>
+                                <input type="url" id="form-municipio-urlprovedor" name="urlprovedor" class="form-control" placeholder="https://provedor.com.br/cidade">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="form-municipio-url_webservice" class="form-label">URL do Webservice</label>
+                                <input type="url" id="form-municipio-url_webservice" name="url_webservice" class="form-control" placeholder="https://api.provedor.com.br/v2/nfse.asmx">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="form-municipio-observacao" class="form-label">Observações</label>
+                                <textarea id="form-municipio-observacao" name="observacao" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="d-flex justify-content-around">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="form-municipio-homologado_uniplus" name="homologado_uniplus">
+                                    <label class="form-check-label" for="form-municipio-homologado_uniplus">Homologado Uniplus</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="form-municipio-reforma_tributaria" name="reforma_tributaria">
+                                    <label class="form-check-label" for="form-municipio-reforma_tributaria">Reforma Tributária</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="form-municipio-cliente_uniplus_ativo" name="cliente_uniplus_ativo">
+                                    <label class="form-check-label" for="form-municipio-cliente_uniplus_ativo">Cliente Uniplus Ativo</label>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <button type="submit" class="btn btn-success admin-only" style="display: none;">
+                                <i class="bi bi-save-fill"></i> Salvar Alterações
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Painel de Histórico -->
+                    <div class="tab-pane fade" id="history-tab-pane" role="tabpanel">
+                        <ul class="list-group" id="municipio-history-list" style="max-height: 400px; overflow-y: auto;">
+                            <!-- Histórico será carregado aqui pelo JavaScript -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

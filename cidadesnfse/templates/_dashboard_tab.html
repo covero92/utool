@@ -1,0 +1,82 @@
+<!-- /cidadesnfse/templates/_dashboard_tab.html -->
+<div class="row mt-3">
+    <!-- KPI: Municípios Totais -->
+    <div class="col-lg col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 kpi-card">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Municípios</div>
+                <div id="kpi-total-municipios" class="h3 mb-0 font-weight-bold">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI: Aderiram ao Padrão -->
+    <div class="col-lg col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 kpi-card">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Aderiram ao Padrão Nacional</div>
+                <div id="kpi-aderiram-padrao" class="h3 mb-0 font-weight-bold">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- KPI: Municípios com Uniplus Ativo -->
+    <div class="col-lg col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 kpi-card">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Municípios com Uniplus Ativo</div>
+                <div id="kpi-uniplus-ativo" class="h3 mb-0 font-weight-bold">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- KPI: Municípios com Provedor Mapeado -->
+    <div class="col-lg col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 kpi-card">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Municípios com Provedor Mapeado</div>
+                <div id="kpi-provedor-mapeado" class="h3 mb-0 font-weight-bold">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI: Reforma Tributária -->
+    <div class="col-lg col-md-6 mb-4">
+        <div class="card shadow h-100 py-2 kpi-card">
+            <div class="card-body">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Reforma Tributária</div>
+                <div id="kpi-reforma-tributaria" class="h3 mb-0 font-weight-bold">0</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros e Mapa -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Mapa de Municípios</h6>
+    </div>
+    <div class="card-body">
+        <!-- Filtros do Mapa -->
+        <div id="map-filters" class="d-flex flex-wrap justify-content-center align-items-center gap-3 mb-3 p-2 rounded" style="background-color: var(--app-accordion-bg);">
+            <div class="form-check form-switch fs-6">
+                <input class="form-check-input" type="checkbox" role="switch" id="filter-nfse-nacional" checked>
+                <label class="form-check-label" for="filter-nfse-nacional">NFS-e Nacional (Laranja)</label>
+            </div>
+            <div class="form-check form-switch fs-6">
+                <input class="form-check-input" type="checkbox" role="switch" id="filter-provedor-mapeado" checked>
+                <label class="form-check-label" for="filter-provedor-mapeado">Provedores Mapeados (Azul)</label>
+            </div>
+            <div class="form-check form-switch fs-6">
+                <input class="form-check-input" type="checkbox" role="switch" id="filter-reforma-tributaria">
+                <label class="form-check-label" for="filter-reforma-tributaria">Reforma Tributária (Verde)</label>
+            </div>
+            <div class="form-check form-switch fs-6">
+                <input class="form-check-input" type="checkbox" role="switch" id="filter-uniplus-ativo">
+                <label class="form-check-label" for="filter-uniplus-ativo">Cliente Uniplus Ativo (Vermelho)</label>
+            </div>
+        </div>
+        <!-- Container do Mapa -->
+        <div id="map"></div>
+    </div>
+</div>

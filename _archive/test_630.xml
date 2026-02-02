@@ -1,0 +1,22 @@
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+    <infNFe Id="NFe35200159595959595959550010000000011000000001" versao="4.00">
+        <det nItem="1">
+            <prod>
+                <cProd>123</cProd>
+                <xProd>Produto Teste Erro 630</xProd>
+                <qTrib>2.00</qTrib>
+                <vUnTrib>10.00</vUnTrib>
+                <vProd>20.05</vProd> <!-- Erro: dever ser 20.00 -->
+            </prod>
+        </det>
+        <det nItem="2">
+            <prod>
+                <cProd>124</cProd>
+                <xProd>Produto Teste Correto</xProd>
+                <qTrib>3.00</qTrib>
+                <vUnTrib>10.00</vUnTrib>
+                <vProd>30.00</vProd> <!-- Correto -->
+            </prod>
+        </det>
+    </infNFe>
+</NFe>
