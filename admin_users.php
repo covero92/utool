@@ -160,17 +160,23 @@ body {
         <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
             <div class="card card-glass rounded-4 overflow-hidden border-0">
                 <div class="card-header bg-transparent border-0 py-4 px-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
+                    <div class="row align-items-center">
+                        <div class="col-md-8 mb-3 mb-md-0">
                             <h5 class="mb-0 fw-bold section-title text-dark">Usuários Cadastrados</h5>
                             <p class="text-muted small mb-0">Gerencie o acesso dos membros da equipe.</p>
                         </div>
-                        <span class="badge bg-white text-primary shadow-sm border rounded-pill px-3 py-2"><?php echo count($users); ?> usuários</span>
+                        <div class="col-md-4 d-flex justify-content-md-end align-items-center gap-3">
+                             <div class="position-relative w-100">
+                                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted small"></i>
+                                <input type="text" class="form-control form-control-sm rounded-pill ps-5 border-0 bg-white shadow-sm" id="userSearch" onkeyup="filterTable('usersTable', this.value)" placeholder="Buscar...">
+                             </div>
+                            <span class="badge bg-white text-primary shadow-sm border rounded-pill px-3 py-2 text-nowrap"><?php echo count($users); ?> usuários</span>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle table-custom">
+                        <table class="table table-hover mb-0 align-middle table-custom" id="usersTable">
                             <thead class="bg-light bg-opacity-50">
                                 <tr>
                                     <th class="py-3 px-4 border-bottom-0 text-uppercase text-secondary small fw-bold ps-4">Usuário</th>
@@ -466,6 +472,7 @@ body {
   </div>
 </div>
 
+<script src="assets/js/utils.js"></script>
 <script>
 // Roles Logic
 let roleModalInstance = null;
@@ -539,7 +546,7 @@ function resetPassword(id) {
 function toggleStatus(id, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
     if(!confirm("Alterar status para " + newStatus + "?")) return;
-    performAction('update_user_status', { user_id: id, status: newStatus });
+    performAction('admin_toggle_user_status', { user_id: id, current_status: currentStatus });
 }
 
 function saveDBConfig() {

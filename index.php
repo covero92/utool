@@ -3,6 +3,9 @@ include 'includes/header.php';
 require_once 'includes/portal_helpers.php';
 
 require_once 'includes/portal_auth.php';
+require_once 'includes/permission_manager.php';
+$permManager = new PermissionManager();
+$currentRoleId = $_SESSION['user_role_id'] ?? 0;
 
 $portal = new SupportPortal();
 $password = $portal->getTechnicalPassword();
@@ -216,10 +219,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                 <div class="ms-3 lh-1">
                                     <span class="d-block fw-bold text-dark small text-truncate"
                                         style="max-width: 140px;"><?php echo htmlspecialchars($u['full_name']); ?></span>
-                                    <span class="d-block text-muted mt-1"
-                                        style="font-size: 0.7rem;"><?php echo ucfirst($u['role']); ?>
-                                        <?php if ($isMe)
-                                            echo '(Você)'; ?></span>
+
                                 </div>
                             </li>
                         <?php endforeach; ?>
@@ -228,10 +228,11 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
             </div>
 
             <!-- Fiscal Blog Widget -->
+            <?php if ($permManager->canView('blog', $currentRoleId)): ?>
             <div class="mt-4 px-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="text-secondary fw-bold text-uppercase small mb-0 opacity-75"
-                        style="letter-spacing: 1px;">Updates Fiscais</h6>
+                        style="letter-spacing: 1px;">Novidades do Blog</h6>
                     <a href="fiscal_blog.php" class="text-primary small text-decoration-none fw-bold">Ver todos</a>
                 </div>
 
@@ -285,6 +286,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 
 
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- Main Content: Tools Grid (Scrollable) -->
@@ -335,9 +337,12 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                             <?php echo htmlspecialchars($currentUser); ?>
                                         </h6>
                                     </li>
+                                    <li><a class="dropdown-item rounded-3" href="profile.php"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
                                     <?php if ($isAdmin): ?>
                                         <li><a class="dropdown-item rounded-3" href="admin_users.php"><i
                                                     class="bi bi-people me-2"></i>Gerenciar Usuários</a></li>
+                                        <li><a class="dropdown-item rounded-3" href="admin_permissions.php"><i
+                                            class="bi bi-shield-lock me-2"></i>Permissões dos Cards</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
@@ -369,6 +374,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 <!-- Widgets Row -->
                 <div class="row g-4 mb-4">
                     <!-- Technical Password Widget -->
+                    <?php if ($permManager->canView('technical_password', $currentRoleId)): ?>
                     <div class="col-md-4">
                         <div
                             class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card">
@@ -381,7 +387,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-end justify-content-between mt-3">
-                                    <h2 class="display-5 widget-value mb-0 text-primary"><?php echo $password; ?></h2>
+                                    <h2 class="display-1 fw-bold widget-value mb-0 text-primary"><?php echo $password; ?></h2>
                                     <div class="text-end lh-1 text-muted">
                                         <div class="small fw-bold"><?php echo date('d/m/Y'); ?></div>
                                         <div id="brasilia-clock" class="small opacity-75">--:--:--</div>
@@ -390,11 +396,13 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- Weather Widget -->
+                    <?php if ($permManager->canView('weather', $currentRoleId)): ?>
                     <div class="col-md-4">
-                        <div
-                            class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card">
+                        <div id="weather-card"
+                            class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card transition-all" style="transition: all 0.5s ease;">
                             <?php if ($isSupport): ?>
                                 <button
                                     class="btn btn-sm btn-light btn-action position-absolute top-0 end-0 m-2 rounded-circle shadow-sm"
@@ -415,15 +423,16 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                             id="weather-city-display"><?php echo htmlspecialchars($weatherConfig['city'] ?? 'Brusque'); ?></span>
                                     </div>
                                 </div>
-                                <i class="bi bi-cloud-sun fs-1 text-info opacity-75"></i>
+                                <i id="weather-icon-lg" class="bi bi-cloud-sun fs-1 text-info opacity-75"></i>
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- Version Widget -->
                     <div class="col-md-4">
                         <div
-                            class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card">
+                            class="card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card cursor-pointer" onclick="window.location.href='release_notes.php'" style="cursor: pointer;">
                             <?php if ($isAdmin): ?>
                                 <button
                                     class="btn btn-sm btn-light btn-action position-absolute top-0 end-0 m-2 rounded-circle shadow-sm"
@@ -442,11 +451,9 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                     <h2 class="display-6 widget-value mb-0 text-dark">v<?php echo $build['version']; ?>
                                     </h2>
                                     <div class="d-flex justify-content-between align-items-end mt-1">
-                                        <p class="text-muted small mb-0 lh-1 opacity-75">Data
-                                            release:<br><?php echo $build['date']; ?></p>
-                                        <a href="release_notes.php"
-                                            class="btn btn-sm btn-primary rounded-pill px-3 py-1 shadow-sm fs-7">Ver
-                                            detalhes</a>
+                                        <p class="text-secondary mb-0 lh-sm fw-medium">Data
+                                            release:<br><span class="text-dark fs-5"><?php echo $build['date']; ?></span></p>
+                                        <!-- Button removed, whole card is clickable -->
                                     </div>
                                 </div>
                             </div>
@@ -455,9 +462,9 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                 </div>
             </div>
 
-            <!-- Horizontal Category Navigation -->
-            <div class="mb-5">
-                <div class="nav nav-pills gap-3 d-flex flex-nowrap overflow-auto py-2" id="hub-nav"
+            <!-- Horizontal Category Navigation & View Options -->
+            <div class="mb-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <div class="nav nav-pills gap-3 d-flex flex-nowrap overflow-auto py-2 w-100" id="hub-nav"
                     style="scrollbar-width: none;">
                     <button
                         class="nav-link active rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-2 flex-shrink-0"
@@ -489,6 +496,23 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                         onclick="filterCategory('sistema', this)">
                         <i class="bi bi-hdd-network"></i> Sistema
                     </button>
+                </div>
+
+                <div class="flex-shrink-0">
+                    <div class="dropdown">
+                        <button class="btn btn-white shadow-sm rounded-pill px-3 py-2 fw-bold text-secondary d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-grid-fill"></i> <span class="d-none d-md-inline">Visualização</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-4 p-2">
+                             <li><h6 class="dropdown-header small text-uppercase fw-bold">Layout</h6></li>
+                            <li><button class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2" onclick="setView('list')"><i class="bi bi-list-ul"></i> Lista</button></li>
+                            <li><hr class="dropdown-divider"></li>
+                             <li><h6 class="dropdown-header small text-uppercase fw-bold">Tamanho da Grade</h6></li>
+                            <li><button class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2" onclick="setView('grid-sm')"><i class="bi bi-grid-3x3"></i> Pequena</button></li>
+                            <li><button class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2" onclick="setView('grid-md')"><i class="bi bi-grid-fill"></i> Média (Padrão)</button></li>
+                            <li><button class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2" onclick="setView('grid-lg')"><i class="bi bi-square-fill"></i> Grande</button></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -523,13 +547,27 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                                 ';
 
 
+
+
+                        // 1. Toggle Button (Quick Hide/Show) - Requires 'edit_tools'
                         if (hasCapability('edit_tools')) {
                             echo '
-                                    <button class="btn btn-sm btn-white position-absolute top-0 end-0 m-2 rounded-circle shadow-sm btn-admin-toggle"
+                                    <button class="btn btn-sm btn-white position-absolute top-0 end-0 m-2 me-5 rounded-circle shadow-sm btn-admin-toggle"
                                             style="width: 32px; height: 32px; padding: 0; z-index: 10;"
                                             onclick="toggleCard(\'' . $id . '\', this); event.preventDefault();"
                                             title="Ocultar/Exibir">
                                         <i class="bi ' . $eyeIcon . ' ' . $eyeColor . ' small"></i>
+                                    </button>';
+                        }
+
+                        // 2. Config Button (Permissions) - Requires 'manage_roles' or 'edit_tools'
+                        if (hasCapability('edit_tools') || hasCapability('manage_roles')) { 
+                            echo '
+                                    <button class="btn btn-sm btn-white position-absolute top-0 end-0 m-2 rounded-circle shadow-sm btn-admin-toggle"
+                                            style="width: 32px; height: 32px; padding: 0; z-index: 10;"
+                                            onclick="openCardConfig(\'' . $id . '\'); event.preventDefault();"
+                                            title="Configurar Permissões">
+                                        <i class="bi bi-gear-fill text-secondary small"></i>
                                     </button>';
                         }
 
@@ -559,11 +597,32 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                     <h3 class="section-title text-secondary mb-4"><i class="bi bi-people-fill me-2"></i>Equipe Suporte
                     </h3>
                     <div class="row g-4 helper-row-container">
+                        <?php if ($permManager->canView('status_suporte', $currentRoleId)): ?>
+                        <?php
+                        renderCard('card-status-suporte', 'Status Suporte', 'Dashboard de métricas em tempo real.', 'status_suporte.php', 'bg-indigo-gradient', 'bi-speedometer2', $portal, $isAdmin, false, true);
+                        ?>
+                        <?php endif; ?>
+
+                        <?php if ($permManager->canView('intranet', $currentRoleId)): ?>
                         <?php
                         renderCard('card-team-intranet', 'Intranet Suporte', 'Ferramentas internas e gestão de conhecimento.', 'intranet.php', 'bg-indigo-gradient', 'bi-globe-americas', $portal, $isAdmin);
+                        ?>
+                        <?php endif; ?>
+                        <?php if ($permManager->canView('ppr', $currentRoleId)): ?>
+                        <?php
                         renderCard('card-team-ppr', 'Gestão PPR', 'Acompanhamento de metas e resultados PPR.', 'ppr_manager.php', 'bg-warning-gradient', 'bi-trophy-fill', $portal, $isAdmin);
+                        ?>
+                        <?php endif; ?>
+                        <?php if ($permManager->canView('meetings', $currentRoleId)): ?>
+                        <?php
                         renderCard('card-team-meetings', 'Reuniões & Pautas', 'Agenda de reuniões, atas e pautas do setor de suporte.', 'meetings.php', 'bg-teal-gradient', 'bi-calendar-event', $portal, $isAdmin);
                         ?>
+                        <?php endif; ?>
+                        <?php if ($permManager->canView('blog', $currentRoleId)): ?>
+                        <?php
+                        renderCard('card-fiscal-blog', 'Blog Suporte', 'Notícias e atualizações.', 'fiscal_blog.php', 'bg-danger-gradient', 'bi-newspaper', $portal, $isAdmin);
+                        ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -573,7 +632,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                     </h3>
                     <div class="row g-4 helper-row-container">
                         <?php
-                        renderCard('card-leitura-remessa', 'Leitura de Remessa', 'Leitura e análise de remessa e retorno bancário.', 'leitura_remessa.php', 'bg-indigo-gradient', 'bi-file-earmark-binary', $portal, $isAdmin, true);
+                        renderCard('card-leitura-remessa', 'Leitura de Remessa', 'Leitura e análise de remessa e retorno bancário.', 'leitura_remessa.php', 'bg-indigo-gradient', 'bi-file-earmark-binary', $portal, $isAdmin, false);
                         renderCard('card-fator-conversor', 'Calculadora Fator', 'Conversão de medidas (Cx p/ Un, Kg p/ g).', 'fator_conversor.php', 'bg-purple-gradient', 'bi-calculator', $portal, $isAdmin);
                         ?>
                     </div>
@@ -588,7 +647,7 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                         
 
                         // Apply Cards (Internal)
-                        renderCard('card-fiscal-blog', 'Blog Fiscal', 'Notícias e atualizações tributárias.', 'fiscal_blog.php', 'bg-danger-gradient', 'bi-newspaper', $portal, $isAdmin);
+
                         renderCard('card-xml-gen', 'Gerador XML NF-e', 'Gere XMLs de Importação a partir de DI.', 'xml_generator.php', 'bg-info-gradient', 'bi-file-earmark-code', $portal, $isAdmin, true);
                         renderCard('card-manifestador', 'Manifestador', 'Em desenvolvimento', '#', 'bg-secondary', 'bi-cloud-download', $portal, $isAdmin, true);
                         renderCard('card-nfse', 'NFS-e Nacional', 'Validador e Consulta NFS-e.', 'nfse-nacional.php', 'bg-orange-gradient', 'bi-building', $portal, $isAdmin, true);
@@ -664,94 +723,139 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 </div> <!-- Close Container -->
 
 <!-- Auth Modal (Login/Register) -->
-<div class="modal fade" id="portalLoginModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
-            <div class="modal-body p-0">
+<div class="modal fade" id="portalLoginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 bg-transparent shadow-lg">
+            <div class="card card-glass overflow-hidden rounded-5 border-0">
                 <div class="row g-0">
-                    <!-- Sidebar Art (Optional, kept simple for now) -->
-                    <div class="col-12 p-4">
-                        <ul class="nav nav-pills nav-fill mb-4" id="pills-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active rounded-pill fw-bold" id="pills-login-tab"
-                                    data-bs-toggle="pill" data-bs-target="#pills-login" type="button"
-                                    role="tab">Login</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link rounded-pill fw-bold" id="pills-register-tab"
-                                    data-bs-toggle="pill" data-bs-target="#pills-register" type="button"
-                                    role="tab">Cadastrar</button>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content" id="pills-tabContent">
-                            <!-- LOGIN FORM -->
-                            <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
-                                <form method="POST" action="includes/portal_actions.php">
-                                    <input type="hidden" name="portal_action" value="login">
-                                    <div class="mb-3">
-                                        <label
-                                            class="form-label small text-muted text-uppercase fw-bold">Usuário</label>
-                                        <input type="text" class="form-control" name="user" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Senha</label>
-                                        <input type="password" class="form-control" name="pass" required>
-                                    </div>
-
-                                    <?php if (isset($_SESSION['login_error'])): ?>
-                                        <div class="alert alert-danger py-2 small mb-3">
-                                            <?php echo $_SESSION['login_error'];
-                                            unset($_SESSION['login_error']); ?>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (isset($_SESSION['login_success_msg'])): ?>
-                                        <div class="alert alert-success py-2 small mb-3">
-                                            <?php echo $_SESSION['login_success_msg'];
-                                            unset($_SESSION['login_success_msg']); ?>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <button type="submit"
-                                        class="btn btn-primary w-100 rounded-pill fw-bold py-2">Entrar</button>
-                                </form>
+                    <!-- Left Side: Brand/Info -->
+                    <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center align-items-center bg-primary bg-gradient p-5 text-white text-center position-relative overflow-hidden">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-white opacity-10" style="background-image: radial-gradient(circle, rgba(255,255,255,0.2) 2px, transparent 2px); background-size: 20px 20px;"></div>
+                        <div class="position-relative z-1">
+                            <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg mb-4" style="width: 80px; height: 80px;">
+                                <i class="bi bi-grid-fill fs-1"></i>
                             </div>
+                            <h2 class="fw-bold mb-2 font-primary">SuporteHub</h2>
+                            <p class="opacity-75 small">Acesse todas as ferramentas e utilitários em um só lugar.</p>
+                        </div>
+                    </div>
 
-                            <!-- REGISTER FORM -->
-                            <div class="tab-pane fade" id="pills-register" role="tabpanel">
-                                <form method="POST" action="includes/portal_actions.php">
-                                    <input type="hidden" name="portal_action" value="register">
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Nome
-                                            Completo</label>
-                                        <input type="text" class="form-control" name="full_name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            class="form-label small text-muted text-uppercase fw-bold">Usuário</label>
-                                        <input type="text" class="form-control" name="user" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted text-uppercase fw-bold">Senha</label>
-                                        <input type="password" class="form-control" name="pass" required>
-                                    </div>
+                    <!-- Right Side: Forms -->
+                    <div class="col-lg-7 bg-white bg-opacity-75 backdrop-blur-md p-5">
+                        <div class="d-flex justify-content-end">
+                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
 
-                                    <?php if (isset($_SESSION['register_error'])): ?>
-                                        <div class="alert alert-danger py-2 small mb-3">
-                                            <?php echo $_SESSION['register_error'];
-                                            unset($_SESSION['register_error']); ?>
+                        <div class="px-md-4 py-3">
+                            <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-pill" id="pills-tab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active rounded-pill fw-bold small text-uppercase ls-1" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab">Login</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill fw-bold small text-uppercase ls-1" id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register" type="button" role="tab">Criar Conta</button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="pills-tabContent">
+                                <!-- LOGIN FORM -->
+                                <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
+                                    <form method="POST" action="includes/portal_actions.php">
+                                        <input type="hidden" name="portal_action" value="login">
+                                        
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold" id="loginUser" name="user" placeholder="Usuário" required>
+                                            <label for="loginUser">Usuário</label>
                                         </div>
-                                    <?php endif; ?>
+                                        <div class="form-floating mb-4">
+                                            <input type="password" class="form-control rounded-4 bg-light border-0 fw-bold" id="loginPass" name="pass" placeholder="Senha" required>
+                                            <label for="loginPass">Senha</label>
+                                        </div>
 
-                                    <button type="submit"
-                                        class="btn btn-success w-100 rounded-pill fw-bold py-2 text-white">Criar
-                                        Conta</button>
-                                </form>
+                                        <?php if (isset($_SESSION['login_error'])): ?>
+                                            <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger py-2 small mb-3 rounded-3 fw-bold">
+                                                <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if (isset($_SESSION['login_success_msg'])): ?>
+                                            <div class="alert alert-success border-0 bg-success bg-opacity-10 text-success py-2 small mb-3 rounded-3 fw-bold">
+                                                <i class="bi bi-check-circle-fill me-2"></i><?php echo $_SESSION['login_success_msg']; unset($_SESSION['login_success_msg']); ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow-sm gradient-hover transition-all">
+                                            Entrar no Portal
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- REGISTER FORM -->
+                                <div class="tab-pane fade" id="pills-register" role="tabpanel">
+                                    <form method="POST" action="includes/portal_actions.php">
+                                        <input type="hidden" name="portal_action" value="register">
+                                        
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold" id="regName" name="full_name" placeholder="Nome Completo" required>
+                                            <label for="regName">Nome Completo</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold" id="regUser" name="user" placeholder="Usuário" required>
+                                            <label for="regUser">Usuário</label>
+                                        </div>
+                                        <div class="form-floating mb-4">
+                                            <input type="password" class="form-control rounded-4 bg-light border-0 fw-bold" id="regPass" name="pass" placeholder="Senha" required>
+                                            <label for="regPass">Senha</label>
+                                        </div>
+
+                                        <?php if (isset($_SESSION['register_error'])): ?>
+                                            <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger py-2 small mb-3 rounded-3 fw-bold">
+                                                <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $_SESSION['register_error']; unset($_SESSION['register_error']); ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold py-3 shadow-sm gradient-hover transition-all text-white border-0" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                            Criar Nova Conta
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.ls-1 { letter-spacing: 1px; }
+.gradient-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.15) !important; }
+</style>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePassModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+             <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold font-primary text-dark">Alterar Senha</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="changePassForm" onsubmit="changePassword(event)">
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control rounded-4 bg-light border-0" id="currentPass" name="current_password" required placeholder="Atual">
+                        <label for="currentPass">Senha Atual</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control rounded-4 bg-light border-0" id="newPassModal" name="new_password" required placeholder="Nova">
+                        <label for="newPassModal">Nova Senha</label>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-bold me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">Salvar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -992,6 +1096,34 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
     </div>
 </div>
 
+    <!-- Card Permissions Modal -->
+    <div class="modal fade" id="cardPermissionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 bg-white" style="background-color: #ffffff !important; color: #000000 !important;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Configurar Card</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Selecione quais cargos podem visualizar este card.</p>
+                    <input type="hidden" id="perm-card-id">
+                    <div id="perm-loading" class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                    <div id="perm-list" class="d-none">
+                        <!-- Checkboxes inserted via JS -->
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" onclick="saveCardPermissions()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
     // Hub Navigation & Filtering
     function filterCategory(category, btn) {
@@ -1055,10 +1187,44 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                     document.getElementById('weather-temp').innerText = Math.round(data.current_weather.temperature) + "°C";
                     const code = data.current_weather.weathercode;
                     let desc = "Céu Limpo";
-                    if (code > 3) desc = "Nublado";
-                    if (code > 45) desc = "Nevoeiro";
-                    if (code > 50) desc = "Chuvoso";
-                    if (code > 95) desc = "Tempestade";
+                    let icon = "bi-sun-fill";
+                    let bgClass = "bg-primary bg-opacity-10"; // Default
+                    let textClass = "text-warning";
+
+                    const card = document.getElementById('weather-card');
+                    const iconEl = document.getElementById('weather-icon-lg');
+
+                    // Reset classes
+                    card.className = "card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden group-action hover-card transition-all";
+                    iconEl.className = "bi fs-1 opacity-75";
+
+                    if (code <= 3) {
+                         desc = "Ensolarado/Limpo";
+                         icon = "bi-sun-fill";
+                         card.style.background = "linear-gradient(135deg, #fff3e0 0%, #ffffff 100%)";
+                         iconEl.classList.add('bi-sun-fill', 'text-warning');
+                    } else if (code > 3 && code <= 45) {
+                        desc = "Nublado";
+                        icon = "bi-cloud-sun-fill";
+                        card.style.background = "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)";
+                        iconEl.classList.add('bi-cloud-sun-fill', 'text-secondary');
+                    } else if (code > 45 && code <= 55) {
+                        desc = "Nevoeiro/Garoa";
+                        icon = "bi-cloud-haze-fill";
+                         card.style.background = "linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%)";
+                        iconEl.classList.add('bi-cloud-haze-fill', 'text-info');
+                    } else if (code > 55 && code <= 95) {
+                        desc = "Chuvoso";
+                        icon = "bi-cloud-rain-fill";
+                        card.style.background = "linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%)";
+                        iconEl.classList.add('bi-cloud-rain-fill', 'text-primary');
+                    } else if (code > 95) {
+                        desc = "Tempestade";
+                         icon = "bi-cloud-lightning-rain-fill";
+                         card.style.background = "linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%)";
+                         iconEl.classList.add('bi-cloud-lightning-rain-fill', 'text-dark');
+                    }
+                    
                     document.getElementById('weather-desc').innerText = desc;
                 }
             })
@@ -1168,30 +1334,50 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
     // View Mode Toggle
     function setView(mode) {
         const container = document.getElementById('tools-main-container');
-        const btnGrid = document.getElementById('btn-view-grid');
-        const btnList = document.getElementById('btn-view-list');
+        if (!container) return;
 
-        if (!container || !btnGrid || !btnList) return;
+        // Strip "grid" to "grid-md" if legacy
+        if (mode === 'grid') mode = 'grid-md';
+
+        container.classList.remove('list-view');
+        
+        const cols = document.querySelectorAll('.tool-col');
+        cols.forEach(col => {
+            // Remove all layout classes
+            col.classList.remove(
+                'col-xl-2', 'col-xl-3', 'col-xl-4', 
+                'col-lg-3', 'col-lg-4', 'col-lg-6', 
+                'col-md-4', 'col-md-6', 
+                'col-sm-6', 'col-12'
+            );
+            
+            // Add new classes based on mode
+            switch(mode) {
+                case 'list':
+                    col.classList.add('col-12');
+                    break;
+                case 'grid-sm':
+                    col.classList.add('col-xl-2', 'col-lg-3', 'col-md-4', 'col-sm-6'); // 6 per row on XL
+                    break;
+                case 'grid-lg':
+                    col.classList.add('col-xl-4', 'col-lg-6', 'col-12'); // 3 per row on XL, 2 on LG
+                    break;
+                case 'grid-md': 
+                default:
+                    col.classList.add('col-xl-3', 'col-lg-4', 'col-md-6'); // 4 per row on XL (Standard)
+            }
+        });
 
         if (mode === 'list') {
             container.classList.add('list-view');
-            btnList.classList.add('active', 'btn-light');
-            btnList.classList.remove('btn-white');
-            btnGrid.classList.remove('active', 'btn-light');
-            btnGrid.classList.add('btn-white');
-        } else {
-            container.classList.remove('list-view');
-            btnGrid.classList.add('active', 'btn-light');
-            btnGrid.classList.remove('btn-white');
-            btnList.classList.remove('active', 'btn-light');
-            btnList.classList.add('btn-white');
         }
+
         localStorage.setItem('toolsViewMode', mode);
     }
 
     // Initialize View
     document.addEventListener('DOMContentLoaded', () => {
-        const savedMode = localStorage.getItem('toolsViewMode') || 'grid';
+        const savedMode = localStorage.getItem('toolsViewMode') || 'grid-md';
         setView(savedMode);
 
         // REMOVE BG-LIGHT to fix Glassmorphism
@@ -1305,6 +1491,86 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
             })
             .catch(err => console.error(err));
     }
+</script>
+
+<script>
+// Card Permissions Logic
+function openCardConfig(cardId) {
+    document.getElementById('perm-card-id').value = cardId;
+    
+    const list = document.getElementById('perm-list');
+    const loading = document.getElementById('perm-loading');
+    
+    list.innerHTML = '';
+    list.classList.add('d-none');
+    loading.classList.remove('d-none');
+    
+    const modal = new bootstrap.Modal(document.getElementById('cardPermissionsModal'));
+    modal.show();
+    
+    const fd = new FormData();
+    fd.append('action', 'get_card_permissions');
+    fd.append('card_id', cardId);
+    
+    fetch('includes/portal_actions.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            loading.classList.add('d-none');
+            list.classList.remove('d-none');
+            
+            if (data.success) {
+                data.permissions.forEach(p => {
+                    const checked = p.can_view ? 'checked' : '';
+                    const item = document.createElement('div');
+                    item.className = 'd-flex justify-content-between align-items-center mb-2 p-2 border-bottom border-secondary border-opacity-10';
+                    item.innerHTML = `
+                        <span class="fw-medium">${p.role_name}</span>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input perm-switch" type="checkbox" role-id="${p.role_id}" ${checked}>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            } else {
+                list.innerHTML = '<div class="text-danger text-center">Erro ao carregar permissões.</div>';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            loading.classList.add('d-none');
+            list.innerHTML = '<div class="text-danger text-center">Erro de conexão.</div>';
+            list.classList.remove('d-none');
+        });
+}
+
+function saveCardPermissions() {
+    const cardId = document.getElementById('perm-card-id').value;
+    const switches = document.querySelectorAll('.perm-switch');
+    const perms = [];
+    
+    switches.forEach(s => {
+        perms.push({
+            role_id: s.getAttribute('role-id'),
+            can_view: s.checked
+        });
+    });
+    
+    const fd = new FormData();
+    fd.append('action', 'update_card_permissions');
+    fd.append('card_id', cardId);
+    fd.append('permissions', JSON.stringify(perms));
+    
+    fetch('includes/portal_actions.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                // Reload to apply changes (server-side rendering)
+                location.reload();
+            } else {
+                alert('Erro ao salvar: ' + (data.message || 'Erro desconhecido'));
+            }
+        });
+}
 </script>
 
 <?php include 'includes/footer.php'; ?>

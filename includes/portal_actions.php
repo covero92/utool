@@ -54,6 +54,37 @@ if (!isLoggedIn()) {
 }
 
 // Authenticated User Actions
+if ($action === 'update_profile') {
+    $userId = $_SESSION['user_id'] ?? null;
+    if (!$userId) { echo json_encode(['success'=>false, 'message'=>'Sessão expirada']); exit; }
+
+    $data = [];
+    if (isset($_POST['full_name'])) $data['full_name'] = trim($_POST['full_name']);
+    if (isset($_POST['nickname'])) $data['nickname'] = trim($_POST['nickname']);
+    if (isset($_POST['bio'])) $data['bio'] = trim($_POST['bio']);
+    if (isset($_POST['new_password']) && !empty($_POST['new_password'])) {
+        $data['password'] = $_POST['new_password'];
+    }
+
+    // Image Upload
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../uploads/profiles/';
+        if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
+        
+        $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
+        $filename = 'user_' . $userId . '_' . time() . '.' . $ext;
+        $target = $uploadDir . $filename;
+        
+        if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
+             $data['profile_image'] = 'uploads/profiles/' . $filename;
+        }
+    }
+
+    $result = $auth->updateProfile($userId, $data);
+    echo json_encode($result);
+    exit;
+}
+
 if ($action === 'change_password') {
     $currentPass = $_POST['current_password'] ?? '';
     $newPass = $_POST['new_password'] ?? '';
@@ -347,6 +378,55 @@ if (isSupport() || isAdmin()) {
         if ($cardId) {
             $newState = $portal->toggleBlockToken($cardId);
             echo json_encode(['success' => true, 'blocked' => $newState]);
+        }
+        exit;
+    }
+
+    // Get permissions for a card (Admin)
+    if ($action === 'get_card_permissions') {
+        if (!isAdmin()) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+        
+        $cardId = $_POST['card_id'] ?? '';
+        require_once 'permission_manager.php';
+        $pm = new PermissionManager();
+        $pdo = getDBConnection();
+        
+        // Get all roles
+        $rolesStmt = $pdo->query("SELECT id, name FROM roles ORDER BY id");
+        $roles = $rolesStmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $permissions = [];
+        foreach ($roles as $r) {
+            $canView = $pm->canView($cardId, $r['id']);
+            $permissions[] = [
+                'role_id' => $r['id'],
+                'role_name' => $r['name'],
+                'can_view' => $canView
+            ];
+        }
+        
+        echo json_encode(['success' => true, 'permissions' => $permissions]);
+        exit;
+    }
+
+    // Update permissions for a card (Admin)
+    if ($action === 'update_card_permissions') {
+        if (!isAdmin()) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+        
+        $cardId = $_POST['card_id'] ?? '';
+        $perms = json_decode($_POST['permissions'] ?? '[]', true);
+        
+        if ($cardId && is_array($perms)) {
+            require_once 'permission_manager.php';
+            $pm = new PermissionManager();
+            
+            foreach ($perms as $p) {
+                // p = { role_id: 1, can_view: true }
+                $pm->setPermission($cardId, $p['role_id'], filter_var($p['can_view'], FILTER_VALIDATE_BOOLEAN));
+            }
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid data']);
         }
         exit;
     }

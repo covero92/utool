@@ -2,36 +2,53 @@
 // setup_profile_schema.php
 require_once 'includes/db_connection.php';
 
-echo "Updating database schema for User Profile...\n";
+try {
+    $pdo = getDBConnection();
+    if (!$pdo) {
+        die("Erro ao conectar no banco.\n");
+    }
 
-$pdo = getDBConnection();
-if (!$pdo) {
-    die("Database connection failed.\n");
-}
+    echo "Verificando tabela 'users'...\n";
 
-$columns = [
-    'preferred_name' => 'VARCHAR(100)',
-    'job_title' => 'VARCHAR(100)',
-    'birth_date' => 'DATE',
-    'bio' => 'TEXT'
-];
-
-foreach ($columns as $col => $type) {
-    echo "Checking column '$col'...";
+    // 1. Add profile_image
     try {
-        // Simple check by selecting, if fails, add it
-        $pdo->query("SELECT $col FROM users LIMIT 1");
-        echo " Exists.\n";
+        $pdo->exec("ALTER TABLE users ADD COLUMN profile_image TEXT NULL");
+        echo "[SUCCESS] Coluna 'profile_image' adicionada.\n";
     } catch (PDOException $e) {
-        echo " Missing. Adding...\n";
-        try {
-            $pdo->exec("ALTER TABLE users ADD COLUMN $col $type");
-            echo "Column '$col' added successfully.\n";
-        } catch (PDOException $ex) {
-            echo "Error adding '$col': " . $ex->getMessage() . "\n";
+        if (strpos($e->getMessage(), 'Duplicate column') !== false || strpos($e->getMessage(), 'already exists') !== false) {
+            echo "[INFO] Coluna 'profile_image' já existe.\n";
+        } else {
+            echo "[ERROR] Erro ao adicionar 'profile_image': " . $e->getMessage() . "\n";
         }
     }
-}
 
-echo "Schema update complete.\n";
+    // 2. Add nickname
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN nickname VARCHAR(50) NULL");
+        echo "[SUCCESS] Coluna 'nickname' adicionada.\n";
+    } catch (PDOException $e) {
+        if (strpos($e->getMessage(), 'Duplicate column') !== false || strpos($e->getMessage(), 'already exists') !== false) {
+            echo "[INFO] Coluna 'nickname' já existe.\n";
+        } else {
+            echo "[ERROR] Erro ao adicionar 'nickname': " . $e->getMessage() . "\n";
+        }
+    }
+
+    // 3. Add bio
+    try {
+        $pdo->exec("ALTER TABLE users ADD COLUMN bio TEXT NULL");
+        echo "[SUCCESS] Coluna 'bio' adicionada.\n";
+    } catch (PDOException $e) {
+        if (strpos($e->getMessage(), 'Duplicate column') !== false || strpos($e->getMessage(), 'already exists') !== false) {
+            echo "[INFO] Coluna 'bio' já existe.\n";
+        } else {
+            echo "[ERROR] Erro ao adicionar 'bio': " . $e->getMessage() . "\n";
+        }
+    }
+
+    echo "Atualização de schema concluída.\n";
+
+} catch (Exception $e) {
+    echo "Erro fatal: " . $e->getMessage() . "\n";
+}
 ?>
