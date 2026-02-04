@@ -158,7 +158,7 @@
   <xs:simpleType name="TSSerieDPS">
     <xs:restriction base="xs:string">
       <xs:maxLength value="5"/>
-      <xs:pattern value="0{0,4}[0-9]{1,5}"/>
+      <xs:pattern value="^0{0,4}\d{1,5}$"/>
       <xs:whiteSpace value="preserve"/>
     </xs:restriction>
   </xs:simpleType>
@@ -920,10 +920,13 @@
 	Identificação da Dedução/Redução:
         1 – Alimentação e bebidas/frigobar;
         2 – Materiais;
+		3 - Produção Externa;
+		4 - Reembolso de despesas;
         5 – Repasse consorciado;
         6 – Repasse plano de saúde;
         7 – Serviços;
         8 – Subempreitada de mão de obra;
+		9 - Profissional parceiro;
         99 – Outras deduções;
       </xs:documentation>
     </xs:annotation>
@@ -931,10 +934,13 @@
       <xs:whiteSpace value="preserve"/>
       <xs:enumeration value="1"/>
       <xs:enumeration value="2"/>
+      <xs:enumeration value="3"/>
+      <xs:enumeration value="4"/>
       <xs:enumeration value="5"/>
       <xs:enumeration value="6"/>
       <xs:enumeration value="7"/>
       <xs:enumeration value="8"/>
+      <xs:enumeration value="9"/>
       <xs:enumeration value="99"/>
     </xs:restriction>
   </xs:simpleType>
@@ -1141,7 +1147,7 @@
         04 - Operação Tributável monofásica - Revenda a Alíquota Zero;
         05 - Operação Tributável por Substituição Tributária;
         06 - Operação Tributável a Alíquota Zero;
-        07 - Operação Tributável da Contribuição;
+        07 - Operação Isenta da Contribuição;
         08 - Operação sem Incidência da Contribuição;
         09 - Operação com Suspensão da Contribuição;
       </xs:documentation>

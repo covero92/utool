@@ -74,7 +74,7 @@ class PortalAuth {
 
         // Updated query to join with roles
         $stmt = $this->pdo->prepare("
-            SELECT u.id, u.username, u.password_hash, u.full_name, u.status, u.role_id, r.name as role_name, r.capabilities
+            SELECT u.id, u.username, u.password_hash, u.full_name, u.status, u.role_id, r.name as role_name, r.capabilities, u.profile_image, u.nickname, u.bio
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             WHERE u.username = :user
@@ -95,6 +95,11 @@ class PortalAuth {
             $_SESSION['user_role_id'] = $user['role_id'];
             $_SESSION['user_role'] = strtolower($user['role_name'] ?? 'user'); 
             $_SESSION['user_role_label'] = $user['role_name'] ?? 'Usuário';
+            
+            // New Profile Fields
+            $_SESSION['user_image'] = $user['profile_image'] ?? null;
+            $_SESSION['user_nickname'] = $user['nickname'] ?? null;
+            $_SESSION['user_bio'] = $user['bio'] ?? null;
             
             // Load Capabilities
             $caps = json_decode($user['capabilities'] ?? '[]', true);
@@ -143,6 +148,50 @@ class PortalAuth {
             return ['success' => true, 'message' => "Cadastro realizado! Faça login."];
         } catch (PDOException $e) {
             return ['success' => false, 'message' => "Erro ao cadastrar: " . $e->getMessage()];
+
+        }
+    }
+
+    public function updateProfile($userId, $data) {
+        $params = [':id' => $userId];
+
+        if (array_key_exists('full_name', $data)) {
+            $fields[] = "full_name = :full_name";
+            $params[':full_name'] = $data['full_name'];
+            $_SESSION['user_name'] = $data['full_name']; // Update session
+        }
+        if (array_key_exists('nickname', $data)) {
+            $fields[] = "nickname = :nickname";
+            $params[':nickname'] = $data['nickname'];
+            $_SESSION['user_nickname'] = $data['nickname'];
+        }
+        if (array_key_exists('bio', $data)) {
+            $fields[] = "bio = :bio";
+            $params[':bio'] = $data['bio'];
+            $_SESSION['user_bio'] = $data['bio'];
+        }
+        if (array_key_exists('profile_image', $data)) {
+            $fields[] = "profile_image = :profile_image";
+            $params[':profile_image'] = $data['profile_image'];
+            $_SESSION['user_image'] = $data['profile_image'];
+        }
+        // Password change handling
+        if (!empty($data['password'])) {
+            $fields[] = "password_hash = :password";
+            $params[':password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+
+        if (empty($fields)) {
+            return ['success' => true, 'message' => "Nada para atualizar."];
+        }
+
+        try {
+            $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return ['success' => true, 'message' => "Perfil atualizado!"];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => "Erro ao atualizar: " . $e->getMessage()];
         }
     }
 

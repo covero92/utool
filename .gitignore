@@ -8,8 +8,6 @@
 # Deployment Archives
 utool-deployment-*.zip
 utool-temp-*
-utool-deployment-*.zip
-utool-temp-*
 *.tar.gz
 *.zip
 *.rar

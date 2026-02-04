@@ -94,17 +94,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
         $finalCover = $coverImage ? $coverImage : ($existingPost['cover_image'] ?? null);
         $finalAttach = $attachment ? $attachment : ($existingPost['attachment'] ?? null);
 
+        // Allow removing attachment
+        if (isset($_POST['delete_attachment']) && $_POST['delete_attachment'] === 'on') {
+            $finalAttach = null;
+        }
+        
+        // Sanitize - prevent string "null"
+        if ($finalAttach === 'null') {
+            $finalAttach = null;
+        }
+
         $post = [
             'id' => $isEdit ? $id : generateId(),
             'title' => $_POST['title'],
             'summary' => $_POST['summary'],
             'content' => $_POST['content'], 
+            'area' => $_POST['area'] ?? 'Fiscal', // NOVO: Área do post
             'category' => $_POST['category'],
             'author' => $_POST['author'] ?? $currentUser,
             'date' => $_POST['date'] ?? date('Y-m-d'),
             'tags' => $tags,
             'cover_image' => $finalCover,
-            'attachment' => $finalAttach
+            'attachment' => $finalAttach,
+            'video_url' => $_POST['video_url'] ?? null, // NOVO: URL de vídeo
+            'video_file' => null // NOVO: Arquivo de vídeo (futuro)
         ];
 
         if ($isEdit) {
@@ -145,12 +158,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
 // --- DATA PREPARATION ---
 $allPosts = loadPosts($jsonFile);
 
+// Deep Link Handling
+$initialPost = null;
+if (isset($_GET['post_id'])) {
+    foreach ($allPosts as $p) {
+        if ($p['id'] === $_GET['post_id']) {
+            $initialPost = $p;
+            break;
+        }
+    }
+}
+
 // Filter Logic
+$filterArea = $_GET['area'] ?? ''; // NOVO: Filtro por área
 $filterCategory = $_GET['category'] ?? '';
 $filterTag = $_GET['tag'] ?? '';
 $searchQuery = $_GET['q'] ?? '';
 
-$filteredPosts = array_filter($allPosts, function($p) use ($filterCategory, $filterTag, $searchQuery) {
+$filteredPosts = array_filter($allPosts, function($p) use ($filterArea, $filterCategory, $filterTag, $searchQuery) {
+    // Garantir retrocompatibilidade: posts sem 'area' são considerados 'Fiscal'
+    $postArea = $p['area'] ?? 'Fiscal';
+    
+    if ($filterArea && $postArea !== $filterArea) return false;
     if ($filterCategory && $p['category'] !== $filterCategory) return false;
     if ($filterTag && !in_array($filterTag, $p['tags'])) return false;
     if ($searchQuery) {
@@ -170,15 +199,24 @@ $offset = ($page - 1) * $perPage;
 
 $currentPosts = array_slice($filteredPosts, $offset, $perPage);
 
-// Extract Categories and Tags
+// Extract Areas, Categories and Tags
+$areas = [];
 $categories = [];
 $allTags = [];
 foreach ($allPosts as $p) {
+    // Áreas
+    $postArea = $p['area'] ?? 'Fiscal';
+    $areas[$postArea] = ($areas[$postArea] ?? 0) + 1;
+    
+    // Categorias
     if (!empty($p['category'])) $categories[$p['category']] = ($categories[$p['category']] ?? 0) + 1;
+    
+    // Tags
     foreach ($p['tags'] as $t) {
         $allTags[$t] = ($allTags[$t] ?? 0) + 1;
     }
 }
+arsort($areas);
 arsort($categories);
 arsort($allTags);
 ?>
@@ -295,7 +333,7 @@ arsort($allTags);
          <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none text-muted small">Hub</a></li>
-                <li class="breadcrumb-item active small" aria-current="page">Fiscal</li>
+                <li class="breadcrumb-item active small" aria-current="page">Blog Suporte</li>
             </ol>
         </nav>
         <div class="d-flex gap-2">
@@ -312,16 +350,15 @@ arsort($allTags);
     <div class="text-center mb-5 mt-2">
         <div class="d-inline-flex align-items-center justify-content-center gap-3 mb-2 user-select-none">
             <div class="bg-primary bg-gradient text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg" 
-                 style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
-                <i class="bi bi-newspaper fs-3"></i>
+                 style="width: 56px; height: 56px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="bi bi-book fs-3"></i>
             </div>
             <h1 class="display-5 fw-bold ls-tight mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">
-                Fiscal<span class="text-primary">News</span>
-                <span class="fw-light text-muted ms-1" style="opacity: 0.7;">Suporte</span>
+                Blog <span class="text-primary">Suporte</span>
             </h1>
         </div>
         <p class="text-secondary small text-uppercase fw-bold ls-3 opacity-50 mb-0" style="font-size: 0.7rem;">
-            Central de Atualizações & Conhecimento
+            Central de Conhecimento & Atualizações
         </p>
     </div>
 
@@ -351,14 +388,35 @@ arsort($allTags);
                      <a href="fiscal_blog.php" class="btn btn-sm btn-outline-primary rounded-pill px-4 w-100 fw-bold">Ver todos os posts</a>
                 </div>
 
-                <!-- Categories -->
-                <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-1">Tópicos</h6>
-                <div class="mb-5">
-                    <a href="fiscal_blog.php" class="sidebar-link <?php echo empty($filterCategory) ? 'active' : ''; ?>">
-                        <span><i class="bi bi-grid-fill me-2 opacity-75"></i>Todos</span>
+                <!-- Areas Filter -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-1">Áreas</h6>
+                <div class="mb-4">
+                    <a href="fiscal_blog.php" class="sidebar-link <?php echo empty($filterArea) ? 'active' : ''; ?>">
+                        <span><i class="bi bi-grid-fill me-2 opacity-75"></i>Todas</span>
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2"><?php echo count($allPosts); ?></span>
                     </a>
+                    <?php 
+                    $areaIcons = [
+                        'Fiscal' => 'bi-receipt',
+                        'Retaguarda' => 'bi-server',
+                        'PDV' => 'bi-shop',
+                        'Geral' => 'bi-info-circle'
+                    ];
+                    foreach ($areas as $area => $count): 
+                        $icon = $areaIcons[$area] ?? 'bi-folder';
+                    ?>
+                        <a href="?area=<?php echo urlencode($area); ?>" class="sidebar-link <?php echo $filterArea === $area ? 'active' : ''; ?>">
+                            <span><i class="bi <?php echo $icon; ?> me-2 opacity-75"></i><?php echo htmlspecialchars($area); ?></span>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2"><?php echo $count; ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Categories -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3 ls-1">Categorias</h6>
+                <div class="mb-5">
                     <?php foreach ($categories as $cat => $count): ?>
-                        <a href="?category=<?php echo urlencode($cat); ?>" class="sidebar-link <?php echo $filterCategory === $cat ? 'active' : ''; ?>">
+                        <a href="?category=<?php echo urlencode($cat); ?><?php echo $filterArea ? '&area=' . urlencode($filterArea) : ''; ?>" class="sidebar-link <?php echo $filterCategory === $cat ? 'active' : ''; ?>">
                             <span><i class="bi bi-hash me-2 opacity-75"></i><?php echo htmlspecialchars($cat); ?></span>
                             <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2"><?php echo $count; ?></span>
                         </a>
@@ -537,14 +595,38 @@ arsort($allTags);
                         <input type="text" name="title" id="edit-title" class="form-control bg-light border-0" required>
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label small fw-bold text-muted">Área</label>
+                        <select name="area" id="edit-area" class="form-select bg-light border-0" required>
+                            <option value="Fiscal">📄 Fiscal</option>
+                            <option value="Retaguarda">🖥️ Retaguarda</option>
+                            <option value="PDV">🛒 PDV</option>
+                            <option value="Geral">ℹ️ Geral</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label small fw-bold text-muted">Categoria</label>
                         <input type="text" name="category" id="edit-category" class="form-control bg-light border-0" list="catList" required>
                         <datalist id="catList">
+                            <!-- Fiscal -->
                             <option value="NFS-e">
                             <option value="NF-e">
                             <option value="Legislação">
-                            <option value="Comunicado">
                             <option value="Reforma Tributária">
+                            <!-- Retaguarda -->
+                            <option value="Banco de Dados">
+                            <option value="Integrações">
+                            <option value="Performance">
+                            <option value="Backup">
+                            <!-- PDV -->
+                            <option value="Terminal">
+                            <option value="Impressoras">
+                            <option value="SAT/TEF">
+                            <option value="Offline">
+                            <!-- Geral -->
+                            <option value="Comunicado">
+                            <option value="Tutorial">
+                            <option value="Dicas">
+                            <option value="Atualização">
                         </datalist>
                     </div>
                     <div class="col-md-6">
@@ -563,6 +645,16 @@ arsort($allTags);
                     <div class="col-md-6">
                         <label class="form-label small fw-bold text-muted">Anexo (Opcional)</label>
                         <input type="file" name="attachment" class="form-control bg-light border-0">
+                        <div class="form-check mt-2" id="div-delete-attachment" style="display:none;">
+                            <input class="form-check-input" type="checkbox" name="delete_attachment" id="check-delete-attachment">
+                            <label class="form-check-label small text-muted" for="check-delete-attachment">Remover anexo existente</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <label class="form-label small fw-bold text-muted">URL de Vídeo (Opcional)</label>
+                        <input type="url" name="video_url" id="edit-video-url" class="form-control bg-light border-0" placeholder="https://www.youtube.com/watch?v=...">
+                        <div class="form-text small">Cole o link do YouTube ou Vimeo</div>
                     </div>
 
                     <div class="col-md-12">
@@ -588,57 +680,96 @@ arsort($allTags);
     </div>
 </div>
 
-<!-- View Modal (Refined) -->
+<!-- View Modal (Modernized with TOC and Share) -->
 <div class="modal fade" id="viewModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
+    <div class="modal-dialog modal-fullscreen-lg-down" style="max-width: 90%; margin: 2rem auto;">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <!-- Full Width Cover -->
-            <div id="view-cover-container" class="position-relative" style="display:none; height: 300px;">
+            <div id="view-cover-container" class="position-relative" style="display:none; height: 350px;">
                 <img id="view-cover" src="" class="w-100 h-100 object-fit-cover">
                 <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
-                     <!-- Optional: Title over image? Kept separate for cleaner read -->
+                     <!-- Optional: Title over image -->
                 </div>
             </div>
 
-            <div class="modal-header border-0 pb-0 px-4 pt-4">
+            <div class="modal-header border-0 pb-2 px-5 pt-4">
                 <div class="w-100">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-1 fw-bold topic-badge" id="view-category"></span>
-                        <div class="text-muted small">
-                             <i class="bi bi-calendar3 me-1"></i> <span id="view-date"></span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-1 fw-bold topic-badge" id="view-area"></span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-1 fw-bold topic-badge" id="view-category"></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="text-muted small">
+                                 <i class="bi bi-calendar3 me-1"></i> <span id="view-date"></span>
+                            </div>
+                            <!-- Share Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-share me-1"></i>Compartilhar
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 rounded-3">
+                                    <li><a class="dropdown-item rounded-2 small" href="#" onclick="copyLink(); return false;"><i class="bi bi-link-45deg text-dark me-2"></i>Copiar Link</a></li>
+                                    <li><hr class="dropdown-divider my-1"></li>
+                                    <li><a class="dropdown-item rounded-2 small" href="#" onclick="copyContent(); return false;"><i class="bi bi-clipboard text-muted me-2"></i>Copiar Conteúdo</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <h2 class="modal-title fw-bold text-dark lh-sm mb-2" id="view-title" style="font-size: 1.75rem;"></h2>
+                    <h2 class="modal-title fw-bold text-dark lh-sm mb-2" id="view-title" style="font-size: 2rem;"></h2>
                     <p class="text-secondary small mb-0">Publicado por <strong class="text-dark" id="view-author"></strong></p>
                 </div>
-                <button type="button" class="btn-close ms-2 align-self-start" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close ms-3 align-self-start" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body px-4 py-4">
-                <div id="view-content" class="lh-lg text-dark fs-6" style="font-size: 1.1rem !important; color: #333;">
-                    <!-- HTML Content -->
-                </div>
-                
-                <div id="view-attachment-container" class="mt-5 p-3 bg-light rounded-3 border align-items-center" style="display:none;">
-                    <div class="bg-white p-2 rounded-circle shadow-sm me-3 text-primary">
-                        <i class="bi bi-file-earmark-arrow-down fs-4"></i>
+            <div class="modal-body px-5 py-4">
+                <div class="row">
+                    <!-- Table of Contents (Sidebar) -->
+                    <div class="col-lg-3 d-none d-lg-block">
+                        <div class="sticky-top" style="top: 20px;">
+                            <h6 class="text-uppercase text-muted fw-bold small mb-3">Índice</h6>
+                            <div id="toc-container" class="list-group list-group-flush">
+                                <!-- TOC will be generated here -->
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex-grow-1">
-                        <h6 class="mb-0 fw-bold text-dark">Material Complementar</h6>
-                        <small class="text-muted">Clique para baixar o arquivo anexo.</small>
-                    </div>
-                    <a href="#" id="view-attachment-link" class="btn btn-primary rounded-pill px-4 fw-bold" target="_blank">
-                        Baixar
-                    </a>
-                </div>
 
-                <hr class="my-4 opacity-10">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="small text-muted fw-bold me-2">TAGS:</span>
-                    <div id="view-tags" class="d-flex flex-wrap gap-2"></div>
+                    <!-- Main Content -->
+                    <div class="col-lg-9">
+                        <div style="max-width: 900px; margin: 0 auto;">
+                            <!-- Video Container -->
+                            <div id="view-video-container" style="display:none;" class="mb-4">
+                                <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+                                    <iframe id="view-video-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+
+                            <div id="view-content" class="lh-lg text-dark" style="font-size: 1.2rem !important; line-height: 1.9; color: #2d3748;">
+                                <!-- HTML Content -->
+                            </div>
+                            
+                            <div id="view-attachment-container" class="mt-5 p-4 bg-light rounded-3 border align-items-center" style="display:none;">
+                                <div class="bg-white p-3 rounded-circle shadow-sm me-3 text-primary">
+                                    <i class="bi bi-file-earmark-arrow-down fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Material Complementar</h6>
+                                    <small class="text-muted">Clique para baixar o arquivo anexo.</small>
+                                </div>
+                                <a href="#" id="view-attachment-link" class="btn btn-primary rounded-pill px-4 fw-bold" target="_blank">
+                                    Baixar
+                                </a>
+                            </div>
+
+                            <hr class="my-5 opacity-10">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="small text-muted fw-bold me-2">TAGS:</span>
+                                <div id="view-tags" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- No footer, clean look -->
         </div>
     </div>
 </div>
@@ -648,6 +779,7 @@ arsort($allTags);
     const editorModal = new bootstrap.Modal(document.getElementById('editorModal'));
     const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
     const uploadUrl = '<?php echo $uploadUrl; ?>'; // Pass JS variable
+    const initialPost = <?php echo json_encode($initialPost); ?>; // Deep link post
 
     // Fix TinyMCE inside Bootstrap Modal focus issue
     document.addEventListener('focusin', (e) => {
@@ -671,10 +803,12 @@ arsort($allTags);
     function editPost(post) {
         document.getElementById('edit-id').value = post.id;
         document.getElementById('edit-title').value = post.title;
+        document.getElementById('edit-area').value = post.area || 'Fiscal'; // NOVO
         document.getElementById('edit-category').value = post.category;
         document.getElementById('edit-date').value = post.date;
         document.getElementById('edit-author').value = post.author || '<?php echo $currentUser; ?>';
         document.getElementById('edit-summary').value = post.summary;
+        document.getElementById('edit-video-url').value = post.video_url || ''; // NOVO
         
         // Set TinyMCE Content
         if(tinymce.get('edit-content')) {
@@ -685,12 +819,28 @@ arsort($allTags);
 
         document.getElementById('edit-tags').value = post.tags.join(', ');
         
+        // Show/Hide Delete Attachment
+        const delDiv = document.getElementById('div-delete-attachment');
+        const delCheck = document.getElementById('check-delete-attachment');
+        if (post.attachment && post.attachment !== 'null' && post.attachment.trim() !== '') {
+            delDiv.style.display = 'block';
+            delCheck.checked = false;
+        } else {
+            delDiv.style.display = 'none';
+            delCheck.checked = false;
+        }
+        
         document.getElementById('editorTitle').innerText = 'Editar Post';
         editorModal.show();
     }
 
+    let currentPost = null; // Store current post for sharing
+
     function viewPost(post) {
+        currentPost = post; // Store for sharing functions
+        
         document.getElementById('view-title').innerText = post.title;
+        document.getElementById('view-area').innerText = post.area || 'Fiscal';
         document.getElementById('view-category').innerText = post.category;
         document.getElementById('view-date').innerText = new Date(post.date).toLocaleDateString(); 
         document.getElementById('view-author').innerText = post.author;
@@ -706,26 +856,62 @@ arsort($allTags);
             coverContainer.style.display = 'none';
         }
 
+        // Handle Video
+        const videoContainer = document.getElementById('view-video-container');
+        const videoIframe = document.getElementById('view-video-iframe');
+        if (post.video_url) {
+            let embedUrl = post.video_url;
+            
+            // Convert YouTube URL to embed
+            if (embedUrl.includes('youtube.com/watch')) {
+                const videoId = new URL(embedUrl).searchParams.get('v');
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            } else if (embedUrl.includes('youtu.be/')) {
+                const videoId = embedUrl.split('youtu.be/')[1].split('?')[0];
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            } else if (embedUrl.includes('vimeo.com/')) {
+                const videoId = embedUrl.split('vimeo.com/')[1].split('?')[0];
+                embedUrl = `https://player.vimeo.com/video/${videoId}`;
+            }
+            
+            videoIframe.src = embedUrl;
+            videoContainer.style.display = 'block';
+        } else {
+            videoIframe.src = '';
+            videoContainer.style.display = 'none';
+        }
+
         // Handle Attachment
         const attachContainer = document.getElementById('view-attachment-container');
         const attachLink = document.getElementById('view-attachment-link');
         
-        // Strict check: must be a non-empty string and not "null" or "undefined"
-        if (post.attachment && 
-            typeof post.attachment === 'string' && 
-            post.attachment.trim() !== "" && 
-            post.attachment !== "null" && 
-            post.attachment !== "undefined") {
-            
+        let attVal = post.attachment;
+
+        // Normalize
+        if (typeof attVal === 'string') {
+            attVal = attVal.trim();
+        }
+        
+        const hasAttachment = (typeof attVal === 'string') && 
+                              (attVal.length > 0) &&
+                              (attVal.toLowerCase() !== 'null') &&
+                              (attVal.toLowerCase() !== 'undefined');
+        
+        if (hasAttachment) {
             attachLink.href = uploadUrl + post.attachment;
             attachLink.setAttribute('download', post.attachment);
-            attachContainer.style.display = 'flex';
+            
+            attachContainer.classList.add('d-flex');
+            attachContainer.style.display = ''; // Clear inline display:none
         } else {
             attachLink.href = '#';
             attachLink.removeAttribute('download');
+            
+            attachContainer.classList.remove('d-flex');
             attachContainer.style.display = 'none';
         }
 
+        // Handle Tags
         const tagsContainer = document.getElementById('view-tags');
         tagsContainer.innerHTML = '';
         post.tags.forEach(tag => {
@@ -735,7 +921,87 @@ arsort($allTags);
             tagsContainer.appendChild(span);
         });
 
+        // Generate Table of Contents
+        generateTOC();
+
         viewModal.show();
+    }
+
+    // Auto-open deep linked post
+    if (initialPost) {
+        viewPost(initialPost);
+    }
+
+    // Generate Table of Contents from headings
+    function generateTOC() {
+        const content = document.getElementById('view-content');
+        const tocContainer = document.getElementById('toc-container');
+        tocContainer.innerHTML = '';
+
+        const headings = content.querySelectorAll('h2, h3');
+        
+        if (headings.length === 0) {
+            tocContainer.innerHTML = '<p class="text-muted small">Nenhum capítulo encontrado</p>';
+            return;
+        }
+
+        headings.forEach((heading, index) => {
+            // Add ID to heading for anchor
+            const id = `heading-${index}`;
+            heading.id = id;
+
+            // Create TOC item
+            const link = document.createElement('a');
+            link.href = `#${id}`;
+            link.className = 'list-group-item list-group-item-action border-0 py-2 px-3 small';
+            link.style.paddingLeft = heading.tagName === 'H3' ? '1.5rem' : '0.75rem';
+            link.innerText = heading.innerText;
+            
+            link.onclick = (e) => {
+                e.preventDefault();
+                heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Highlight active
+                tocContainer.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+                link.classList.add('active');
+            };
+
+            tocContainer.appendChild(link);
+        });
+    }
+
+    // Share Functions
+    function shareWhatsApp() {
+        if (!currentPost) return;
+        const text = `${currentPost.title}\n\n${currentPost.summary}\n\nLeia mais: ${window.location.href}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function shareEmail() {
+        if (!currentPost) return;
+        const subject = currentPost.title;
+        const body = `${currentPost.summary}\n\nLeia o artigo completo: ${window.location.href}`;
+        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    function copyLink() {
+        if (!currentPost) return;
+        
+        // Construct deep link
+        const urlP = new URL(window.location.href);
+        urlP.searchParams.set('post_id', currentPost.id);
+        
+        navigator.clipboard.writeText(urlP.toString()).then(() => {
+            alert('Link do artigo copiado!');
+        });
+    }
+
+    function copyContent() {
+        if (!currentPost) return;
+        const content = document.getElementById('view-content').innerText;
+        navigator.clipboard.writeText(content).then(() => {
+            alert('Conteúdo copiado para a área de transferência!');
+        });
     }
 
     function clearSearch() {

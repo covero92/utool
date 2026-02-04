@@ -160,17 +160,23 @@ body {
         <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
             <div class="card card-glass rounded-4 overflow-hidden border-0">
                 <div class="card-header bg-transparent border-0 py-4 px-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
+                    <div class="row align-items-center">
+                        <div class="col-md-8 mb-3 mb-md-0">
                             <h5 class="mb-0 fw-bold section-title text-dark">Usuários Cadastrados</h5>
                             <p class="text-muted small mb-0">Gerencie o acesso dos membros da equipe.</p>
                         </div>
-                        <span class="badge bg-white text-primary shadow-sm border rounded-pill px-3 py-2"><?php echo count($users); ?> usuários</span>
+                        <div class="col-md-4 d-flex justify-content-md-end align-items-center gap-3">
+                             <div class="position-relative w-100">
+                                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted small"></i>
+                                <input type="text" class="form-control form-control-sm rounded-pill ps-5 border-0 bg-white shadow-sm" id="userSearch" onkeyup="filterTable('usersTable', this.value)" placeholder="Buscar...">
+                             </div>
+                            <span class="badge bg-white text-primary shadow-sm border rounded-pill px-3 py-2 text-nowrap"><?php echo count($users); ?> usuários</span>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle table-custom">
+                        <table class="table table-hover mb-0 align-middle table-custom" id="usersTable">
                             <thead class="bg-light bg-opacity-50">
                                 <tr>
                                     <th class="py-3 px-4 border-bottom-0 text-uppercase text-secondary small fw-bold ps-4">Usuário</th>
@@ -313,7 +319,7 @@ body {
                                     </td>
                                     <td class="px-4 text-muted"><?php echo htmlspecialchars($role['description']); ?></td>
                                     <td class="px-4 text-end pe-4">
-                                        <?php if(!$role['is_system']): ?>
+                                        <?php if(!($role['is_system'] ?? false)): ?>
                                             <button class="btn btn-sm btn-white text-primary shadow-sm rounded-circle me-1 border-0" onclick="editRole(<?php echo htmlspecialchars(json_encode($role)); ?>)" style="width: 32px; height: 32px;"><i class="bi bi-pencil-fill small"></i></button>
                                             <button class="btn btn-sm btn-white text-danger shadow-sm rounded-circle border-0" onclick="deleteRole(<?php echo $role['id']; ?>)" style="width: 32px; height: 32px;"><i class="bi bi-trash-fill small"></i></button>
                                         <?php else: ?>
@@ -454,6 +460,18 @@ body {
                             <label class="form-check-label small fw-bold text-danger" for="cap_system_config">System Config</label>
                         </div>
                     </div>
+                    <div class="col-6">
+                        <div class="form-check p-3 bg-light rounded-3 h-100">
+                            <input class="form-check-input role-cap" type="checkbox" value="view_ppr" id="cap_view_ppr">
+                            <label class="form-check-label small fw-bold text-dark" for="cap_view_ppr">Visualizar PPR</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check p-3 bg-light rounded-3 h-100">
+                            <input class="form-check-input role-cap" type="checkbox" value="edit_ppr" id="cap_edit_ppr">
+                            <label class="form-check-label small fw-bold text-dark" for="cap_edit_ppr">Editar PPR</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
@@ -466,6 +484,7 @@ body {
   </div>
 </div>
 
+<script src="assets/js/utils.js"></script>
 <script>
 // Roles Logic
 let roleModalInstance = null;
@@ -539,7 +558,7 @@ function resetPassword(id) {
 function toggleStatus(id, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
     if(!confirm("Alterar status para " + newStatus + "?")) return;
-    performAction('update_user_status', { user_id: id, status: newStatus });
+    performAction('admin_toggle_user_status', { user_id: id, current_status: currentStatus });
 }
 
 function saveDBConfig() {
