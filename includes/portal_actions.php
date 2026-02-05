@@ -25,9 +25,9 @@ if ($action === 'register') {
     $user = $_POST['user'] ?? '';
     $pass = $_POST['pass'] ?? '';
     $name = $_POST['full_name'] ?? '';
-    
+
     $result = $auth->register($user, $pass, $name);
-    
+
     if ($result['success']) {
         $_SESSION['login_success_msg'] = $result['message'];
     } else {
@@ -56,12 +56,18 @@ if (!isLoggedIn()) {
 // Authenticated User Actions
 if ($action === 'update_profile') {
     $userId = $_SESSION['user_id'] ?? null;
-    if (!$userId) { echo json_encode(['success'=>false, 'message'=>'Sessão expirada']); exit; }
+    if (!$userId) {
+        echo json_encode(['success' => false, 'message' => 'Sessão expirada']);
+        exit;
+    }
 
     $data = [];
-    if (isset($_POST['full_name'])) $data['full_name'] = trim($_POST['full_name']);
-    if (isset($_POST['nickname'])) $data['nickname'] = trim($_POST['nickname']);
-    if (isset($_POST['bio'])) $data['bio'] = trim($_POST['bio']);
+    if (isset($_POST['full_name']))
+        $data['full_name'] = trim($_POST['full_name']);
+    if (isset($_POST['nickname']))
+        $data['nickname'] = trim($_POST['nickname']);
+    if (isset($_POST['bio']))
+        $data['bio'] = trim($_POST['bio']);
     if (isset($_POST['new_password']) && !empty($_POST['new_password'])) {
         $data['password'] = $_POST['new_password'];
     }
@@ -69,14 +75,15 @@ if ($action === 'update_profile') {
     // Image Upload
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../uploads/profiles/';
-        if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
-        
+        if (!file_exists($uploadDir))
+            mkdir($uploadDir, 0777, true);
+
         $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
         $filename = 'user_' . $userId . '_' . time() . '.' . $ext;
         $target = $uploadDir . $filename;
-        
+
         if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-             $data['profile_image'] = 'uploads/profiles/' . $filename;
+            $data['profile_image'] = 'uploads/profiles/' . $filename;
         }
     }
 
@@ -89,17 +96,17 @@ if ($action === 'change_password') {
     $currentPass = $_POST['current_password'] ?? '';
     $newPass = $_POST['new_password'] ?? '';
     $userId = $_SESSION['user_id'] ?? null;
-    
+
     if (!$userId || !$currentPass || !$newPass) {
         echo json_encode(['success' => false, 'message' => 'Dados incompletos']);
         exit;
     }
-    
+
     $pdo = getDBConnection();
     $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE id = :id");
     $stmt->execute([':id' => $userId]);
     $userExp = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($userExp && password_verify($currentPass, $userExp['password_hash'])) {
         $newHash = password_hash($newPass, PASSWORD_DEFAULT);
         $update = $pdo->prepare("UPDATE users SET password_hash = :hash WHERE id = :id");
@@ -114,14 +121,14 @@ if ($action === 'change_password') {
 // --- SUPPORT / ADMIN ACTIONS ---
 // (Notices, Weather, etc - Support can edit)
 if (isSupport() || isAdmin()) {
-    
+
     if ($action === 'update_weather') {
         $city = $_POST['city'] ?? '';
         $lat = $_POST['lat'] ?? '';
         $lon = $_POST['lon'] ?? '';
-        
+
         if ($city && $lat && $lon) {
-            $portal->updateConfig('weather', ['city' => $city, 'lat' => (float)$lat, 'lon' => (float)$lon]);
+            $portal->updateConfig('weather', ['city' => $city, 'lat' => (float) $lat, 'lon' => (float) $lon]);
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Missing fields']);
@@ -135,10 +142,10 @@ if (isSupport() || isAdmin()) {
         $type = $_POST['type'] ?? 'info';
         $desc = $_POST['description'] ?? '';
         $team = $_POST['team'] ?? 'Suporte (geral)';
-        
+
         if ($desc) {
             $notices = $portal->getNotices();
-            
+
             if ($id) {
                 // Update existing
                 foreach ($notices as &$n) {
@@ -147,7 +154,7 @@ if (isSupport() || isAdmin()) {
                         $n['type'] = $type;
                         $n['description'] = $desc;
                         $n['team'] = $team;
-                         // Keep original date or update? Usually keep original creation date.
+                        // Keep original date or update? Usually keep original creation date.
                         break;
                     }
                 }
@@ -164,11 +171,11 @@ if (isSupport() || isAdmin()) {
                 ];
                 array_unshift($notices, $newNotice); // Prepend to top
             }
-            
+
             $portal->updateConfig('notices', $notices);
             echo json_encode(['success' => true]);
         } else {
-             echo json_encode(['success' => false, 'message' => 'Descrição obrigatória']);
+            echo json_encode(['success' => false, 'message' => 'Descrição obrigatória']);
         }
         exit;
     }
@@ -176,7 +183,7 @@ if (isSupport() || isAdmin()) {
     // --- PPR ACTIONS ---
     if ($action === 'get_ppr_data') {
         $year = $_POST['year'] ?? date('Y');
-        
+
         $pdo = getDBConnection();
         // Fetch values
         $stmt = $pdo->prepare("
@@ -185,15 +192,15 @@ if (isSupport() || isAdmin()) {
             JOIN ppr_metrics m ON v.metric_id = m.id
             WHERE v.year = :year
         ");
-        $stmt->execute([':year' => (int)$year]);
+        $stmt->execute([':year' => (int) $year]);
         $rows = $stmt->fetchAll();
-        
+
         // Transform to { 'metric_key': { '1': 'value', '2': 'value' } }
         $data = [];
-        foreach($rows as $r) {
+        foreach ($rows as $r) {
             $data[$r['key']][$r['month']] = $r['value'];
         }
-        
+
         echo json_encode(['success' => true, 'data' => $data]);
         exit;
     }
@@ -214,12 +221,12 @@ if (isSupport() || isAdmin()) {
 
         try {
             $pdo->beginTransaction();
-            
+
             // Get Metrics for THIS YEAR
             $stmt = $pdo->prepare("SELECT key, id FROM ppr_metrics WHERE year = :year");
-            $stmt->execute([':year' => (int)$year]);
+            $stmt->execute([':year' => (int) $year]);
             $metrics = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // [key => id]
-            
+
             // Prepare statements
             $checkOld = $pdo->prepare("SELECT value FROM ppr_values WHERE metric_id = :mid AND month = :month AND year = :year");
             $upsert = $pdo->prepare("
@@ -233,17 +240,17 @@ if (isSupport() || isAdmin()) {
 
             foreach ($entries as $e) {
                 $key = $e['key'];
-                $month = (int)$e['month'];
+                $month = (int) $e['month'];
                 $val = trim($e['value']);
-                
+
                 if (!isset($metrics[$key])) {
-                     file_put_contents('debug_save.txt', "Metric $key not found for Year $year\n", FILE_APPEND);
-                     continue; 
+                    file_put_contents('debug_save.txt', "Metric $key not found for Year $year\n", FILE_APPEND);
+                    continue;
                 }
                 $mid = $metrics[$key];
-                
+
                 // Check change
-                $checkOld->execute([':mid' => $mid, ':month' => $month, ':year' => (int)$year]);
+                $checkOld->execute([':mid' => $mid, ':month' => $month, ':year' => (int) $year]);
                 $oldVal = $checkOld->fetchColumn();
                 $oldVal = ($oldVal === false) ? '' : $oldVal;
 
@@ -253,18 +260,18 @@ if (isSupport() || isAdmin()) {
                     // Execute Update
                     $upsert->execute([
                         ':mid' => $mid,
-                        ':year' => (int)$year,
+                        ':year' => (int) $year,
                         ':month' => $month,
                         ':val' => $val
                     ]);
-                    
+
                     // Log Audit
                     $details = "Updated $key ($month/$year)";
                     $audit->execute([$currentUserId, $currentUser, 'UPDATE', 'ppr_value', $mid, $oldVal, $val, $details]);
                     file_put_contents('debug_save.txt', "Updated and Audited\n", FILE_APPEND);
                 }
             }
-            
+
             $pdo->commit();
             echo json_encode(['success' => true]);
         } catch (Exception $ex) {
@@ -292,9 +299,9 @@ if (isSupport() || isAdmin()) {
         ");
         $stmt->execute();
         $rows = $stmt->fetchAll();
-        
+
         $history = [];
-        foreach($rows as $r) {
+        foreach ($rows as $r) {
             $history[$r['year']][$r['key']][$r['month']] = $r['value'];
         }
         echo json_encode(['success' => true, 'data' => $history]);
@@ -305,12 +312,12 @@ if (isSupport() || isAdmin()) {
         $year = $_POST['year'] ?? date('Y');
         $pdo = getDBConnection();
         $stmt = $pdo->prepare("SELECT * FROM ppr_metrics WHERE year = :year ORDER BY okr_group, key");
-        $stmt->execute([':year' => (int)$year]);
+        $stmt->execute([':year' => (int) $year]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Transform to Structure: [{id: 'okr1', metrics: [...]}, ...]
         $groups = [];
-        foreach($rows as $r) {
+        foreach ($rows as $r) {
             $gid = $r['okr_group']; // e.g. 'okr1'
             if (!isset($groups[$gid])) {
                 $groups[$gid] = ['id' => $gid, 'metrics' => []];
@@ -329,18 +336,18 @@ if (isSupport() || isAdmin()) {
 
     if ($action === 'save_metric_attribute') {
         if (!isAdmin()) {
-             echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-             exit;
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
         }
         $year = $_POST['year'];
         $key = $_POST['key'];
         $col = $_POST['column']; // e.g. 'target_description'
         $val = $_POST['value'];
-        
+
         $allowedCols = ['name', 'target_description', 'type', 'target_value'];
         if (!in_array($col, $allowedCols)) {
-             echo json_encode(['success' => false, 'message' => 'Column not allowed']);
-             exit;
+            echo json_encode(['success' => false, 'message' => 'Column not allowed']);
+            exit;
         }
 
         $pdo = getDBConnection();
@@ -355,274 +362,319 @@ if (isSupport() || isAdmin()) {
     }
 
 }
-    // --- ADMIN / LEADER ACTIONS ---
-    
-    // Update Version (Admin specific usually? Or System Config?)
-    if ($action === 'update_version') {
-        if (!hasCapability('system_config')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-        
-        $version = $_POST['version'] ?? '';
-        $date = $_POST['date'] ?? '';
-        if ($version && $date) {
-            $portal->updateConfig('latest_version', ['version' => $version, 'date' => $date]);
-            echo json_encode(['success' => true]);
-        }
+// --- ADMIN / LEADER ACTIONS ---
+
+// Update Version (Admin specific usually? Or System Config?)
+if ($action === 'update_version') {
+    if (!hasCapability('system_config')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
 
-    // Toggle Card Visibility (Edit Tools capability)
-    if ($action === 'toggle_card') {
-        if (!hasCapability('edit_tools')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-        
-        $cardId = $_POST['card_id'] ?? '';
-        if ($cardId) {
-            $newState = $portal->toggleBlockToken($cardId);
-            echo json_encode(['success' => true, 'blocked' => $newState]);
-        }
+    $version = $_POST['version'] ?? '';
+    $date = $_POST['date'] ?? '';
+    if ($version && $date) {
+        $portal->updateConfig('latest_version', ['version' => $version, 'date' => $date]);
+        echo json_encode(['success' => true]);
+    }
+    exit;
+}
+
+// Toggle Card Visibility (Edit Tools capability)
+if ($action === 'toggle_card') {
+    if (!hasCapability('edit_tools')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
 
-    // Get permissions for a card (Admin)
-    if ($action === 'get_card_permissions') {
-        if (!isAdmin()) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-        
-        $cardId = $_POST['card_id'] ?? '';
+    $cardId = $_POST['card_id'] ?? '';
+    if ($cardId) {
+        $newState = $portal->toggleBlockToken($cardId);
+        echo json_encode(['success' => true, 'blocked' => $newState]);
+    }
+    exit;
+}
+
+// Get permissions for a card (Admin)
+if ($action === 'get_card_permissions') {
+    if (!isAdmin()) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
+
+    $cardId = $_POST['card_id'] ?? '';
+    require_once 'permission_manager.php';
+    $pm = new PermissionManager();
+    $pdo = getDBConnection();
+
+    // Get all roles
+    $rolesStmt = $pdo->query("SELECT id, name FROM roles ORDER BY id");
+    $roles = $rolesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $permissions = [];
+    foreach ($roles as $r) {
+        $canView = $pm->canView($cardId, $r['id']);
+        $permissions[] = [
+            'role_id' => $r['id'],
+            'role_name' => $r['name'],
+            'can_view' => $canView
+        ];
+    }
+
+    echo json_encode(['success' => true, 'permissions' => $permissions]);
+    exit;
+}
+
+// Update permissions for a card (Admin)
+if ($action === 'update_card_permissions') {
+    if (!isAdmin()) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
+
+    $cardId = $_POST['card_id'] ?? '';
+    $perms = json_decode($_POST['permissions'] ?? '[]', true);
+
+    if ($cardId && is_array($perms)) {
         require_once 'permission_manager.php';
         $pm = new PermissionManager();
-        $pdo = getDBConnection();
-        
-        // Get all roles
-        $rolesStmt = $pdo->query("SELECT id, name FROM roles ORDER BY id");
-        $roles = $rolesStmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        $permissions = [];
-        foreach ($roles as $r) {
-            $canView = $pm->canView($cardId, $r['id']);
-            $permissions[] = [
-                'role_id' => $r['id'],
-                'role_name' => $r['name'],
-                'can_view' => $canView
-            ];
+
+        foreach ($perms as $p) {
+            // p = { role_id: 1, can_view: true }
+            $pm->setPermission($cardId, $p['role_id'], filter_var($p['can_view'], FILTER_VALIDATE_BOOLEAN));
         }
-        
-        echo json_encode(['success' => true, 'permissions' => $permissions]);
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid data']);
+    }
+    exit;
+}
+
+// Delete Notice (Support/Admin)
+if ($action === 'delete_notice') {
+    if (!isSupport() && !isAdmin()) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
 
-    // Update permissions for a card (Admin)
-    if ($action === 'update_card_permissions') {
-        if (!isAdmin()) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-        
-        $cardId = $_POST['card_id'] ?? '';
-        $perms = json_decode($_POST['permissions'] ?? '[]', true);
-        
-        if ($cardId && is_array($perms)) {
-            require_once 'permission_manager.php';
-            $pm = new PermissionManager();
-            
-            foreach ($perms as $p) {
-                // p = { role_id: 1, can_view: true }
-                $pm->setPermission($cardId, $p['role_id'], filter_var($p['can_view'], FILTER_VALIDATE_BOOLEAN));
-            }
+    $id = $_POST['notice_id'] ?? '';
+    $notices = $portal->getNotices();
+    $notices = array_filter($notices, function ($n) use ($id) {
+        return ($n['id'] ?? '') !== $id; });
+    $portal->updateConfig('notices', array_values($notices));
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+// --- ROLE MANAGEMENT (manage_roles) ---
+if ($action === 'admin_save_role') {
+    if (!hasCapability('manage_roles')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized: Missing manage_roles']);
+        exit;
+    }
+
+    $id = $_POST['id'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $desc = $_POST['description'] ?? '';
+    // Decode capabilities array
+    $caps = json_decode($_POST['capabilities'] ?? '[]', true);
+    if (!is_array($caps))
+        $caps = [];
+    $capsJson = json_encode($caps);
+
+    if (!$name) {
+        echo json_encode(['success' => false, 'message' => 'Nome obrigatório']);
+        exit;
+    }
+
+    $pdo = getDBConnection();
+    if ($id) {
+        // Update
+        $stmt = $pdo->prepare("UPDATE roles SET name = ?, description = ?, capabilities = ? WHERE id = ?");
+        try {
+            $stmt->execute([$name, $desc, $capsJson, $id]);
             echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid data']);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Erro ao atualizar (nome duplicado?)']);
         }
-        exit;
-    }
-    
-    // Delete Notice (Support/Admin)
-    if ($action === 'delete_notice') {
-        if (!isSupport() && !isAdmin()) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-
-        $id = $_POST['notice_id'] ?? '';
-        $notices = $portal->getNotices();
-        $notices = array_filter($notices, function($n) use ($id) { return ($n['id'] ?? '') !== $id; });
-        $portal->updateConfig('notices', array_values($notices));
-        echo json_encode(['success' => true]);
-        exit;
-    }
-
-    // --- ROLE MANAGEMENT (manage_roles) ---
-    if ($action === 'admin_save_role') {
-        if (!hasCapability('manage_roles')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized: Missing manage_roles']); exit; }
-
-        $id = $_POST['id'] ?? '';
-        $name = $_POST['name'] ?? '';
-        $desc = $_POST['description'] ?? '';
-        // Decode capabilities array
-        $caps = json_decode($_POST['capabilities'] ?? '[]', true);
-        if (!is_array($caps)) $caps = [];
-        $capsJson = json_encode($caps);
-        
-        if (!$name) { echo json_encode(['success' => false, 'message' => 'Nome obrigatório']); exit; }
-        
-        $pdo = getDBConnection();
-        if ($id) {
-            // Update
-            $stmt = $pdo->prepare("UPDATE roles SET name = ?, description = ?, capabilities = ? WHERE id = ?");
-            try {
-                $stmt->execute([$name, $desc, $capsJson, $id]);
-                echo json_encode(['success' => true]);
-            } catch (Exception $e) { echo json_encode(['success' => false, 'message' => 'Erro ao atualizar (nome duplicado?)']); }
-        } else {
-            // Create
-            $stmt = $pdo->prepare("INSERT INTO roles (name, description, capabilities) VALUES (?, ?, ?)");
-            try {
-                $stmt->execute([$name, $desc, $capsJson]);
-                echo json_encode(['success' => true]);
-            } catch (Exception $e) { echo json_encode(['success' => false, 'message' => 'Erro ao criar (nome duplicado?)']); }
+    } else {
+        // Create
+        $stmt = $pdo->prepare("INSERT INTO roles (name, description, capabilities) VALUES (?, ?, ?)");
+        try {
+            $stmt->execute([$name, $desc, $capsJson]);
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Erro DB: ' . $e->getMessage()]);
         }
+    }
+    exit;
+}
+
+if ($action === 'admin_delete_role') {
+    if (!hasCapability('manage_roles')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
 
-    if ($action === 'admin_delete_role') {
-        if (!hasCapability('manage_roles')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+    $id = $_POST['id'] ?? '';
+    $pdo = getDBConnection();
 
-        $id = $_POST['id'] ?? '';
-        $pdo = getDBConnection();
-        
-        // Check if system
-        $check = $pdo->prepare("SELECT is_system FROM roles WHERE id = ?");
-        $check->execute([$id]);
-        $role = $check->fetch();
-        if ($role && $role['is_system']) {
-            echo json_encode(['success' => false, 'message' => 'Permissões de sistema não podem ser excluídas']);
-            exit;
-        }
-
-        // Check columns
-        $usersLinked = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role_id = ?");
-        $usersLinked->execute([$id]);
-        if ($usersLinked->fetchColumn() > 0) {
-            echo json_encode(['success' => false, 'message' => 'Existem usuários com esta permissão. Remova-os antes de excluir.']);
-            exit;
-        }
-
-        $stmt = $pdo->prepare("DELETE FROM roles WHERE id = ?");
-        $stmt->execute([$id]);
-        echo json_encode(['success' => true]);
+    // Check if system
+    $check = $pdo->prepare("SELECT is_system FROM roles WHERE id = ?");
+    $check->execute([$id]);
+    $role = $check->fetch();
+    if ($role && $role['is_system']) {
+        echo json_encode(['success' => false, 'message' => 'Permissões de sistema não podem ser excluídas']);
         exit;
     }
 
-    // --- USER MANAGEMENT (manage_users) ---
-    if ($action === 'admin_update_user_role_id') {
-        if (!hasCapability('manage_users')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+    // Check columns
+    $usersLinked = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role_id = ?");
+    $usersLinked->execute([$id]);
+    if ($usersLinked->fetchColumn() > 0) {
+        echo json_encode(['success' => false, 'message' => 'Existem usuários com esta permissão. Remova-os antes de excluir.']);
+        exit;
+    }
 
-        $targetUserId = $_POST['user_id'] ?? '';
-        $newRoleId = $_POST['role_id'] ?? '';
-        
-        // Security: Prevent editing admins if not System Config
-        // Check target user role
-        $pdo = getDBConnection();
-        $target = $pdo->prepare("SELECT r.name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?");
-        $target->execute([$targetUserId]);
-        $tRole = $target->fetchColumn();
-        
-        if ($tRole && stripos($tRole, 'admin') !== false && !hasCapability('system_config')) {
-             echo json_encode(['success'=>false, 'message'=>'Você não pode modificar um Administrador.']); exit; 
-        }
+    $stmt = $pdo->prepare("DELETE FROM roles WHERE id = ?");
+    $stmt->execute([$id]);
+    echo json_encode(['success' => true]);
+    exit;
+}
 
+// --- USER MANAGEMENT (manage_users) ---
+if ($action === 'admin_update_user_role_id') {
+    if (!hasCapability('manage_users')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
+
+    $targetUserId = $_POST['user_id'] ?? '';
+    $newRoleId = $_POST['role_id'] ?? '';
+
+    // Security: Prevent editing admins if not System Config
+    // Check target user role
+    $pdo = getDBConnection();
+    $target = $pdo->prepare("SELECT r.name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?");
+    $target->execute([$targetUserId]);
+    $tRole = $target->fetchColumn();
+
+    if ($tRole && stripos($tRole, 'admin') !== false && !hasCapability('system_config')) {
+        echo json_encode(['success' => false, 'message' => 'Você não pode modificar um Administrador.']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("UPDATE users SET role_id = :role WHERE id = :id");
+    $stmt->execute([':role' => $newRoleId, ':id' => $targetUserId]);
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+if ($action === 'admin_update_user_role') {
+    // Legacy - only admin
+    if (!hasCapability('manage_users')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
+
+    // ... (Logic removed for brevity if not needed, or simplified)
+    // Assuming legacy support not critical for new UI, but lets keep it simple
+    $targetUserId = $_POST['user_id'] ?? '';
+    $newRole = $_POST['role'] ?? '';
+    $pdo = getDBConnection();
+    $map = $pdo->prepare("SELECT id FROM roles WHERE name ILIKE ?");
+    $map->execute([$newRole]);
+    $rid = $map->fetchColumn();
+    if ($rid) {
         $stmt = $pdo->prepare("UPDATE users SET role_id = :role WHERE id = :id");
-        $stmt->execute([':role' => $newRoleId, ':id' => $targetUserId]);
+        $stmt->execute([':role' => $rid, ':id' => $targetUserId]);
         echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Role not found']);
+    }
+    exit;
+}
+
+if ($action === 'admin_toggle_user_status') {
+    if (!hasCapability('manage_users')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
 
-    if ($action === 'admin_update_user_role') {
-         // Legacy - only admin
-         if (!hasCapability('manage_users')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-         
-         // ... (Logic removed for brevity if not needed, or simplified)
-         // Assuming legacy support not critical for new UI, but lets keep it simple
-        $targetUserId = $_POST['user_id'] ?? '';
-        $newRole = $_POST['role'] ?? '';
-        $pdo = getDBConnection();
-        $map = $pdo->prepare("SELECT id FROM roles WHERE name ILIKE ?");
-        $map->execute([$newRole]);
-        $rid = $map->fetchColumn();
-        if ($rid) {
-            $stmt = $pdo->prepare("UPDATE users SET role_id = :role WHERE id = :id");
-            $stmt->execute([':role' => $rid, ':id' => $targetUserId]);
-             echo json_encode(['success' => true]);
-        } else {
-             echo json_encode(['success' => false, 'message' => 'Role not found']);
-        }
+    $targetUserId = $_POST['user_id'] ?? '';
+    $currentStatus = $_POST['current_status'] ?? '';
+
+    // Security: Prevent blocking admins if not System Config
+    $pdo = getDBConnection();
+    $target = $pdo->prepare("SELECT r.name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?");
+    $target->execute([$targetUserId]);
+    $tRole = $target->fetchColumn();
+
+    if ($tRole && stripos($tRole, 'admin') !== false && !hasCapability('system_config')) {
+        echo json_encode(['success' => false, 'message' => 'Você não pode bloquear um Administrador.']);
         exit;
     }
 
-    if ($action === 'admin_toggle_user_status') {
-        if (!hasCapability('manage_users')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
+    $newStatus = ($currentStatus === 'active') ? 'blocked' : 'active';
+    $stmt = $pdo->prepare("UPDATE users SET status = :status WHERE id = :id");
+    $stmt->execute([':status' => $newStatus, ':id' => $targetUserId]);
+    echo json_encode(['success' => true]);
+    exit;
+}
 
-        $targetUserId = $_POST['user_id'] ?? '';
-        $currentStatus = $_POST['current_status'] ?? '';
-        
-        // Security: Prevent blocking admins if not System Config
+if ($action === 'admin_reset_password') {
+    if (!hasCapability('manage_users')) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
+
+    $targetUserId = $_POST['user_id'] ?? '';
+    $newPass = $_POST['new_password'] ?? '';
+
+    if ($targetUserId && $newPass) {
         $pdo = getDBConnection();
+
+        // Security: Prevent reset admin pass if not System Config
         $target = $pdo->prepare("SELECT r.name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?");
         $target->execute([$targetUserId]);
         $tRole = $target->fetchColumn();
-        
+
         if ($tRole && stripos($tRole, 'admin') !== false && !hasCapability('system_config')) {
-             echo json_encode(['success'=>false, 'message'=>'Você não pode bloquear um Administrador.']); exit; 
-        }
-
-        $newStatus = ($currentStatus === 'active') ? 'blocked' : 'active';
-        $stmt = $pdo->prepare("UPDATE users SET status = :status WHERE id = :id");
-        $stmt->execute([':status' => $newStatus, ':id' => $targetUserId]);
-        echo json_encode(['success' => true]);
-        exit;
-    }
-    
-    if ($action === 'admin_reset_password') {
-        if (!hasCapability('manage_users')) { echo json_encode(['success'=>false, 'message'=>'Unauthorized']); exit; }
-
-        $targetUserId = $_POST['user_id'] ?? '';
-        $newPass = $_POST['new_password'] ?? '';
-        
-        if ($targetUserId && $newPass) {
-             $pdo = getDBConnection();
-             
-            // Security: Prevent reset admin pass if not System Config
-            $target = $pdo->prepare("SELECT r.name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?");
-            $target->execute([$targetUserId]);
-            $tRole = $target->fetchColumn();
-            
-            if ($tRole && stripos($tRole, 'admin') !== false && !hasCapability('system_config')) {
-                 echo json_encode(['success'=>false, 'message'=>'Você não pode resetar a senha de um Administrador.']); exit; 
-            }
-
-             $hash = password_hash($newPass, PASSWORD_DEFAULT);
-             $stmt = $pdo->prepare("UPDATE users SET password_hash = :hash WHERE id = :id");
-             $stmt->execute([':hash' => $hash, ':id' => $targetUserId]);
-             echo json_encode(['success' => true]);
-        } else {
-             echo json_encode(['success' => false, 'message' => 'Missing data']);
-        }
-        exit;
-    }
-
-    if ($action === 'update_db_config') {
-        if (!isAdmin()) {
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            echo json_encode(['success' => false, 'message' => 'Você não pode resetar a senha de um Administrador.']);
             exit;
         }
-        
-        $host = $_POST['host'] ?? 'localhost';
-        $port = $_POST['port'] ?? '5432';
-        $dbname = $_POST['dbname'] ?? 'suporte_hub';
-        $user = $_POST['user'] ?? 'postgres';
-        $pass = $_POST['password'] ?? 'postgres';
 
-        $content = "<?php\n// includes/db_connection.php\n\nfunction getDBConnection() {\n    \$host = '$host';\n    \$port = '$port';\n    \$dbname = '$dbname';\n    \$user = '$user';\n    \$password = '$pass';\n\n    try {\n        \$dsn = \"pgsql:host=\$host;port=\$port;dbname=\$dbname\";\n        \$pdo = new PDO(\$dsn, \$user, \$password, [\n            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n        ]);\n        return \$pdo;\n    } catch (PDOException \$e) {\n        // Log error instead of displaying freely in production\n        error_log(\"DB Connection Error: \" . \$e->getMessage());\n        return null;\n    }\n}\n?>";
-        
-        if(file_put_contents('includes/db_connection.php', $content)) {
-            echo json_encode(['success' => true]);
-        } else {
-             echo json_encode(['success' => false, 'message' => 'Write failed']);
-        }
+        $hash = password_hash($newPass, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("UPDATE users SET password_hash = :hash WHERE id = :id");
+        $stmt->execute([':hash' => $hash, ':id' => $targetUserId]);
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Missing data']);
+    }
+    exit;
+}
+
+if ($action === 'update_db_config') {
+    if (!isAdmin()) {
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
 
-    echo json_encode(['success' => false, 'message' => 'Invalid action or permission']);
+    $host = $_POST['host'] ?? 'localhost';
+    $port = $_POST['port'] ?? '5432';
+    $dbname = $_POST['dbname'] ?? 'suporte_hub';
+    $user = $_POST['user'] ?? 'postgres';
+    $pass = $_POST['password'] ?? 'postgres';
+
+    $content = "<?php\n// includes/db_connection.php\n\nfunction getDBConnection() {\n    \$host = '$host';\n    \$port = '$port';\n    \$dbname = '$dbname';\n    \$user = '$user';\n    \$password = '$pass';\n\n    try {\n        \$dsn = \"pgsql:host=\$host;port=\$port;dbname=\$dbname\";\n        \$pdo = new PDO(\$dsn, \$user, \$password, [\n            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n        ]);\n        return \$pdo;\n    } catch (PDOException \$e) {\n        // Log error instead of displaying freely in production\n        error_log(\"DB Connection Error: \" . \$e->getMessage());\n        return null;\n    }\n}\n?>";
+
+    if (file_put_contents('includes/db_connection.php', $content)) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Write failed']);
+    }
+    exit;
+}
+
+echo json_encode(['success' => false, 'message' => 'Invalid action or permission']);
 ?>

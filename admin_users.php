@@ -319,7 +319,7 @@ body {
                                     </td>
                                     <td class="px-4 text-muted"><?php echo htmlspecialchars($role['description']); ?></td>
                                     <td class="px-4 text-end pe-4">
-                                        <?php if(!$role['is_system']): ?>
+                                        <?php if(!($role['is_system'] ?? false)): ?>
                                             <button class="btn btn-sm btn-white text-primary shadow-sm rounded-circle me-1 border-0" onclick="editRole(<?php echo htmlspecialchars(json_encode($role)); ?>)" style="width: 32px; height: 32px;"><i class="bi bi-pencil-fill small"></i></button>
                                             <button class="btn btn-sm btn-white text-danger shadow-sm rounded-circle border-0" onclick="deleteRole(<?php echo $role['id']; ?>)" style="width: 32px; height: 32px;"><i class="bi bi-trash-fill small"></i></button>
                                         <?php else: ?>
@@ -458,6 +458,18 @@ body {
                         <div class="form-check p-3 bg-danger bg-opacity-10 rounded-3 h-100 border border-danger border-opacity-25">
                             <input class="form-check-input role-cap p-danger" type="checkbox" value="system_config" id="cap_system_config">
                             <label class="form-check-label small fw-bold text-danger" for="cap_system_config">System Config</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check p-3 bg-light rounded-3 h-100">
+                            <input class="form-check-input role-cap" type="checkbox" value="view_ppr" id="cap_view_ppr">
+                            <label class="form-check-label small fw-bold text-dark" for="cap_view_ppr">Visualizar PPR</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check p-3 bg-light rounded-3 h-100">
+                            <input class="form-check-input role-cap" type="checkbox" value="edit_ppr" id="cap_edit_ppr">
+                            <label class="form-check-label small fw-bold text-dark" for="cap_edit_ppr">Editar PPR</label>
                         </div>
                     </div>
                 </div>

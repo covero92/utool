@@ -1,191 +1,222 @@
 <?php
 // ppr_manager.php
-include 'includes/header.php';
-require_once 'includes/portal_helpers.php';
-require_once 'includes/portal_auth.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-$currentYear = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
+// Correct Includes based on directory listing
+require_once 'includes/db_connection.php'; // Ensure DB
+require_once 'includes/portal_auth.php'; // Handle Auth
+
+$currentUser = $_SESSION['user_name'] ?? 'Visitante';
+$currentRoleId = $_SESSION['user_role_id'] ?? 0;
 
 // Security Check
-if (!isLoggedIn()) {
-    echo "<div class='container py-5 text-center'><h3>Faça login para acessar esta ferramenta.</h3></div>";
-    include 'includes/footer.php';
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index.php');
     exit;
 }
+
+// Helper to find assets
+function getAssetPath($dir, $extension)
+{
+    if (!is_dir($dir))
+        return '';
+    $files = scandir($dir);
+    foreach ($files as $file) {
+        if (pathinfo($file, PATHINFO_EXTENSION) === $extension && strpos($file, 'index') !== false) {
+            return 'ppr_dashboard/dist/assets/' . $file;
+        }
+    }
+    return '';
+}
+
+// Compute paths relative to web root
+$baseDistDir = __DIR__ . '/ppr_dashboard/dist/assets';
+$cssPath = getAssetPath($baseDistDir, 'css');
+$jsPath = getAssetPath($baseDistDir, 'js');
+
+// --- CSV PARSING LOGIC ---
+function parsePPRCsv($file)
+{
+    if (!file_exists($file))
+        return [];
+    $handle = fopen($file, "r");
+    $okrs = [];
+    $currentOKR = null; // Store reference to current OKR array
+
+    $colOffsets = null; // Store detected month indices: ['Jan' => 1, 'Fev' => 2...]
+
+    while (($row = fgetcsv($handle, 1000, ";")) !== FALSE) {
+        $row = array_map(function ($x) {
+            return mb_check_encoding($x, 'UTF-8') ? $x : mb_convert_encoding($x, 'UTF-8', 'Windows-1252');
+        }, $row);
+
+        $firstCell = trim($row[0] ?? '');
+
+        if (empty($firstCell))
+            continue;
+
+        // Detect OKR Header
+        if (stripos($firstCell, 'OKR') === 0) {
+            // New OKR, reset context if needed, but usually header follows
+            $newOKR = [
+                'id' => uniqid('okr_'),
+                'title' => $firstCell,
+                'goals' => []
+            ];
+            $okrs[] = $newOKR;
+            end($okrs);
+            $key = key($okrs);
+            $currentOKR = &$okrs[$key];
+
+            // Reset offsets on new OKR (assuming each OKR has its own header row)
+            $colOffsets = null;
+            continue;
+        }
+
+        // Detect Header Row (Contains Jan, Fev, etc)
+        // We look for 'Jan' or 'Fev' to be sure
+        $foundJan = false;
+        $tempOffsets = [];
+        $months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+        foreach ($row as $idx => $cell) {
+            $cellTrim = trim($cell);
+            if (stripos($cellTrim, 'Jan') !== false) {
+                $tempOffsets['Jan'] = $idx;
+                $foundJan = true;
+                break; // Found Jan, no need to check other cells in this row for Jan
+            }
+        }
+
+        if ($foundJan) {
+            // We found a header row! Calculate all offsets relative to Jan
+            $base = $tempOffsets['Jan'];
+            foreach ($months as $i => $m) {
+                // Assuming sequential columns
+                $colOffsets[$m] = $base + $i;
+            }
+            continue; // Skip the header row itself
+        }
+
+        // Skip Metadata/Helper rows if we haven't found a header yet or if it's explicitly a helper
+        if (stripos($firstCell, 'Meta') === 0 || stripos($firstCell, 'Peso') === 0 || stripos($firstCell, '0') === 0) {
+            continue;
+        }
+
+        // Process Goal Row
+        if ($currentOKR !== null && $colOffsets !== null) {
+            // We need at least enough columns to cover the map
+            // But relying on row count matches header count is risky.
+
+            // Check if this row looks like a goal (has values in the mapped columns)
+            $hasValues = false;
+            $tempMonthlyResults = [];
+
+            foreach ($months as $m) {
+                $idx = $colOffsets[$m] ?? -1;
+                $val = $row[$idx] ?? '';
+
+                // Safety: if value is super long text, ignore (it's likely a description text bleeding in)
+                if (strlen($val) > 20 && !is_numeric(str_replace(['%', 'm', 's', ' '], '', $val))) {
+                    $val = '';
+                }
+
+                if (trim($val) !== '') {
+                    $hasValues = true;
+                }
+
+                $tempMonthlyResults[$m] = [
+                    'status' => 'pending',
+                    'actual' => '',
+                    'target' => $val
+                ];
+            }
+
+            // FILTERING:
+            // 1. Must have some target values.
+            // 2. Must NOT be an explanatory text row.
+            if (
+                !$hasValues ||
+                stripos($firstCell, 'O não cumprimento') !== false ||
+                stripos($firstCell, 'Para garantir') !== false ||
+                stripos($firstCell, 'Pontos atuais') !== false
+            ) {
+                continue;
+            }
+
+            $goal = [
+                'id' => uniqid('goal_'),
+                'title' => $firstCell,
+                'weight' => 10,
+                // Rule usually is after Dec. Let's guess: Dec index + 1
+                'rule' => $row[$colOffsets['Dez'] + 1] ?? '',
+                'monthlyResults' => $tempMonthlyResults
+            ];
+
+            $currentOKR['goals'][] = $goal;
+        }
+    }
+    fclose($handle);
+    return $okrs;
+}
+
+// Load Multiple Years
+$years = ['2024', '2025', '2026'];
+$allPPRData = [];
+
+foreach ($years as $y) {
+    // Try variations of filename found in dir
+    $candidates = [
+        __DIR__ . "/ppr/PPR (2)(PPR - $y).csv",
+        __DIR__ . "/ppr/PPR (2)(PPR-$y).csv"
+    ];
+
+    foreach ($candidates as $f) {
+        if (file_exists($f)) {
+            $allPPRData[$y] = parsePPRCsv($f);
+            break;
+        }
+    }
+}
+
 ?>
+<!doctype html>
+<html lang="pt-br">
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="display-6 fw-bold mb-0">Gestão de <span class="text-primary">PPR</span></h1>
-            <p class="text-muted">Acompanhamento de metas e resultados.</p>
-            <a href="index.php" class="btn btn-sm btn-outline-secondary mt-2"><i class="bi bi-arrow-left me-1"></i>Voltar ao Início</a>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestão de PPR | SuporteHub</title>
+
+    <!-- Inject PHP Session Info -->
+    <script>
+        window.USER_INFO = {
+            name: <?php echo json_encode($currentUser); ?>,
+            roleId: <?php echo json_encode($currentRoleId); ?>,
+            capabilities: <?php echo json_encode($_SESSION['user_capabilities'] ?? []); ?>
+        };
+        window.PPR_DATA = <?php echo json_encode($allPPRData ?? []); ?>;
+    </script>
+
+    <?php if ($cssPath): ?>
+        <link rel="stylesheet" href="<?php echo $cssPath; ?>?v=<?php echo time(); ?>">
+    <?php endif; ?>
+</head>
+
+<body style="margin: 0; background-color: #f3f5f9;">
+    <div id="root"></div>
+
+    <?php if ($jsPath): ?>
+        <script type="module" src="<?php echo $jsPath; ?>?v=<?php echo time(); ?>"></script>
+    <?php else: ?>
+        <div style="padding: 50px; text-align: center; color: #dc3545; font-family: sans-serif;">
+            <h2>Erro de Carregamento</h2>
+            <p>Os arquivos do Dashboard não foram encontrados.</p>
+            <p>Certifique-se de que o build foi gerado em <code>/ppr_dashboard/dist</code>.</p>
         </div>
-        
-        <div class="d-flex gap-2 align-items-center">
-            <select class="form-select w-auto" id="yearSelect" onchange="changeYear(this.value)">
-                <?php for($y = 2024; $y <= date('Y')+1; $y++): ?>
-                    <option value="<?php echo $y; ?>" <?php echo $y == $currentYear ? 'selected' : ''; ?>><?php echo $y; ?></option>
-                <?php endfor; ?>
-            </select>
-        </div>
-    </div>
+    <?php endif; ?>
+</body>
 
-    <ul class="nav nav-tabs mb-4" id="pprTabs" role="tablist">
-        <li class="nav-item">
-            <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button">Dashboard</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" id="charts-tab" data-bs-toggle="tab" data-bs-target="#charts" type="button" onclick="loadCharts()">Histórico & Gráficos</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" id="audit-tab" data-bs-toggle="tab" data-bs-target="#audit" type="button" onclick="loadAudit()">Auditoria</button>
-        </li>
-    </ul>
-
-    <div class="tab-content" id="pprTabContent">
-        <!-- DASHBOARD TAB -->
-        <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-            <!-- Summary Row -->
-            <div class="row mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-primary bg-gradient text-white">
-                        <div class="card-body p-4 d-flex align-items-center justify-content-between">
-                            <div>
-                                <h6 class="text-uppercase opacity-75 mb-1">Pontuação Atual (<?php echo $currentYear; ?>)</h6>
-                                <h1 class="display-3 fw-bold mb-0" id="totalScore">100</h1>
-                                <p class="opacity-75 mb-0 small">Minimo para PPR: 70</p>
-                            </div>
-                            <div class="text-end">
-                                <i class="bi bi-trophy-fill opacity-50 display-4"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm rounded-4 h-100">
-                         <div class="card-body p-4"> <!-- Condensed Status -->
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0">Status das Metas</h6>
-                                <?php if(isSupport() || isAdmin()): ?>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="savePPR()"><i class="bi bi-save me-1"></i>Salvar</button>
-                                <?php endif; ?>
-                            </div>
-                             <div class="d-flex justify-content-between mb-1">
-                                <span>Perdas Acumuladas:</span>
-                                <span class="fw-bold text-danger" id="lostPoints">0</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span>Projeção (Se mantiver):</span>
-                                <span class="fw-bold" id="projectedScore">100</span>
-                            </div>
-                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tables Row -->
-            <div class="row">
-                 <div class="col-12">
-                     <!-- OKR 1 -->
-                     <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-header bg-success bg-opacity-10 py-3 border-0">
-                            <h5 class="fw-bold text-success mb-0">OKR 1 - Interação e Conteúdo</h5>
-                        </div>
-                        <div class="card-body p-0 table-responsive">
-                            <table class="table table-hover align-middle mb-0 text-center" id="table-okr1">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th class="text-start ps-4" style="width: 250px;">Meta</th>
-                                        <?php 
-                                        $months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-                                        foreach ($months as $m) echo "<th>$m</th>"; 
-                                        ?>
-                                        <th class="text-start pe-4">Desc</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- OKR 2 -->
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-header bg-primary bg-opacity-10 py-3 border-0">
-                             <h5 class="fw-bold text-primary mb-0">OKR 2 - Satisfação e Agilidade</h5>
-                        </div>
-                        <div class="card-body p-0 table-responsive">
-                            <table class="table table-hover align-middle mb-0 text-center" id="table-okr2">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th class="text-start ps-4" style="width: 250px;">Meta</th>
-                                         <?php foreach ($months as $m) echo "<th>$m</th>"; ?>
-                                        <th class="text-start pe-4">Desc</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-        </div>
-
-        <!-- CHARTS TAB -->
-        <div class="tab-pane fade" id="charts" role="tabpanel">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">Evolução da Pontuação (Comparativo Anual)</h5>
-                            <canvas id="chartHistory" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-                 <div class="col-md-6">
-                    <div class="card border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">Previsão 2025</h5>
-                            <canvas id="chartProjection" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- AUDIT TAB -->
-        <div class="tab-pane fade" id="audit" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="ps-4">Data/Hora</th>
-                                <th>Usuário</th>
-                                <th>Ação</th>
-                                <th>Detalhes</th>
-                                <th>Anterior</th>
-                                <th>Novo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="auditTableBody">
-                            <tr><td colspan="6" class="text-center py-4">Carregando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Expose PHP variables to global window scope for ppr_manager.js
-    window.currentYear = <?php echo $currentYear; ?>;
-    window.canEdit = <?php echo (isSupport() || isAdmin()) ? 'true' : 'false'; ?>;
-    window.isAdmin = <?php echo isAdmin() ? 'true' : 'false'; ?>;
-</script>
-<script src="assets/js/ppr_manager.js"></script>
-
-
-<?php include 'includes/footer.php'; ?>
+</html>
