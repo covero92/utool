@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once 'includes/auth_guard.php';
+require_once 'includes/db_connection.php';
 require_once 'includes/header.php';
 require_once 'includes/portal_auth.php'; 
 
@@ -226,9 +228,9 @@ arsort($allTags);
 <script>
   tinymce.init({
     selector: '#edit-content',
-    height: 400,
-    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline js-strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+    height: 650,
+    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount fullscreen preview code',
+    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline js-strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat | fullscreen preview code',
   });
 </script>
 
@@ -579,7 +581,7 @@ arsort($allTags);
 <!-- Editor Modal (Unchanged Logically, just CSS inherited) -->
 <div class="modal fade" id="editorModal" tabindex="-1" data-bs-backdrop="static">
     <!-- ... (Keep existing Editor Modal content) ... -->
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <form method="POST" class="modal-content border-0 shadow rounded-4" id="postForm" enctype="multipart/form-data">
             <input type="hidden" name="action" value="save_post">
             <input type="hidden" name="id" id="edit-id">
@@ -594,7 +596,7 @@ arsort($allTags);
                         <label class="form-label small fw-bold text-muted">Título</label>
                         <input type="text" name="title" id="edit-title" class="form-control bg-light border-0" required>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">Área</label>
                         <select name="area" id="edit-area" class="form-select bg-light border-0" required>
                             <option value="Fiscal">📄 Fiscal</option>
@@ -603,7 +605,7 @@ arsort($allTags);
                             <option value="Geral">ℹ️ Geral</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">Categoria</label>
                         <input type="text" name="category" id="edit-category" class="form-control bg-light border-0" list="catList" required>
                         <datalist id="catList">
@@ -629,11 +631,11 @@ arsort($allTags);
                             <option value="Atualização">
                         </datalist>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">Data</label>
                         <input type="date" name="date" id="edit-date" class="form-control bg-light border-0" value="<?php echo date('Y-m-d'); ?>" required>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">Autor</label>
                         <input type="text" name="author" id="edit-author" class="form-control bg-light border-0" value="<?php echo htmlspecialchars($currentUser); ?>" required>
                     </div>

@@ -6,12 +6,15 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Correct Includes based on directory listing
 require_once 'includes/db_connection.php'; // Ensure DB
-require_once 'includes/portal_auth.php'; // Handle Auth
+require_once 'includes/auth_guard.php'; // Enforce Global Auth
+require_once 'includes/portal_auth.php'; // Handle Helpers
 
 $currentUser = $_SESSION['user_name'] ?? 'Visitante';
 $currentRoleId = $_SESSION['user_role_id'] ?? 0;
 
-// Security Check
+// Security Check (redundant if auth_guard is strictly enforcing, but good for role checks)
+// auth_guard handles the basic public/private check.
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit;
@@ -129,8 +132,8 @@ function parsePPRCsv($file)
 
                 $tempMonthlyResults[$m] = [
                     'status' => 'pending',
-                    'actual' => '',
-                    'target' => $val
+                    'actualValue' => '',
+                    'targetValue' => $val
                 ];
             }
 
@@ -149,10 +152,11 @@ function parsePPRCsv($file)
             $goal = [
                 'id' => uniqid('goal_'),
                 'title' => $firstCell,
+                'type' => 'numeric',
                 'weight' => 10,
                 // Rule usually is after Dec. Let's guess: Dec index + 1
-                'rule' => $row[$colOffsets['Dez'] + 1] ?? '',
-                'monthlyResults' => $tempMonthlyResults
+                'description' => $row[$colOffsets['Dez'] + 1] ?? '',
+                'results' => $tempMonthlyResults
             ];
 
             $currentOKR['goals'][] = $goal;

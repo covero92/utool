@@ -163,6 +163,24 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
     .bg-teal-gradient {
         background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
     }
+    
+    /* Login Splash Utils */
+    .mw-1000 { max-width: 1000px; }
+    .ls-tight { letter-spacing: -0.025em; }
+    .ls-1 { letter-spacing: 1px; }
+    
+    .hover-scale {
+        transition: transform 0.2s ease;
+    }
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+    
+    @keyframes float {
+        0% { transform: translate(-50%, -50%) translateY(0px); }
+        50% { transform: translate(-50%, -50%) translateY(-20px); }
+        100% { transform: translate(-50%, -50%) translateY(0px); }
+    }
 </style>
 <script>
     // Body cleanup
@@ -176,6 +194,83 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 <!-- Top Right User Profile Removed (Moved to Sidebar) -->
 
 <div class="container-fluid">
+    <?php if (!$loggedIn): ?>
+        <script>
+            // Ensure modal works if needed, but we focus on the splash page now
+        </script>
+        <!-- Full Page Splash Screen for Guests -->
+        <div class="d-flex min-vh-100 align-items-center justify-content-center p-4 position-relative overflow-hidden">
+            
+            <!-- Animated Background Shapes -->
+            <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: -1;">
+                <div class="position-absolute top-0 start-0 translate-middle rounded-circle bg-primary opacity-25" style="width: 600px; height: 600px; filter: blur(100px); animation: float 10s infinite ease-in-out;"></div>
+                <div class="position-absolute bottom-0 end-0 translate-middle rounded-circle bg-secondary opacity-25" style="width: 500px; height: 500px; filter: blur(100px); animation: float 12s infinite ease-in-out reverse;"></div>
+            </div>
+
+            <!-- Glass Card Content -->
+            <div class="container mw-1000">
+                <div class="row g-0 rounded-4 overflow-hidden shadow-lg border border-white border-opacity-25" style="backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.6);">
+                    
+                    <!-- Left Side: Brand & Info -->
+                    <div class="col-lg-6 p-5 d-flex flex-column justify-content-center bg-white bg-opacity-50">
+                        <div class="mb-5">
+                            <div class="d-inline-flex align-items-center gap-3 mb-4">
+                                <div class="bg-primary text-white rounded-3 p-2 shadow-sm">
+                                    <i class="bi bi-grid-fill fs-3"></i>
+                                </div>
+                                <h2 class="fw-bold mb-0 text-dark">Suporte<span class="text-primary">Hub</span></h2>
+                            </div>
+                            <h1 class="display-6 fw-bold mb-3 ls-tight">Centralize suas ferramentas de suporte.</h1>
+                            <p class="text-muted lead">Acesse documentação, ferramentas fiscais e utilitários em um único lugar seguro e integrado.</p>
+                        </div>
+                        
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="text-primary mt-1"><i class="bi bi-check-circle-fill"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Acesso Centralizado</h6>
+                                    <p class="small text-muted mb-0">Login único para todas as ferramentas do ecossistema.</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="text-primary mt-1"><i class="bi bi-shield-lock-fill"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Segurança RBAC</h6>
+                                    <p class="small text-muted mb-0">Controle de permissões baseado em funções e níveis de acesso.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Action Area -->
+                    <div class="col-lg-6 p-5 bg-white bg-opacity-25 d-flex flex-column justify-content-center align-items-center text-center position-relative">
+                        <!-- Decorative ring -->
+                        <div class="position-absolute top-50 start-50 translate-middle border border-white border-opacity-50 rounded-circle" style="width: 300px; height: 300px; z-index: -1;"></div>
+                        
+                        <div class="mb-4">
+                            <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill fw-bold">Intranet Corporativa</span>
+                            <h3 class="fw-bold mb-2">Bem-vindo de volta!</h3>
+                            <p class="text-muted mb-4">Faça login para continuar suas atividades.</p>
+                        </div>
+
+                        <div class="d-grid gap-3 w-100" style="max-width: 320px;">
+                            <button class="btn btn-primary btn-lg rounded-pill shadow-sm fw-bold py-3 transition-transform hover-scale" data-bs-toggle="modal" data-bs-target="#portalLoginModal" onclick="switchAuthView('login')">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Acessar Conta
+                            </button>
+                            <button class="btn btn-outline-dark btn-lg rounded-pill fw-bold py-3 transition-transform hover-scale border-2" data-bs-toggle="modal" data-bs-target="#portalLoginModal" onclick="switchAuthView('register')">
+                                Criar Nova Conta
+                            </button>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top border-white border-opacity-25 w-100">
+                             <p class="small text-muted mb-0">Precisa de ajuda? <a href="#" class="text-primary fw-bold text-decoration-none">Contatar Admin</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php else: ?>
+    <!-- LOGGED IN CONTENT STARTS -->
     <div class="row">
 
         <!-- Left Sidebar: Utils & Info (Fixed/Sticky) -->
@@ -736,13 +831,15 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
 
 
     </div> <!-- Close Row -->
+<!-- Auth Modal (Login/Register) -->
+<?php endif; // End LoggedIn Check ?>
 </div> <!-- Close Container -->
 
 <!-- Auth Modal (Login/Register) -->
 <div class="modal fade" id="portalLoginModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 bg-transparent shadow-lg">
-            <div class="card card-glass overflow-hidden rounded-5 border-0">
+            <div class="card card-glass overflow-hidden rounded-5 border-0" style="border: none !important;">
                 <div class="row g-0">
                     <!-- Left Side: Brand/Info -->
                     <div
@@ -767,100 +864,154 @@ $onlineUsers = (new PortalAuth())->getOnlineUsers();
                         </div>
 
                         <div class="px-md-4 py-3">
-                            <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-pill" id="pills-tab"
-                                role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active rounded-pill fw-bold small text-uppercase ls-1"
-                                        id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login"
-                                        type="button" role="tab">Login</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link rounded-pill fw-bold small text-uppercase ls-1"
-                                        id="pills-register-tab" data-bs-toggle="pill" data-bs-target="#pills-register"
-                                        type="button" role="tab">Criar Conta</button>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content" id="pills-tabContent">
-                                <!-- LOGIN FORM -->
-                                <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
-                                    <form method="POST" action="includes/portal_actions.php">
-                                        <input type="hidden" name="portal_action" value="login">
-
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold"
-                                                id="loginUser" name="user" placeholder="Usuário" required>
-                                            <label for="loginUser">Usuário</label>
-                                        </div>
-                                        <div class="form-floating mb-4">
-                                            <input type="password"
-                                                class="form-control rounded-4 bg-light border-0 fw-bold" id="loginPass"
-                                                name="pass" placeholder="Senha" required>
-                                            <label for="loginPass">Senha</label>
-                                        </div>
-
-                                        <?php if (isset($_SESSION['login_error'])): ?>
-                                            <div
-                                                class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger py-2 small mb-3 rounded-3 fw-bold">
-                                                <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $_SESSION['login_error'];
-                                                unset($_SESSION['login_error']); ?>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php if (isset($_SESSION['login_success_msg'])): ?>
-                                            <div
-                                                class="alert alert-success border-0 bg-success bg-opacity-10 text-success py-2 small mb-3 rounded-3 fw-bold">
-                                                <i class="bi bi-check-circle-fill me-2"></i><?php echo $_SESSION['login_success_msg'];
-                                                unset($_SESSION['login_success_msg']); ?>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <button type="submit"
-                                            class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow-sm gradient-hover transition-all">
-                                            Entrar no Portal
-                                        </button>
-                                    </form>
+                            <!-- Removed Nav Pills -->
+                            
+                            <!-- LOGIN VIEW -->
+                            <div id="view-login" class="auth-view transition-all">
+                                <div class="text-center mb-4">
+                                    <h3 class="fw-bold text-primary">Bem-vindo</h3>
+                                    <p class="text-muted small">Insira suas credenciais para acessar.</p>
                                 </div>
 
-                                <!-- REGISTER FORM -->
-                                <div class="tab-pane fade" id="pills-register" role="tabpanel">
-                                    <form method="POST" action="includes/portal_actions.php">
-                                        <input type="hidden" name="portal_action" value="register">
+                                <form method="POST" action="includes/portal_actions.php">
+                                    <input type="hidden" name="portal_action" value="login">
 
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold"
-                                                id="regName" name="full_name" placeholder="Nome Completo" required>
-                                            <label for="regName">Nome Completo</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold"
-                                                id="regUser" name="user" placeholder="Usuário" required>
-                                            <label for="regUser">Usuário</label>
-                                        </div>
-                                        <div class="form-floating mb-4">
-                                            <input type="password"
-                                                class="form-control rounded-4 bg-light border-0 fw-bold" id="regPass"
-                                                name="pass" placeholder="Senha" required>
-                                            <label for="regPass">Senha</label>
-                                        </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold"
+                                            id="loginUser" name="user" placeholder="Usuário" required>
+                                        <label for="loginUser"><i class="bi bi-person me-2"></i>Usuário</label>
+                                    </div>
+                                    <div class="form-floating mb-4">
+                                        <input type="password"
+                                            class="form-control rounded-4 bg-light border-0 fw-bold" id="loginPass"
+                                            name="pass" placeholder="Senha" required>
+                                        <label for="loginPass"><i class="bi bi-key me-2"></i>Senha</label>
+                                    </div>
 
-                                        <?php if (isset($_SESSION['register_error'])): ?>
-                                            <div
-                                                class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger py-2 small mb-3 rounded-3 fw-bold">
-                                                <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $_SESSION['register_error'];
-                                                unset($_SESSION['register_error']); ?>
-                                            </div>
-                                        <?php endif; ?>
+                                    <?php if (isset($_SESSION['login_error'])): ?>
+                                        <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger py-2 small mb-3 rounded-3 fw-bold fade show">
+                                            <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?>
+                                        </div>
+                                    <?php endif; ?>
 
-                                        <button type="submit"
-                                            class="btn btn-success w-100 rounded-pill fw-bold py-3 shadow-sm gradient-hover transition-all text-white border-0"
-                                            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                    <?php if (isset($_SESSION['login_success_msg'])): ?>
+                                        <div class="alert alert-success border-0 bg-success bg-opacity-10 text-success py-2 small mb-3 rounded-3 fw-bold fade show">
+                                            <i class="bi bi-check-circle-fill me-2"></i><?php echo $_SESSION['login_success_msg']; unset($_SESSION['login_success_msg']); ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow-sm gradient-hover transition-all mb-4">
+                                        Entrar no Portal
+                                    </button>
+
+                                    <div class="text-center">
+                                        <p class="small text-muted">Ainda não tem conta?</p>
+                                        <button type="button" class="btn btn-sm btn-white text-primary fw-bold rounded-pill px-3 border-0 bg-primary bg-opacity-10 hover-scale" onclick="switchAuthView('register')">
                                             Criar Nova Conta
                                         </button>
-                                    </form>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- REGISTER VIEW -->
+                            <div id="view-register" class="auth-view transition-all d-none">
+                                <div class="text-center mb-4">
+                                    <h3 class="fw-bold text-success ls-1">Criar Conta</h3>
+                                    <p class="text-muted small">Preencha os dados abaixo para solicitar acesso.</p>
                                 </div>
+
+                                <form method="POST" action="includes/portal_actions.php">
+                                    <input type="hidden" name="portal_action" value="register">
+
+                                    <div class="row g-2">
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold small-input"
+                                                    id="regName" name="full_name" placeholder="Nome Completo" required>
+                                                <label for="regName" class="small"><i class="bi bi-person-vcard me-1"></i>Nome</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold small-input"
+                                                    id="regNick" name="nickname" placeholder="Apelido">
+                                                <label for="regNick" class="small"><i class="bi bi-emoji-smile me-1"></i>Apelido</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control rounded-4 bg-light border-0 fw-bold small-input"
+                                            id="regUser" name="user" placeholder="Usuário" required>
+                                        <label for="regUser" class="small"><i class="bi bi-person me-1"></i>Usuário (Login)</label>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-floating">
+                                                <input type="password"
+                                                    class="form-control rounded-4 bg-light border-0 fw-bold small-input" id="regPass"
+                                                    name="pass" placeholder="Senha" required>
+                                                <label for="regPass" class="small"><i class="bi bi-key me-1"></i>Senha</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-floating">
+                                                <input type="password"
+                                                    class="form-control rounded-4 bg-light border-0 fw-bold small-input" id="regPassConfirm"
+                                                    name="pass_confirm" placeholder="Confirmar" required>
+                                                <label for="regPassConfirm" class="small"><i class="bi bi-check2-all me-1"></i>Confirmar</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control rounded-4 bg-light border-0 fw-bold small-input" placeholder="Bio" id="regBio" name="bio" style="height: 60px"></textarea>
+                                        <label for="regBio" class="small"><i class="bi bi-building me-1"></i>Setor / Função</label>
+                                    </div>
+
+                                    <div class="form-check mb-3 ms-1">
+                                        <input class="form-check-input" type="checkbox" value="" id="regTerms" required>
+                                        <label class="form-check-label x-small text-muted" for="regTerms" style="font-size: 0.8rem;">
+                                            Li e concordo com as políticas internas.
+                                        </label>
+                                    </div>
+
+                                    <?php if (isset($_SESSION['register_error'])): ?>
+                                        <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger py-2 small mb-3 rounded-3 fw-bold fade show">
+                                            <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo $_SESSION['register_error']; unset($_SESSION['register_error']); ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold py-3 shadow-sm gradient-hover transition-all mb-4 text-white">
+                                        Solicitar Acesso
+                                    </button>
+
+                                    <div class="text-center">
+                                        <p class="small text-muted mb-2">Já tem acesso?</p>
+                                        <button type="button" class="btn btn-sm btn-white text-dark fw-bold rounded-pill px-4 border bg-gray-100 hover-scale shadow-sm" onclick="switchAuthView('login')">
+                                            <i class="bi bi-arrow-left me-1"></i> Voltar para Login
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+
+                        <!-- Script to handle View Switching -->
+                        <script>
+                            function switchAuthView(view) {
+                                const loginView = document.getElementById('view-login');
+                                const registerView = document.getElementById('view-register');
+                                
+                                if (view === 'register') {
+                                    loginView.classList.add('d-none');
+                                    registerView.classList.remove('d-none');
+                                } else {
+                                    registerView.classList.add('d-none');
+                                    loginView.classList.remove('d-none');
+                                }
+                            }
+                        </script>
                     </div>
                 </div>
             </div>

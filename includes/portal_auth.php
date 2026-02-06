@@ -99,7 +99,9 @@ class PortalAuth {
             // New Profile Fields
             $_SESSION['user_image'] = $user['profile_image'] ?? null;
             $_SESSION['user_nickname'] = $user['nickname'] ?? null;
+            $_SESSION['user_nickname'] = $user['nickname'] ?? null;
             $_SESSION['user_bio'] = $user['bio'] ?? null;
+            $_SESSION['user_status'] = $user['status']; // Important for Auth Guard
             
             // Load Capabilities
             $caps = json_decode($user['capabilities'] ?? '[]', true);
@@ -115,7 +117,7 @@ class PortalAuth {
         return false;
     }
 
-    public function register($username, $password, $fullName) {
+    public function register($username, $password, $fullName, $nickname = '', $bio = '') {
         if (!$this->pdo) return ['success' => false, 'message' => "Erro de banco."];
 
         // Check exists
@@ -127,28 +129,25 @@ class PortalAuth {
 
         $passHash = password_hash($password, PASSWORD_DEFAULT);
         
-        // Default: role=user, status=pending (Requires Admin Approval as per request? "só um admin pode dar a permissao... por padrão todos são usuários até um admin liberar")
-        // Interpretation: They can register, but are "Pending" or standard "User"?
-        // Request: "qualquer usuário pode se cadastrar, mas só um admin pode dar a permissao de suporte/usuário, por padrão todos são usuários até um admin liberar"
-        // This implies they start as 'user' (maybe active?) but to get anything HIGHER requires admin. Or maybe they are BLOCKED until admin approves?
-        // Let's set status = 'active' but role = 'user' (ReadOnly). Admin can promote.
-        
+        // Default: role=user, status=pending
         $role = 'user';
-        $status = 'active'; 
+        $status = 'pending'; 
 
         try {
-            $insert = $this->pdo->prepare("INSERT INTO users (username, password_hash, full_name, role, status) VALUES (:user, :pass, :name, :role, :status)");
+            $insert = $this->pdo->prepare("INSERT INTO users (username, password_hash, full_name, nickname, bio, role, status) VALUES (:user, :pass, :name, :nick, :bio, :role, :status)");
             $insert->execute([
                 ':user' => $username,
                 ':pass' => $passHash,
                 ':name' => $fullName,
+                ':nick' => $nickname,
+                ':bio'  => $bio,
                 ':role' => $role,
                 ':status' => $status
             ]);
-            return ['success' => true, 'message' => "Cadastro realizado! Faça login."];
-        } catch (PDOException $e) {
-            return ['success' => false, 'message' => "Erro ao cadastrar: " . $e->getMessage()];
 
+            return ['success' => true, 'message' => "Cadastro realizado! Aguarde aprovação."];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => "Erro no cadastro: " . $e->getMessage()];
         }
     }
 

@@ -24,9 +24,27 @@ if ($action === 'login') {
 if ($action === 'register') {
     $user = $_POST['user'] ?? '';
     $pass = $_POST['pass'] ?? '';
+    $passConfirm = $_POST['pass_confirm'] ?? '';
     $name = $_POST['full_name'] ?? '';
+    $nick = $_POST['nickname'] ?? '';
+    $bio  = $_POST['bio'] ?? '';
 
-    $result = $auth->register($user, $pass, $name);
+    // Basic Validation
+    if (empty($user) || empty($pass) || empty($name)) {
+        $_SESSION['register_error'] = "Preencha todos os campos obrigatórios.";
+        $_SESSION['register_error_flag'] = true;
+        header("Location: ../index.php");
+        exit;
+    }
+
+    if ($pass !== $passConfirm) {
+        $_SESSION['register_error'] = "As senhas não conferem.";
+        $_SESSION['register_error_flag'] = true;
+        header("Location: ../index.php");
+        exit;
+    }
+
+    $result = $auth->register($user, $pass, $name, $nick, $bio);
 
     if ($result['success']) {
         $_SESSION['login_success_msg'] = $result['message'];

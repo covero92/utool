@@ -369,14 +369,24 @@ usort($versions, function($a, $b) {
 ?>
 
 </div> <!-- Close header container -->
-<div class="container-fluid px-4 py-4 bg-light min-vh-100">
+<div class="container-fluid px-4 pt-3 pb-0 bg-light min-vh-100">
 
-    <div class="row align-items-center mb-4">
-        <div class="col-md-2">
-            <h1 class="h3 mb-0 text-gray-800">Release Notes Uniplus</h1>
-            <p class="text-muted small mb-0">Gerencie e visualize o histórico de atualizações.</p>
+    <div class="row g-4 align-items-center mb-4">
+        <div class="col-md-6">
+            <div class="d-inline-flex align-items-center gap-3 user-select-none">
+                <div class="bg-gradient-primary-to-secondary text-white rounded-4 d-flex align-items-center justify-content-center shadow-lg"
+                    style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                    <i class="bi bi-file-earmark-text-fill fs-2"></i>
+                </div>
+                <div>
+                    <h1 class="display-6 fw-bold mb-0 text-dark" style="font-family: 'Outfit', sans-serif;">
+                        Release <span class="text-primary">Notes Uniplus</span>
+                    </h1>
+                    <p class="text-muted small mb-0 fw-medium opacity-75">Histórico de atualizações e melhorias.</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-10 d-flex justify-content-end gap-2">
+        <div class="col-md-6 d-flex justify-content-end gap-2">
             <?php if ($isAdmin): ?>
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
                     <i class="bi bi-filetype-html me-2"></i>Importar HTML
@@ -412,322 +422,320 @@ usort($versions, function($a, $b) {
     <?php endif; ?>
 
     <!-- PREMIUM DARK THEME SYSTEM -->
+    <!-- HUB THEME SYSTEM -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
         :root {
-            /* MODERN LIGHT PALETTE */
-            --bg-body: #f1f5f9; /* Slate 100 */
-            --bg-gradient-start: #e2e8f0; /* Slate 200 */
-            --bg-gradient-end: #f8fafc; /* Slate 50 */
+            /* HUB ALIGNMENT VARS */
+            --bg-body: #f3f5f9;
+            --bg-body-gradient: linear-gradient(135deg, #f0f4f8 0%, #dbeafe 100%);
             
-            /* Glass Surface */
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(148, 163, 184, 0.2); /* Slate 400 alpha */
-            --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --glass-blur: blur(12px);
+            --bg-surface: rgba(255, 255, 255, 0.85);
+            --bg-sidebar: rgba(255, 255, 255, 0.85);
             
-            /* Typography */
+            /* Modern Palette */
+            --primary: #3b82f6; /* Blue 500 */
+            --primary-dark: #2563eb; /* Blue 600 */
+            --primary-light: #eff6ff; /* Blue 50 */
+            
+            --secondary: #64748b; /* Slate 500 */
             --text-main: #0f172a; /* Slate 900 */
             --text-muted: #64748b; /* Slate 500 */
-            --text-accent: #0ea5e9; /* Sky 500 */
             
-            /* Accents & States */
-            --primary: #0284c7; /* Sky 600 - Darker for readability on light */
-            --primary-glow: rgba(2, 132, 199, 0.2);
-            --success: #16a34a;
-            --warning: #d97706;
-            --danger: #dc2626;
-            --info: #0891b2;
+            --border-color: #e2e8f0; /* Slate 200 */
+            --border-hover: #cbd5e1; /* Slate 300 */
             
-            --component-bg: #ffffff;
-            --hover-bg: #f8fafc;
+            /* Glass & Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.5);
         }
 
-        /* RESET & BASE */
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-body) !important;
-            background-image: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+            background: var(--bg-body-gradient) !important;
             background-attachment: fixed !important;
             color: var(--text-main) !important;
-            min-height: 100vh;
+            line-height: 1.6;
         }
 
-        h1, h2, h3, h4, h5, h6 { 
-            color: var(--text-main) !important; 
-            font-weight: 600; 
-            letter-spacing: -0.025em; 
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-main);
+            letter-spacing: -0.025em;
         }
 
-        .text-muted { color: var(--text-muted) !important; }
-        .text-dark { color: var(--text-main) !important; } /* Invert legacy text-dark */
-        .text-secondary { color: var(--text-muted) !important; }
-        
-        /* MODERN CARDS */
-        .card {
-            background: var(--component-bg) !important;
-            border: 1px solid var(--glass-border) !important;
-            box-shadow: var(--glass-shadow) !important;
-            border-radius: 1rem !important;
+        /* --- MODERN DASHBOARD CARDS -- PREMIUM --- */
+        .stat-card {
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Gradients */
+        .card-gradient-blue { margin-bottom:0; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; }
+        .card-gradient-green { margin-bottom:0; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0; }
+        .card-gradient-purple { margin-bottom:0; background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 1px solid #ddd6fe; }
+        .card-gradient-red { margin-bottom:0; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 1px solid #fecaca; }
+
+        .stat-value {
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+            line-height: 1;
+            margin: 0.5rem 0;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 5rem;
+            opacity: 0.15;
+            transform: rotate(-10deg);
+            z-index: 1;
             transition: all 0.3s ease;
         }
+
+        .stat-card:hover .stat-icon {
+            transform: rotate(0deg) scale(1.1);
+            opacity: 0.2;
+        }
+
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            margin-bottom: 0.75rem;
+            width: fit-content;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* --- FILTERS TOOLBAR --- */
+        .filter-toolbar {
+            background: var(--bg-surface);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 50;
+        }
         
-        .card-header {
-            background: rgba(0, 0, 0, 0.03) !important; /* Light grey for light mode */
-            border-bottom: 1px solid var(--glass-border) !important;
-            padding: 1rem 1.25rem;
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background-color: #f8fafc;
         }
-
-        /* INPUTS */
-        .form-control, .form-select, .input-group-text, #sidebarSearch {
-            background-color: #f8fafc !important; /* Slate 50 */
-            border: 1px solid #cbd5e1 !important; /* Slate 300 */
-            color: var(--text-main) !important;
-            border-radius: 0.5rem;
-        }
-
+        
         .form-control:focus, .form-select:focus {
-            border-color: var(--text-accent) !important;
-            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2) !important;
-            background-color: #ffffff !important;
-        }
-
-        .form-control::placeholder { color: #94a3b8 !important; }
-
-        /* BUTTONS */
-        .btn-primary {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            border: none;
-            box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);
-        }
-        .btn-primary:hover {
-            box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline-primary {
-            color: var(--primary);
+            background-color: #fff;
             border-color: var(--primary);
-        }
-        
-        .btn-outline-secondary {
-            color: var(--text-muted);
-            border-color: #cbd5e1;
-        }
-        .btn-outline-secondary:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-main);
-            border-color: var(--text-muted);
+            box-shadow: 0 0 0 3px var(--primary-light);
+            outline: none;
         }
 
-        /* TABLE STYLING */
-        .table {
-            --bs-table-bg: transparent;
-            --bs-table-color: var(--text-main);
-            border-color: var(--glass-border);
+        /* --- VERSION CARDS --- */
+        .version-section .card {
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--shadow-sm) !important;
+            overflow: hidden;
+            background: var(--bg-surface) !important;
+            transition: box-shadow 0.3s;
+            margin-bottom: 2rem !important;
         }
         
-        .table thead th {
-            background-color: #f1f5f9 !important; /* Light header */
-            color: var(--text-muted) !important;
+        .version-section .card:hover {
+            box-shadow: var(--shadow-md) !important;
+        }
+
+        .version-card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            padding: 1.5rem !important;
+        }
+
+        .version-badge {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 0.35em 0.8em;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.01em;
+        }
+
+        /* --- TABLE STYLES --- */
+        .table-responsive {
+            border-radius: 0 0 16px 16px;
+        }
+
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: var(--text-muted);
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.05em;
-            border-bottom: 1px solid #e2e8f0 !important;
-            font-weight: 600;
+            background: #f8fafc !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            padding: 1rem 1.5rem;
         }
+        
         .table td {
             vertical-align: middle;
-            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.45rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            background: #fff;
         }
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.02) !important;
-        }
-        .table-hover tbody tr:hover {
-            background-color: rgba(2, 132, 199, 0.05) !important; /* Subtle blue tint */
+        
+        .table tr:last-child td {
+            border-bottom: none;
         }
         
         .table-hover tbody tr:hover td {
-            color: var(--text-main) !important;
-            transition: color 0.15s ease-in-out;
-        }
-
-        .table-hover tbody tr:hover .text-secondary,
-        .table-hover tbody tr:hover .text-muted {
-            color: var(--text-muted) !important;
-        }
-
-        /* BADGES */
-        .badge {
-            font-weight: 500;
-            padding: 0.35em 0.65em;
-            letter-spacing: 0.025em;
-            border-radius: 0.375rem;
-        }
-        /* Adjusted badge colors for light theme */
-        .badge.bg-primary { background: rgba(14, 165, 233, 0.1) !important; color: #0284c7 !important; border: 1px solid rgba(14, 165, 233, 0.2); }
-        .badge.bg-success { background: rgba(22, 163, 74, 0.1) !important; color: #15803d !important; border: 1px solid rgba(22, 163, 74, 0.2); }
-        .badge.bg-warning { background: rgba(217, 119, 6, 0.1) !important; color: #b45309 !important; border: 1px solid rgba(217, 119, 6, 0.2); }
-        .badge.bg-danger  { background: rgba(220, 38, 38, 0.1) !important; color: #b91c1c !important; border: 1px solid rgba(220, 38, 38, 0.2); }
-        .badge.bg-info    { background: rgba(8, 145, 178, 0.1) !important; color: #0e7490 !important; border: 1px solid rgba(8, 145, 178, 0.2); }
-        .badge.bg-secondary { background: rgba(100, 116, 139, 0.1) !important; color: #475569 !important; border: 1px solid rgba(100, 116, 139, 0.2); }
-
-        /* DASHBOARD CARDS */
-        .dashboard-card { 
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            position: relative;
-            overflow: hidden;
-        }
-        .dashboard-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--text-muted); /* Default */
-        }
-        .border-primary-left::before { background: var(--primary); }
-        .border-success-left::before { background: var(--success); }
-        .border-info-left::before { background: var(--info); }
-        .border-warning-left::before { background: var(--warning); }
-
-        .dashboard-card:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1) !important;
-        }
-
-        .icon-square {
-            width: 48px; height: 48px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 12px;
-            background: rgba(0,0,0,0.05) !important; /* Darker bg for icon container */
-        }
-
-        /* SIDEBAR */
-        #versionSidebar .list-group-item {
-            color: var(--text-muted);
-            background: transparent;
-            border: none;
-            padding: 0.75rem 1rem;
-            margin-bottom: 2px;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
-        }
-        #versionSidebar .list-group-item:hover {
             background-color: #f1f5f9;
+        }
+
+        /* Type Badges */
+        .badge-type {
+            padding: 0.4em 0.8em;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .type-melhoria { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+        .type-correcao { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+        .type-nova { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+        .type-ajuste { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+
+        /* Links */
+        .ref-link {
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .ref-link:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Sidebar */
+        #sidebarCol {
+            position: sticky;
+            top: 20px;
+        }
+
+        #versionSidebar .list-group-item {
+            border: none;
+            border-left: 3px solid transparent;
+            margin-bottom: 4px;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+            padding: 0.8rem 1rem;
+        }
+        
+        #versionSidebar .list-group-item:hover {
+            background: #f8fafc;
             color: var(--text-main);
         }
+        
         #versionSidebar .list-group-item.active {
-            background-color: rgba(2, 132, 199, 0.1);
-            color: #0284c7;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
             font-weight: 600;
         }
 
-        /* UTILS */
-        .list-group-item-action:active { background-color: transparent; }
-        .sticky-top { z-index: 1020; }
-        
-        /* Modals */
-        .modal-content {
-            background: #ffffff !important;
-            border: 1px solid #cbd5e1;
-            color: var(--text-main);
-        }
-        .modal-header, .modal-footer { border-color: #e2e8f0; }
-        .btn-close { filter: none; opacity: 0.5; } /* No invert needed for light mode */
-        
-        /* Enhanced Link Styling */
-        .ref-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            padding: 3px 10px;
-            background: rgba(14, 165, 233, 0.08);
-            border: 1px solid rgba(14, 165, 233, 0.25);
-            border-radius: 6px;
-            color: #0284c7;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-        
-        .ref-link:hover {
-            background: rgba(14, 165, 233, 0.15);
-            border-color: #0284c7;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
-        }
-        
-        .ref-link i {
-            font-size: 0.9rem;
-        }
-        
-        /* Enhanced Note Description Links */
-        .note-desc a {
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        
-        .note-desc a:hover {
-            opacity: 0.8;
-        }
-        
-        /* Note Row Hover Effect */
-        .note-row {
-            transition: all 0.3s ease;
-        }
-        
-        .note-row:hover {
-            background-color: rgba(14, 165, 233, 0.03) !important;
-            box-shadow: inset 3px 0 0 var(--primary);
-        }
-        
-        /* Improved Typography for Descriptions */
-        .note-desc {
-            color: var(--text-main) !important;
-            font-size: 15px !important;
-            line-height: 1.6 !important;
+        .note-desc { 
+            font-size: 1rem; 
+            color: #334155; 
+            line-height: 1.7;
         }
         
         /* Loading Overlay */
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
+        #loadingOverlay.show { display: flex !important; }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
         }
-        
-        #loadingOverlay.show {
-            display: flex;
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
         }
-        
-        .loading-content {
-            background: white;
-            padding: 2rem 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            text-align: center;
+        .btn-outline-secondary {
+            color: var(--secondary);
+            border-color: #cbd5e1;
         }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e2e8f0;
-            border-top-color: #0284c7;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 1rem;
+        .btn-outline-secondary:hover {
+            background-color: #f1f5f9;
+            color: var(--text-main);
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+
     </style>
     
     <script>
@@ -741,7 +749,7 @@ usort($versions, function($a, $b) {
         });
     </script>
     
-    <div class="container-fluid px-4 py-4 min-vh-100">
+    <div class="container-fluid px-4 py-3 min-vh-100">
     <?php
     // Calculate Stats
     $stats = [
@@ -765,76 +773,57 @@ usort($versions, function($a, $b) {
     }
     ?>
 
-    <!-- Dashboard -->
-    <div class="row mb-4 g-3">
-        <div class="col">
-            <div class="card border-0 border-primary-left dashboard-card h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small fw-bold mb-1">Total Versões</h6>
-                        <h2 class="fw-bold mb-0"><?php echo $stats['total_versions']; ?></h2>
-                    </div>
-                    <div class="icon-square text-primary">
-                        <i class="bi bi-calendar-check fs-4"></i>
-                    </div>
-                </div>
+    <!-- Stats Dashboard -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-2">
+            <div class="stat-card card-gradient-blue">
+                <div class="stat-badge text-primary"><i class="bi bi-layers-fill me-1"></i> Histórico</div>
+                <div class="stat-value"><?php echo $stats['total_versions']; ?></div>
+                <div class="stat-label">Total de Versões</div>
+                <i class="bi bi-layers stat-icon text-primary"></i>
             </div>
         </div>
-        <div class="col">
-            <div class="card border-0 border-success-left dashboard-card h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small fw-bold mb-1">Total Notas</h6>
-                        <h2 class="fw-bold mb-0"><?php echo $stats['total_notes']; ?></h2>
-                    </div>
-                    <div class="icon-square text-success">
-                        <i class="bi bi-list-check fs-4"></i>
-                    </div>
-                </div>
+        
+        <div class="col-md-3">
+            <div class="stat-card card-gradient-green">
+                <div class="stat-badge text-success"><i class="bi bi-file-earmark-check-fill me-1"></i> Changelog</div>
+                <div class="stat-value"><?php echo $stats['total_notes']; ?></div>
+                <div class="stat-label">Total de Notas</div>
+                <i class="bi bi-list-check stat-icon text-success"></i>
             </div>
         </div>
-        <div class="col">
-            <div class="card border-0 border-info-left dashboard-card h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small fw-bold mb-1">Desktop / Web</h6>
-                        <h2 class="fw-bold mb-0"><?php echo $stats['scopes']['Desktop'] . ' / ' . $stats['scopes']['Web']; ?></h2>
-                    </div>
-                    <div class="icon-square text-info">
-                        <i class="bi bi-pc-display fs-4"></i>
-                    </div>
+
+        <div class="col-md-3">
+            <div class="stat-card card-gradient-purple">
+                <div class="stat-badge" style="color: #7c3aed"><i class="bi bi-laptop me-1"></i> Plataformas</div>
+                <div class="stat-value" style="font-size: 2.2rem;">
+                    <?php echo $stats['scopes']['Desktop']; ?>
+                    <span class="text-muted opacity-25 fw-light">/</span>
+                    <?php echo $stats['scopes']['Web']; ?>
                 </div>
+                <div class="stat-label">Desktop / Web</div>
+                <i class="bi bi-pc-display stat-icon" style="color: #7c3aed"></i>
             </div>
         </div>
-        <div class="col">
-            <div class="card border-0 border-warning-left dashboard-card h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small fw-bold mb-1">Correções</h6>
-                        <h2 class="fw-bold mb-0"><?php echo $stats['types']['Correção'] ?? 0; ?></h2>
-                    </div>
-                    <div class="icon-square text-warning">
-                        <i class="bi bi-bug fs-4"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card border-0 border-primary-left dashboard-card h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small fw-bold mb-1">Melhorias</h6>
-                        <h2 class="fw-bold mb-0"><?php echo $stats['types']['Melhoria'] ?? 0; ?></h2>
-                    </div>
-                    <div class="icon-square text-primary">
-                        <i class="bi bi-stars fs-4"></i>
+
+        <div class="col-md-4">
+            <div class="stat-card card-gradient-red">
+                <div class="stat-badge text-danger"><i class="bi bi-tools me-1"></i> Manutenção</div>
+                <div class="d-flex align-items-baseline gap-3">
+                    <div class="stat-value text-danger"><?php echo $stats['types']['Correção'] ?? 0; ?></div>
+                    <div class="d-flex flex-column align-items-start">
+                        <span class="badge bg-white text-success shadow-sm border border-success border-opacity-25 px-2 py-1 rounded-pill">
+                            <i class="bi bi-arrow-up-right"></i> <?php echo $stats['types']['Melhoria'] ?? 0; ?> Melhorias
+                        </span>
                     </div>
                 </div>
+                <div class="stat-label">Correções Realizadas</div>
+                <i class="bi bi-bug stat-icon text-danger"></i>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row g-4">
         <!-- Sidebar: Versions List -->
         <div class="col-md-2 mb-4" id="sidebarCol">
             <div class="card shadow-sm sticky-top" style="top: 20px; max-height: 80vh; overflow-y: auto;">
@@ -871,67 +860,66 @@ usort($versions, function($a, $b) {
                 </button>
             </div>
             
-            <!-- Filters -->
-            <div class="card shadow-sm mb-4 sticky-top" style="top: 20px; z-index: 1000;">
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" id="searchInput" placeholder="Pesquisar...">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" id="filterTheme">
-                                <option value="">Todos os Temas</option>
-                                <?php 
-                                    $themes = [];
-                                    foreach ($versions as $v) foreach ($v['notes'] as $n) if(!empty($n['theme'])) $themes[] = $n['theme'];
-                                    $themes = array_unique($themes);
-                                    sort($themes);
-                                    foreach ($themes as $t) echo "<option value='" . htmlspecialchars($t) . "'>" . htmlspecialchars($t) . "</option>";
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" id="filterScope">
-                                <option value="">Todos os Escopos</option>
-                                <?php 
-                                    $scopes = [];
-                                    foreach ($versions as $v) {
-                                        foreach ($v['notes'] as $n) {
-                                            if (!empty($n['scope'])) {
-                                                // Filter out invalid scopes (likely descriptions)
-                                                if (strlen($n['scope']) < 40 && substr_count($n['scope'], ' ') < 4) {
-                                                    $scopes[] = $n['scope'];
-                                                }
-                                            }
+            <!-- Filters Toolbar -->
+            <div class="filter-toolbar d-flex flex-wrap gap-3 align-items-center mb-4 sticky-top" style="top: 20px;">
+                <div class="flex-grow-1" style="min-width: 250px;">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="searchInput" placeholder="Pesquisar versões, notas ou temas...">
+                    </div>
+                </div>
+                
+                <div style="min-width: 180px;">
+                    <select class="form-select" id="filterTheme">
+                        <option value="">Todos os Temas</option>
+                        <?php 
+                            $themes = [];
+                            foreach ($versions as $v) foreach ($v['notes'] as $n) if(!empty($n['theme'])) $themes[] = $n['theme'];
+                            $themes = array_unique($themes);
+                            sort($themes);
+                            foreach ($themes as $t) echo "<option value='" . htmlspecialchars($t) . "'>" . htmlspecialchars($t) . "</option>";
+                        ?>
+                    </select>
+                </div>
+
+                <div style="min-width: 180px;">
+                    <select class="form-select" id="filterScope">
+                        <option value="">Todos os Escopos</option>
+                        <?php 
+                            $scopes = [];
+                            foreach ($versions as $v) {
+                                foreach ($v['notes'] as $n) {
+                                    if (!empty($n['scope'])) {
+                                        if (strlen($n['scope']) < 40 && substr_count($n['scope'], ' ') < 4) {
+                                            $scopes[] = $n['scope'];
                                         }
                                     }
-                                    $scopes = array_unique($scopes);
-                                    sort($scopes);
-                                    foreach ($scopes as $s) echo "<option value='" . htmlspecialchars($s) . "'>" . htmlspecialchars($s) . "</option>";
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" id="filterType">
-                                <option value="">Todos os Tipos</option>
-                                <?php 
-                                    $types = [];
-                                    foreach ($versions as $v) foreach ($v['notes'] as $n) if(!empty($n['type'])) $types[] = $n['type'];
-                                    $types = array_unique($types);
-                                    sort($types);
-                                    foreach ($types as $t) echo "<option value='" . htmlspecialchars($t) . "'>" . htmlspecialchars($t) . "</option>";
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                             <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
-                                <i class="bi bi-x-lg me-2"></i>Limpar
-                             </button>
-                        </div>
-                    </div>
+                                }
+                            }
+                            $scopes = array_unique($scopes);
+                            sort($scopes);
+                            foreach ($scopes as $s) echo "<option value='" . htmlspecialchars($s) . "'>" . htmlspecialchars($s) . "</option>";
+                        ?>
+                    </select>
+                </div>
+
+                <div style="min-width: 180px;">
+                     <select class="form-select" id="filterType">
+                        <option value="">Todos os Tipos</option>
+                        <?php 
+                            $types = [];
+                            foreach ($versions as $v) foreach ($v['notes'] as $n) if(!empty($n['type'])) $types[] = $n['type'];
+                            $types = array_unique($types);
+                            sort($types);
+                            foreach ($types as $t) echo "<option value='" . htmlspecialchars($t) . "'>" . htmlspecialchars($t) . "</option>";
+                        ?>
+                    </select>
+                </div>
+
+                <div>
+                     <button class="btn btn-outline-secondary" onclick="clearFilters()" title="Limpar Filtros">
+                        <i class="bi bi-x-lg"></i>
+                     </button>
                 </div>
             </div>
 
@@ -1011,6 +999,30 @@ usort($versions, function($a, $b) {
         return text;
     }
 
+    // --- Clipboard Helper ---
+    function copyTicket(ref, btn) {
+        // Extract number only (remove # if present)
+        const ticket = ref.replace(/[^0-9]/g, '');
+        
+        navigator.clipboard.writeText(ticket).then(() => {
+            // Visual Feedback
+            const icon = btn.querySelector('i');
+            const originalClass = icon.className;
+            
+            icon.className = 'bi bi-check-lg text-success';
+            btn.classList.add('text-success');
+            btn.classList.remove('text-muted');
+            
+            setTimeout(() => {
+                icon.className = originalClass;
+                btn.classList.remove('text-success');
+                btn.classList.add('text-muted');
+            }, 1000);
+        }).catch(err => {
+            console.error('Falha ao copiar:', err);
+        });
+    }
+
     function getTypeIcon(type) {
         switch(type) {
             case 'Correção':
@@ -1033,12 +1045,12 @@ usort($versions, function($a, $b) {
     }
 
     function getBadgeClass(type) {
-        switch(type) {
-            case 'Correção': return 'bg-danger bg-opacity-10 text-danger';
-            case 'Melhoria': return 'bg-success bg-opacity-10 text-success';
-            case 'Nova Feature': return 'bg-primary bg-opacity-10 text-primary';
-            case 'Ajuste': return 'bg-warning bg-opacity-10 text-warning';
-            default: return 'bg-secondary bg-opacity-10 text-secondary';
+        switch (type) {
+            case 'Melhoria': return 'badge-type type-melhoria';
+            case 'Correção': return 'badge-type type-correcao';
+            case 'Nova Feature': return 'badge-type type-nova';
+            case 'Ajuste': return 'badge-type type-ajuste';
+            default: return 'badge-type bg-secondary bg-opacity-10 text-secondary';
         }
     }
 
@@ -1051,35 +1063,35 @@ usort($versions, function($a, $b) {
         const showDesc = ver.description && (IS_ADMIN || !isImportDesc);
 
         let html = `
-        <div class="card shadow-sm mb-4 version-section" id="v-${ver.id}">
-            <div class="card-header version-card-header py-3">
+        <div class="card mb-5 version-section" id="v-${ver.id}">
+            <div class="card-header version-card-header">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h4 class="mb-0 fw-bold text-primary">${escapeHtml(ver.version)}</h4>
-                            <span class="badge border border-secondary text-secondary"><i class="bi bi-calendar-event me-1"></i>${dateFormatted}</span>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <h4 class="mb-0 fw-bolder text-dark" style="letter-spacing: -0.01em;">${escapeHtml(ver.version)}</h4>
+                            <span class="version-badge"><i class="bi bi-calendar4-week me-1"></i>${dateFormatted}</span>
                         </div>
                         
-                        ${showTitle ? `<h6 class="fw-bold text-dark mb-1">${escapeHtml(ver.title)}</h6>` : ''}
-                        ${showDesc ? `<p class="text-muted small mb-2">${nl2br(escapeHtml(ver.description))}</p>` : ''}
+                        ${showTitle ? `<h6 class="fw-semibold text-secondary mb-1">${escapeHtml(ver.title)}</h6>` : ''}
+                        ${showDesc ? `<p class="text-muted small mb-3" style="line-height: 1.5;">${nl2br(escapeHtml(ver.description))}</p>` : ''}
 
-                        <!-- Downloads -->
-                        <div class="d-flex gap-2 mt-2">
+                        <!-- Downloads & Actions -->
+                        <div class="d-flex gap-2 mt-3">
                             ${ver.download_desktop ? `
-                                <a href="${escapeHtml(ver.download_desktop)}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                <a href="${escapeHtml(ver.download_desktop)}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
                                     <i class="bi bi-windows me-1"></i> Desktop
                                 </a>` : ''}
                             ${ver.download_web ? `
-                                <a href="${escapeHtml(ver.download_web)}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                <a href="${escapeHtml(ver.download_web)}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
                                     <i class="bi bi-globe me-1"></i> Web
                                 </a>` : ''}
                             <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-danger rounded-pill dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="bi bi-file-pdf me-1"></i> Exportar
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-download me-1"></i> Exportar
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" onclick="exportToPDF('v-${ver.id}', '${escapeHtml(ver.version)}', false)">PDF Completo</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="exportToPDF('v-${ver.id}', '${escapeHtml(ver.version)}', true)">PDF Cliente (Sem Ref/Obs)</a></li>
+                                <ul class="dropdown-menu shadow-lg border-0">
+                                    <li><a class="dropdown-item py-2" href="#" onclick="exportToPDF('v-${ver.id}', '${escapeHtml(ver.version)}', false)"><i class="bi bi-file-pdf me-2 text-danger"></i>PDF Completo</a></li>
+                                    <li><a class="dropdown-item py-2" href="#" onclick="exportToPDF('v-${ver.id}', '${escapeHtml(ver.version)}', true)"><i class="bi bi-file-text me-2 text-primary"></i>PDF Cliente (Sem Ref/Obs)</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -1088,17 +1100,17 @@ usort($versions, function($a, $b) {
                     ${IS_ADMIN ? `
                         <div class="dropdown">
                             <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
+                                <i class="bi bi-three-dots-vertical fs-5"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
                                 <li>
-                                    <button class="dropdown-item" onclick='editVersion(${JSON.stringify(ver).replace(/'/g, "&#39;")})'>
-                                        <i class="bi bi-pencil me-2"></i>Editar Detalhes
+                                    <button class="dropdown-item py-2" onclick='editVersion(${JSON.stringify(ver).replace(/'/g, "&#39;")})'>
+                                        <i class="bi bi-pencil me-2 text-primary"></i>Editar Detalhes
                                     </button>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <button class="dropdown-item text-danger" onclick="confirmDeleteVersion('${ver.id}')">
+                                    <button class="dropdown-item py-2 text-danger" onclick="confirmDeleteVersion('${ver.id}')">
                                         <i class="bi bi-trash me-2"></i>Excluir Versão
                                     </button>
                                 </li>
@@ -1110,33 +1122,44 @@ usort($versions, function($a, $b) {
             
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle table-bordered">
-                        <thead class="table-light">
+                    <table class="table table-hover align-middle">
+                        <thead>
                             <tr>
                                 <th style="width: 1%; white-space: nowrap;">Tema</th>
                                 <th style="width: 1%; white-space: nowrap;">Tipo</th>
                                 <th style="width: 1%; white-space: nowrap;">Escopo</th>
                                 <th>Descrição</th>
                                 <th style="width: 1%; white-space: nowrap;" class="col-ref">Ref.</th>
-                                <th style="width: 25%;" class="col-obs">Observação</th>
+                                <th style="width: 20%;" class="col-obs">Observação</th>
                                 ${IS_ADMIN ? '<th style="width: 1%; white-space: nowrap;" class="text-end col-actions">Ações</th>' : ''}
                             </tr>
                         </thead>
                         <tbody>
                             ${(ver.notes && ver.notes.length > 0) ? ver.notes.map(note => `
                                 <tr class="note-row">
-                                    <td class="fw-bold text-secondary small text-nowrap">${escapeHtml(note.theme)}</td>
+                                    <td class="fw-semibold text-dark small text-nowrap">${escapeHtml(note.theme)}</td>
                                     <td class="text-nowrap">
-                                        <span class="badge ${getBadgeClass(note.type)}">${getTypeIcon(note.type)}${escapeHtml(note.type)}</span>
+                                        <span class="${getBadgeClass(note.type)}">${getTypeIcon(note.type)}${escapeHtml(note.type)}</span>
                                     </td>
-                                    <td class="text-nowrap"><span class="badge border border-secondary text-secondary">${escapeHtml(note.scope)}</span></td>
-                                    <td class="text-wrap note-desc" style="min-width: 300px; line-height: 1.6; font-size: 15px;">${parseLinks(nl2br(escapeHtml(note.description)))}</td>
-                                    <td class="small note-ref text-nowrap col-ref">${parseLinks(escapeHtml(note.ref))}</td>
+                                    <td class="text-nowrap"><span class="badge bg-light text-secondary border fw-normal">${escapeHtml(note.scope)}</span></td>
+                                    <td class="text-wrap note-desc">${parseLinks(nl2br(escapeHtml(note.description)))}</td>
+                                    <td class="small text-nowrap col-ref">
+                                        ${note.ref ? `
+                                            <div class="d-flex align-items-center gap-1">
+                                                <a href="#" class="ref-link text-decoration-none">${escapeHtml(note.ref)}</a>
+                                                <button class="btn btn-link btn-sm p-0 text-muted opacity-50 hover-opacity-100" 
+                                                        title="Copiar Ticket" 
+                                                        onclick="copyTicket('${escapeHtml(note.ref)}', this)">
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    </td>
                                     <td class="small text-muted note-obs text-wrap col-obs">${parseLinks(nl2br(escapeHtml(note.observation)))}</td>
                                     ${IS_ADMIN ? `
                                         <td class="text-end text-nowrap col-actions">
-                                            <div class="d-flex justify-content-end gap-2">
-                                                <button class="btn btn-link text-primary p-0 btn-sm" 
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <button class="btn btn-light btn-sm text-primary" title="Editar"
                                                     onclick='editNote(${JSON.stringify(note).replace(/'/g, "&#39;")}, "${ver.id}")'>
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
@@ -1144,7 +1167,7 @@ usort($versions, function($a, $b) {
                                                     <input type="hidden" name="action" value="delete_note">
                                                     <input type="hidden" name="version_id" value="${ver.id}">
                                                     <input type="hidden" name="note_id" value="${note.id}">
-                                                    <button type="submit" class="btn btn-link text-danger p-0 btn-sm">
+                                                    <button type="submit" class="btn btn-light btn-sm text-danger" title="Excluir">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
@@ -1154,8 +1177,9 @@ usort($versions, function($a, $b) {
                                 </tr>
                             `).join('') : `
                                 <tr>
-                                    <td colspan="${IS_ADMIN ? 7 : 6}" class="p-4 text-center text-muted small">
-                                        Nenhuma nota lançada nesta versão.
+                                    <td colspan="${IS_ADMIN ? 7 : 6}" class="p-5 text-center text-muted">
+                                        <div class="mb-2"><i class="bi bi-clipboard-x display-6 opacity-25"></i></div>
+                                        <div class="small">Nenhuma nota lançada nesta versão.</div>
                                     </td>
                                 </tr>
                             `}
@@ -1164,8 +1188,8 @@ usort($versions, function($a, $b) {
                 </div>
             </div>
             ${IS_ADMIN ? `
-                <div class="card-footer bg-white border-top-0 text-center">
-                    <button class="btn btn-outline-primary btn-sm rounded-pill" 
+                <div class="card-footer bg-white border-top-0 text-center py-3">
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-4" 
                         onclick="openAddNoteModal('${ver.id}')">
                         <i class="bi bi-plus-lg me-1"></i>Adicionar Nota
                     </button>
@@ -1754,26 +1778,78 @@ btnBackToTop.addEventListener('click', function() {
 // For now, infinite scroll is the main nav method. Sidebar is just a list.
 // Upgrading sidebar to filter the list effectively jumps to that version if we filter by version name.
 
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('data-target'); // v-xxxx
-        const versionId = targetId.replace('v-', '');
-        
-        // Check if element exists
-        const el = document.getElementById(targetId);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            // If not rendered, we could force render it. 
-            // Better UX for this specific case: Filter by that version?
-            // Or just alert user.
-            // Let's implement a "Find and Scroll" if possible, or just ignore for now as 'Load More' covers most.
-            // Simple fallback:
-            alert("Role para baixo para carregar versões mais antigas.");
-        }
+
+    // Sidebar Link Click Handler (Smart Load)
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target'); // v-xxxx
+            const versionId = targetId.replace('v-', '');
+            
+            // 1. Try to find existing element
+            const el = document.getElementById(targetId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Visual feedback
+                el.classList.add('shadow-lg');
+                setTimeout(() => el.classList.remove('shadow-lg'), 1000);
+            } else {
+                // 2. Element not rendered - Load it!
+                const index = currentData.findIndex(v => v.id === versionId);
+                
+                if (index === -1) {
+                    alert('Versão não encontrada na lista atual (verifique os filtros).');
+                    return;
+                }
+                
+                // Show loading overlay
+                const overlay = document.getElementById('loadingOverlay');
+                if(overlay) {
+                    overlay.classList.add('show');
+                    const text = overlay.querySelector('h5');
+                    if(text) text.textContent = "Localizando versão...";
+                }
+
+                // Render in next tick to allow UI to update
+                setTimeout(() => {
+                    // We need to render from current 'renderedCount' up to 'index + 1'
+                    // Optimisation: Render in one go
+                    const missingData = currentData.slice(renderedCount, index + 1);
+                    
+                    if (missingData.length > 0) {
+                        let htmlBuffer = '';
+                        missingData.forEach(ver => {
+                            htmlBuffer += renderVersionCard(ver);
+                        });
+                        container.insertAdjacentHTML('beforeend', htmlBuffer);
+                        renderedCount += missingData.length;
+                        
+                        // Sync Sentinel
+                        if (renderedCount >= currentData.length) {
+                            sentinel.textContent = "Fim dos resultados";
+                        }
+                    }
+                    
+                    // Scroll to newly created element
+                    const newEl = document.getElementById(targetId);
+                    if (newEl) {
+                        newEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        newEl.classList.add('shadow-lg');
+                        setTimeout(() => newEl.classList.remove('shadow-lg'), 1000);
+                    }
+                    
+                    // Hide overlay
+                    if(overlay) {
+                        overlay.classList.remove('show');
+                        setTimeout(() => {
+                             const text = overlay.querySelector('h5');
+                             if(text) text.textContent = "Carregando versões...";
+                        }, 200);
+                    }
+                }, 50);
+            }
+        });
     });
-});
 
 // Sidebar Toggle
 function toggleSidebar() {
